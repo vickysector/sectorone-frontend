@@ -20,6 +20,34 @@ module.exports = {
         "primary-base": "#FF6F1E",
         "input-border": "#D5D5D5",
         "input-container": "#F7F7F7",
+        "text-description": "#676767",
+      },
+      fontSize: {
+        "heading-1": [
+          //styleName: Heading/Heading 1;
+
+          "38px",
+          {
+            //styleName: Heading/Heading 1;
+            lineHeight: "46px",
+            fontWeight: "600",
+          },
+        ],
+        "LG-normal": [
+          "16px",
+          {
+            lineHeight: "24px",
+            fontWeight: "400",
+          },
+        ],
+
+        "Base-normal": [
+          "14px",
+          {
+            lineHeight: "22px",
+            fontWeight: "400",
+          },
+        ],
       },
     },
   },
