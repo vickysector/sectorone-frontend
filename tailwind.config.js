@@ -15,6 +15,12 @@ module.exports = {
       height: {
         "auth-screen": "calc(100vh - 40px)",
       },
+      colors: {
+        "primary-200": "#FFF8F1",
+        "primary-base": "#FF6F1E",
+        "input-border": "#D5D5D5",
+        "input-container": "#F7F7F7",
+      },
     },
   },
   plugins: [],
