@@ -19,7 +19,7 @@ export default function Home() {
                 placeholder="Password"
               />
               <EyeOutlined
-                className="absolute top-[50%] right-4 translate-y-[-50%]"
+                className="absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer"
                 style={{ color: "#00000040" }}
               />
             </div>
@@ -30,7 +30,7 @@ export default function Home() {
                 placeholder="Retype password"
               />
               <EyeOutlined
-                className="absolute top-[50%] right-4 translate-y-[-50%]"
+                className="absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer"
                 style={{ color: "#00000040" }}
               />
             </div>
@@ -44,11 +44,18 @@ export default function Home() {
                   value="I agree to the Terms & Conditions and Privacy Policy"
                   className="accent-primary-base bg-white text-Base-normal"
                 />
-                <p className="text-Base-normal ml-1.5">
+                <p className="text-Base-normal ml-1.5 text-text-description">
                   I agree to the Terms & Conditions and Privacy Policy
                 </p>
               </label>
             </div>
+
+            <button
+              type="submit"
+              className="cursor-pointer w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal text-text-disabled"
+            >
+              Create Password
+            </button>
           </form>
         </div>
       </section>
