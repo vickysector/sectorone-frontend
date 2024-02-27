@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 :root {
-  max-width: 1740px;
+  max-width: 1640px;
   margin: 0 auto;
 }
