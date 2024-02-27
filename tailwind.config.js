@@ -34,6 +34,13 @@ module.exports = {
             fontWeight: "600",
           },
         ],
+        "heading-2": [
+          "30px",
+          {
+            lineHeight: "38px",
+            fontWeight: "600",
+          },
+        ],
         "LG-normal": [
           "16px",
           {
