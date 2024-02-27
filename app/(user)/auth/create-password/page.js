@@ -58,6 +58,11 @@ export default function Home() {
             </button>
           </form>
         </div>
+        <div className="absolute bottom-[10%] left-[9.5%]">
+          <p className="text-Base-normal text-text-description">
+            &copy; 2024 Sector. All right reserved.
+          </p>
+        </div>
       </section>
       <section className="flex-1 bg-primary-200 w-full h-full flex items-center justify-center">
         <Image
