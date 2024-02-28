@@ -1,8 +1,22 @@
+"use client";
+
 import Image from "next/image";
-import { EyeOutlined } from "@ant-design/icons";
+import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import "@/app/_ui/Tooltip.css";
+import { useState } from "react";
+import clsx from "clsx";
 
 export default function Home() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRetypePassword, setShowRetypePassword] = useState(false);
+
+  const toggleShowPasswordVisibility = () => {
+    setShowPassword((prevPasswordState) => !prevPasswordState);
+  };
+  const toggleShowRetypePasswordVisibility = () => {
+    setShowRetypePassword((prevPasswordState) => !prevPasswordState);
+  };
+
   return (
     <main className="h-auth-screen -500 flex relative">
       <section className="flex-1 flex flex-col items-center justify-center h-full w-full ">
@@ -15,7 +29,7 @@ export default function Home() {
           <form action="">
             <div className="bg-input-container relative has-tooltip">
               <input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 className=" w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal"
                 placeholder="Password"
               />
@@ -31,19 +45,44 @@ export default function Home() {
                 </p>
               </span>
               <EyeOutlined
-                className="absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer"
+                className={clsx(
+                  "absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer",
+                  !showPassword ? "hidden" : "block"
+                )}
                 style={{ color: "#00000040" }}
+                onClick={toggleShowPasswordVisibility}
+              />
+              <EyeInvisibleOutlined
+                className={clsx(
+                  "absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer",
+                  showPassword ? "hidden" : "block"
+                )}
+                style={{ color: "#00000040" }}
+                onClick={toggleShowPasswordVisibility}
               />
             </div>
             <div className=" mt-4 text-right relative">
               <input
-                type="password"
+                type={showRetypePassword ? "text" : "password"}
                 className="  w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal"
                 placeholder="Retype password"
               />
               <EyeOutlined
-                className="absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer"
+                className={clsx(
+                  "absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer",
+                  !showRetypePassword ? "hidden" : "block"
+                )}
                 style={{ color: "#00000040" }}
+                onClick={toggleShowRetypePasswordVisibility}
+              />
+
+              <EyeInvisibleOutlined
+                className={clsx(
+                  "absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer",
+                  showRetypePassword ? "hidden" : "block"
+                )}
+                style={{ color: "#00000040" }}
+                onClick={toggleShowRetypePasswordVisibility}
               />
             </div>
 
