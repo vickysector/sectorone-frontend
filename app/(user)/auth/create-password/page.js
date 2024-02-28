@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { EyeOutlined } from "@ant-design/icons";
+import "@/app/_ui/Tooltip.css";
 
 export default function Home() {
   return (
@@ -12,12 +13,23 @@ export default function Home() {
           </p>
 
           <form action="">
-            <div className="bg-input-container relative">
+            <div className="bg-input-container relative has-tooltip">
               <input
                 type="password"
                 className=" w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal"
                 placeholder="Password"
               />
+              <span
+                className={`tooltip  bg-white absolute top-[100%] left-0 shadow-lg w-[60%] p-3 rounded-md`}
+              >
+                <h1 className="text-Base-strong text-black mb-2.5">
+                  Password requirements
+                </h1>
+                <p className="text-Base-normal text-black">
+                  Password must have 8 character or longer. At least one number
+                  or symbol (like !@#$%^)
+                </p>
+              </span>
               <EyeOutlined
                 className="absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer"
                 style={{ color: "#00000040" }}
@@ -36,7 +48,7 @@ export default function Home() {
             </div>
 
             <div className="mt-4 mb-8 ">
-              <label for="agreements" className="flex items-center mr-1.5">
+              <label htmlFor="agreements" className="flex items-center mr-1.5">
                 <input
                   type="checkbox"
                   name=""
