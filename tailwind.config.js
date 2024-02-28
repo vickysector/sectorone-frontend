@@ -56,6 +56,13 @@ module.exports = {
             fontWeight: "400",
           },
         ],
+        "Base-strong": [
+          "14px",
+          {
+            lineHeight: "22px",
+            fontWeight: "600",
+          },
+        ],
       },
     },
   },
