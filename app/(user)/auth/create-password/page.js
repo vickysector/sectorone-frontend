@@ -6,6 +6,10 @@ import "@/app/_ui/Tooltip.css";
 import "@/app/_ui/CheckboxCustom.css";
 import { useState, useRef } from "react";
 import clsx from "clsx";
+import {
+  CalculatePasswordStrength,
+  GetCalculatePasswordStrengthByNumber,
+} from "@/app/_lib/CalculatePassword";
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -33,26 +37,9 @@ export default function Home() {
     return isLengthValid && hasNumberOrSymbol;
   };
 
-  const calculatePasswordStrength = (password) => {
-    const minLength = 8;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSymbol = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
-
-    // Assign scores based on different criteria
-    const lengthScore = Math.min(password.length / minLength, 1);
-    const uppercaseScore = hasUppercase ? 1 : 0;
-    const lowercaseScore = hasLowercase ? 1 : 0;
-    const numberScore = hasNumber ? 1 : 0;
-    const symbolScore = hasSymbol ? 1 : 0;
-
-    // Calculate the overall strength as the average of individual scores
-    const overallStrength =
-      lengthScore + uppercaseScore + lowercaseScore + numberScore + symbolScore;
-
-    return overallStrength;
-  };
+  const { overallStrength } = CalculatePasswordStrength(password);
+  const { strength_1, strength_2, strength_3, strength_4, strength_5 } =
+    GetCalculatePasswordStrengthByNumber(overallStrength);
 
   const handlePasswordFocus = () => {
     setIsPasswordFocused(true);
@@ -80,9 +67,6 @@ export default function Home() {
   const handleAgreements = (e) => {
     setAgreements((prevState) => !prevState);
   };
-
-  console.log(retypePassword.length);
-  console.log("password match error : ", passwordMatchError);
 
   return (
     <main className="h-auth-screen -500 flex relative">
@@ -146,34 +130,28 @@ export default function Home() {
                 <div
                   className={clsx(
                     " h-3 rounded-lg ",
-                    calculatePasswordStrength(password) === 1 &&
-                      "w-[20%] bg-red-500",
-                    calculatePasswordStrength(password) === 2 &&
-                      "w-[40%] bg-red-300",
-                    calculatePasswordStrength(password) === 3 &&
-                      "w-[60%] bg-orange-400",
-                    calculatePasswordStrength(password) === 4 &&
-                      "w-[80%] bg-blue-600",
-                    calculatePasswordStrength(password) === 5 &&
-                      "w-[100%] bg-success"
+                    strength_1 && "w-[20%] bg-red-500",
+                    strength_2 && "w-[40%] bg-red-300",
+                    strength_3 && "w-[60%] bg-orange-400",
+                    strength_4 && "w-[80%] bg-blue-600",
+                    strength_5 && "w-[100%] bg-success"
                   )}
                 ></div>
               </div>
               <p
                 className={clsx(
-                  calculatePasswordStrength(password) === 1 && " text-red-500",
-                  calculatePasswordStrength(password) === 2 && " text-red-300",
-                  calculatePasswordStrength(password) === 3 &&
-                    " text-orange-400",
-                  calculatePasswordStrength(password) === 4 && " text-blue-600",
-                  calculatePasswordStrength(password) === 5 && " text-success"
+                  strength_1 && " text-red-500",
+                  strength_2 && " text-red-300",
+                  strength_3 && " text-orange-400",
+                  strength_4 && " text-blue-600",
+                  strength_5 && " text-success"
                 )}
               >
-                {calculatePasswordStrength(password) === 1 && "Bad"}
-                {calculatePasswordStrength(password) === 2 && "Weak"}
-                {calculatePasswordStrength(password) === 3 && "Medium"}
-                {calculatePasswordStrength(password) === 4 && "Good"}
-                {calculatePasswordStrength(password) === 5 && "Strong"}
+                {strength_1 && "Bad"}
+                {strength_2 && "Weak"}
+                {strength_3 && "Medium"}
+                {strength_4 && "Good"}
+                {strength_5 && "Strong"}
               </p>
             </div>
             <div className=" mt-4 text-right relative">
