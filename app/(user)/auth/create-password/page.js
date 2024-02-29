@@ -14,6 +14,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState(false);
+  const [agreements, setAgreements] = useState(false);
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -74,6 +75,10 @@ export default function Home() {
 
     // Check if retype password matches after retype password change
     setPasswordMatchError(password !== newRetypePassword);
+  };
+
+  const handleAgreements = (e) => {
+    setAgreements((prevState) => !prevState);
   };
 
   console.log(retypePassword.length);
@@ -221,6 +226,8 @@ export default function Home() {
                 id="agreements"
                 value="I agree to the Terms & Conditions and Privacy Policy"
                 className=" text-Base-normal"
+                checked={agreements}
+                onChange={handleAgreements}
               />
               <label
                 htmlFor="agreements"
