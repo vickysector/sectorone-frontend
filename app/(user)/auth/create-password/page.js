@@ -239,7 +239,13 @@ export default function Home() {
 
             <button
               type="submit"
-              className="cursor-pointer w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal text-text-disabled"
+              className={clsx(
+                "cursor-pointer w-full  py-1.5 px-3  rounded-lg text-Base-normal ",
+                !agreements
+                  ? "cursor-not-allowed bg-input-container border-input-border border-2 text-text-disabled"
+                  : "bg-primary-base border-2 border-primary-base text-white"
+              )}
+              disabled={!agreements}
             >
               Create Password
             </button>
