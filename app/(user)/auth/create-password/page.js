@@ -9,12 +9,36 @@ import clsx from "clsx";
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [password, setPassword] = useState("");
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
   };
   const toggleShowRetypePasswordVisibility = () => {
     setShowRetypePassword((prevPasswordState) => !prevPasswordState);
+  };
+
+  const checkPasswordRequirements = (password) => {
+    const minLength = 8;
+    const hasNumberOrSymbol = /[0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(
+      password
+    );
+    const isLengthValid = password.length >= minLength;
+
+    return isLengthValid && hasNumberOrSymbol;
+  };
+
+  const handlePasswordFocus = () => {
+    setIsPasswordFocused(true);
+  };
+
+  const handlePasswordBlur = () => {
+    setIsPasswordFocused(false);
+  };
+
+  const handlePasswordChange = (e) => {
+    setPassword(e.target.value);
   };
 
   return (
@@ -27,14 +51,22 @@ export default function Home() {
           </p>
 
           <form action="">
-            <div className="bg-input-container relative has-tooltip">
+            <div className="bg-input-container relative ">
               <input
                 type={showPassword ? "text" : "password"}
                 className=" w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal"
                 placeholder="Password"
+                value={password}
+                onChange={handlePasswordChange}
+                onFocus={handlePasswordFocus}
+                onBlur={handlePasswordBlur}
               />
               <span
-                className={`tooltip  bg-white absolute top-[100%] left-0 shadow-lg w-[60%] p-3 rounded-md`}
+                className={clsx(
+                  " z-10  bg-white absolute top-[100%] left-0 shadow-lg w-[60%] p-3 rounded-md",
+                  isPasswordFocused ? "block" : "hidden",
+                  !checkPasswordRequirements(password) ? "block" : "hidden"
+                )}
               >
                 <h1 className="text-Base-strong text-black mb-2.5">
                   Password requirements

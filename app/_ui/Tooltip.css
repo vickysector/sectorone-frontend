@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 
-.tooltip {
+/* .tooltip {
   transition: all 0.2s ease;
   @apply invisible absolute;
 }
@@ -9,6 +9,6 @@
 .has-tooltip:hover .tooltip {
   transition: all 0.2s ease;
   @apply visible z-50;
-}
+} */
 
 @tailwind utilities;
