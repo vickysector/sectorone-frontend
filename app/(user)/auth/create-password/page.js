@@ -11,6 +11,7 @@ export default function Home() {
   const [showRetypePassword, setShowRetypePassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [password, setPassword] = useState("");
+  const [passwordStrength, setPasswordStrength] = useState(0);
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -29,6 +30,27 @@ export default function Home() {
     return isLengthValid && hasNumberOrSymbol;
   };
 
+  const calculatePasswordStrength = (password) => {
+    const minLength = 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSymbol = /[!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(password);
+
+    // Assign scores based on different criteria
+    const lengthScore = Math.min(password.length / minLength, 1);
+    const uppercaseScore = hasUppercase ? 1 : 0;
+    const lowercaseScore = hasLowercase ? 1 : 0;
+    const numberScore = hasNumber ? 1 : 0;
+    const symbolScore = hasSymbol ? 1 : 0;
+
+    // Calculate the overall strength as the average of individual scores
+    const overallStrength =
+      lengthScore + uppercaseScore + lowercaseScore + numberScore + symbolScore;
+
+    return overallStrength;
+  };
+
   const handlePasswordFocus = () => {
     setIsPasswordFocused(true);
   };
@@ -38,7 +60,10 @@ export default function Home() {
   };
 
   const handlePasswordChange = (e) => {
-    setPassword(e.target.value);
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+    const strength = calculatePasswordStrength(newPassword);
+    setPasswordStrength(strength);
   };
 
   return (
@@ -92,6 +117,46 @@ export default function Home() {
                 style={{ color: "#00000040" }}
                 onClick={toggleShowPasswordVisibility}
               />
+            </div>
+            <div
+              className={clsx(
+                "w-full flex items-center justify-between mt-3",
+                checkPasswordRequirements(password) ? "block" : "hidden"
+              )}
+            >
+              <div className="w-[85%] h-3 bg-[#0000000F] rounded-lg">
+                <div
+                  className={clsx(
+                    " h-3 rounded-lg ",
+                    calculatePasswordStrength(password) === 1 &&
+                      "w-[20%] bg-red-500",
+                    calculatePasswordStrength(password) === 2 &&
+                      "w-[40%] bg-red-300",
+                    calculatePasswordStrength(password) === 3 &&
+                      "w-[60%] bg-orange-400",
+                    calculatePasswordStrength(password) === 4 &&
+                      "w-[80%] bg-blue-600",
+                    calculatePasswordStrength(password) === 5 &&
+                      "w-[100%] bg-success"
+                  )}
+                ></div>
+              </div>
+              <p
+                className={clsx(
+                  calculatePasswordStrength(password) === 1 && " text-red-500",
+                  calculatePasswordStrength(password) === 2 && " text-red-300",
+                  calculatePasswordStrength(password) === 3 &&
+                    " text-orange-400",
+                  calculatePasswordStrength(password) === 4 && " text-blue-600",
+                  calculatePasswordStrength(password) === 5 && " text-success"
+                )}
+              >
+                {calculatePasswordStrength(password) === 1 && "Bad"}
+                {calculatePasswordStrength(password) === 2 && "Weak"}
+                {calculatePasswordStrength(password) === 3 && "Medium"}
+                {calculatePasswordStrength(password) === 4 && "Good"}
+                {calculatePasswordStrength(password) === 5 && "Strong"}
+              </p>
             </div>
             <div className=" mt-4 text-right relative">
               <input
