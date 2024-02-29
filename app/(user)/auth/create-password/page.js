@@ -15,7 +15,7 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import { ProgressBar } from "@/app/_ui/components/utils/ProgressBar";
 
-export default function Home() {
+export default function CreatePasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
