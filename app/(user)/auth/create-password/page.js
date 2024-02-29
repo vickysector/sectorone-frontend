@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import "@/app/_ui/Tooltip.css";
+import "@/app/_ui/CheckboxCustom.css";
 import { useState, useRef } from "react";
 import clsx from "clsx";
 
@@ -213,18 +214,19 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="mt-4 mb-8 ">
-              <label htmlFor="agreements" className="flex items-center mr-1.5">
-                <input
-                  type="checkbox"
-                  name=""
-                  id="agreements"
-                  value="I agree to the Terms & Conditions and Privacy Policy"
-                  className="accent-primary-base bg-white text-Base-normal"
-                />
-                <p className="text-Base-normal ml-1.5 text-text-description">
-                  I agree to the Terms & Conditions and Privacy Policy
-                </p>
+            <div className="mt-4 mb-8 flex items-center mr-1.5">
+              <input
+                type="checkbox"
+                name=""
+                id="agreements"
+                value="I agree to the Terms & Conditions and Privacy Policy"
+                className=" text-Base-normal"
+              />
+              <label
+                htmlFor="agreements"
+                className="text-Base-normal ml-1.5 text-text-description"
+              >
+                I agree to the Terms & Conditions and Privacy Policy
               </label>
             </div>
 
