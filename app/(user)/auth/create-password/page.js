@@ -10,6 +10,7 @@ import {
   CalculatePasswordStrength,
   GetCalculatePasswordStrengthByNumber,
 } from "@/app/_lib/CalculatePassword";
+import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,16 +28,7 @@ export default function Home() {
     setShowRetypePassword((prevPasswordState) => !prevPasswordState);
   };
 
-  const checkPasswordRequirements = (password) => {
-    const minLength = 8;
-    const hasNumberOrSymbol = /[0-9!@#$%^&*()_+{}\[\]:;<>,.?~\\-]/.test(
-      password
-    );
-    const isLengthValid = password.length >= minLength;
-
-    return isLengthValid && hasNumberOrSymbol;
-  };
-
+  const { passwordRequirement } = CheckPasswordRequirements(password);
   const { overallStrength } = CalculatePasswordStrength(password);
   const { strength_1, strength_2, strength_3, strength_4, strength_5 } =
     GetCalculatePasswordStrengthByNumber(overallStrength);
@@ -92,7 +84,7 @@ export default function Home() {
                 className={clsx(
                   " z-10  bg-white absolute top-[100%] left-0 shadow-lg w-[60%] p-3 rounded-md",
                   isPasswordFocused ? "block" : "hidden",
-                  !checkPasswordRequirements(password) ? "block" : "hidden"
+                  !passwordRequirement ? "block" : "hidden"
                 )}
               >
                 <h1 className="text-Base-strong text-black mb-2.5">
@@ -123,7 +115,7 @@ export default function Home() {
             <div
               className={clsx(
                 "w-full flex items-center justify-between mt-3",
-                checkPasswordRequirements(password) ? "block" : "hidden"
+                passwordRequirement ? "block" : "hidden"
               )}
             >
               <div className="w-[85%] h-3 bg-[#0000000F] rounded-lg">
