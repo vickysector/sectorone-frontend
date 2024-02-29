@@ -11,7 +11,6 @@ export default function Home() {
   const [showRetypePassword, setShowRetypePassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [password, setPassword] = useState("");
-  const [passwordStrength, setPasswordStrength] = useState(0);
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -62,8 +61,6 @@ export default function Home() {
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
-    const strength = calculatePasswordStrength(newPassword);
-    setPasswordStrength(strength);
   };
 
   return (
