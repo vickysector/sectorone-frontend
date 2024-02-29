@@ -23,6 +23,7 @@ module.exports = {
         "text-description": "#676767",
         "text-disabled": "#00000040",
         success: "#389E0D",
+        error: "#CF1322",
       },
       fontSize: {
         "heading-1": [

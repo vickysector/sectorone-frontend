@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import "@/app/_ui/Tooltip.css";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import clsx from "clsx";
 
 export default function Home() {
@@ -11,6 +11,8 @@ export default function Home() {
   const [showRetypePassword, setShowRetypePassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
   const [password, setPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
+  const [passwordMatchError, setPasswordMatchError] = useState(false);
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -61,7 +63,20 @@ export default function Home() {
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
+    // Check if retype password matches after password change
+    setPasswordMatchError(retypePassword !== newPassword);
   };
+
+  const handleRetypePasswordChange = (e) => {
+    const newRetypePassword = e.target.value;
+    setRetypePassword(newRetypePassword);
+
+    // Check if retype password matches after retype password change
+    setPasswordMatchError(password !== newRetypePassword);
+  };
+
+  console.log(retypePassword.length);
+  console.log("password match error : ", passwordMatchError);
 
   return (
     <main className="h-auth-screen -500 flex relative">
@@ -158,8 +173,15 @@ export default function Home() {
             <div className=" mt-4 text-right relative">
               <input
                 type={showRetypePassword ? "text" : "password"}
-                className="  w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal"
+                className={clsx(
+                  "  w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal",
+                  passwordMatchError && retypePassword.length !== 0
+                    ? "border-error outline-error"
+                    : "border-input-border"
+                )}
                 placeholder="Retype password"
+                value={retypePassword}
+                onChange={handleRetypePasswordChange}
               />
               <EyeOutlined
                 className={clsx(
@@ -178,6 +200,17 @@ export default function Home() {
                 style={{ color: "#00000040" }}
                 onClick={toggleShowRetypePasswordVisibility}
               />
+            </div>
+            <div className="w-full mt-2">
+              <p
+                className={clsx(
+                  "text-Base-normal text-error",
+                  passwordMatchError ? "block" : "hidden",
+                  retypePassword.length === 0 ? "hidden" : "block"
+                )}
+              >
+                Pasword do not match. Please try again.
+              </p>
             </div>
 
             <div className="mt-4 mb-8 ">
