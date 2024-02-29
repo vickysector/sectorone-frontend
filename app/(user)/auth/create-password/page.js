@@ -11,7 +11,7 @@ import {
   GetCalculatePasswordStrengthByNumber,
 } from "@/app/_lib/CalculatePassword";
 import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
-import { Button } from "@/app/_ui/components/Button";
+import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 
 export default function Home() {
@@ -162,7 +162,7 @@ export default function Home() {
               </label>
             </div>
 
-            <Button agreements={agreements} />
+            <AuthButton agreements={agreements} />
           </form>
         </div>
         <div className="absolute bottom-[10%] left-[9.5%]">

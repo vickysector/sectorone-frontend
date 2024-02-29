@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export function Button({ agreements }) {
+export function AuthButton({ agreements }) {
   return (
     <button
       type="submit"
