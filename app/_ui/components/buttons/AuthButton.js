@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export function AuthButton({ agreements }) {
+export function AuthButton({ agreements, value }) {
   return (
     <button
       type="submit"
@@ -12,7 +12,7 @@ export function AuthButton({ agreements }) {
       )}
       disabled={!agreements}
     >
-      Create Password
+      {value}
     </button>
   );
 }

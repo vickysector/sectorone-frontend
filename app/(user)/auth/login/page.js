@@ -53,7 +53,7 @@ export default function LoginPage() {
               />
             </div>
 
-            <AuthButton />
+            <AuthButton value={"Login"} />
           </form>
         </div>
         <div className="absolute bottom-[10%] left-[9.5%]">

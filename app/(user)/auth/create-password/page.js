@@ -139,7 +139,7 @@ export default function CreatePasswordPage() {
               </label>
             </div>
 
-            <AuthButton agreements={agreements} />
+            <AuthButton agreements={agreements} value={"Create Password"} />
           </form>
         </div>
         <div className="absolute bottom-[10%] left-[9.5%]">
