@@ -3,22 +3,30 @@ import clsx from "clsx";
 
 export default function Password({
   showPassword,
-  password,
-  toggleShowPasswordVisibility,
+  value,
+  toggleShowIcon,
   isPasswordFocused,
   passwordRequirement,
   onBlur,
   onFocus,
   onChange,
   hasTooltip,
+  passwordMatchError,
+  placeholder,
 }) {
   return (
     <>
       <input
         type={showPassword ? "text" : "password"}
-        className=" w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal"
-        placeholder="Password"
-        value={password}
+        className={clsx(
+          " w-full bg-input-container py-1.5 px-3  border-2 rounded-lg text-Base-normal",
+          !passwordMatchError && "border-input-border",
+          passwordMatchError && value.length !== 0
+            ? "border-error outline-error"
+            : "border-input-border"
+        )}
+        placeholder={placeholder}
+        value={value}
         onChange={onChange}
         onFocus={onFocus}
         onBlur={onBlur}
@@ -46,7 +54,7 @@ export default function Password({
           !showPassword ? "hidden" : "block"
         )}
         style={{ color: "#00000040" }}
-        onClick={toggleShowPasswordVisibility}
+        onClick={toggleShowIcon}
       />
       <EyeInvisibleOutlined
         className={clsx(
@@ -54,7 +62,7 @@ export default function Password({
           showPassword ? "hidden" : "block"
         )}
         style={{ color: "#00000040" }}
-        onClick={toggleShowPasswordVisibility}
+        onClick={toggleShowIcon}
       />
     </>
   );
