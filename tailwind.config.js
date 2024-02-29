@@ -22,6 +22,8 @@ module.exports = {
         "input-container": "#F7F7F7",
         "text-description": "#676767",
         "text-disabled": "#00000040",
+        success: "#389E0D",
+        error: "#CF1322",
       },
       fontSize: {
         "heading-1": [
@@ -32,6 +34,7 @@ module.exports = {
             //styleName: Heading/Heading 1;
             lineHeight: "46px",
             fontWeight: "600",
+            letterSpacing: "1px",
           },
         ],
         "heading-2": [
@@ -39,6 +42,7 @@ module.exports = {
           {
             lineHeight: "38px",
             fontWeight: "600",
+            letterSpacing: "1px",
           },
         ],
         "LG-normal": [
@@ -46,6 +50,7 @@ module.exports = {
           {
             lineHeight: "24px",
             fontWeight: "400",
+            letterSpacing: "1px",
           },
         ],
 
@@ -54,6 +59,15 @@ module.exports = {
           {
             lineHeight: "22px",
             fontWeight: "400",
+            letterSpacing: "1px",
+          },
+        ],
+        "Base-strong": [
+          "14px",
+          {
+            lineHeight: "22px",
+            fontWeight: "600",
+            letterSpacing: "1px",
           },
         ],
       },
