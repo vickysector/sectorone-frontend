@@ -150,7 +150,7 @@ export default function Home() {
               <input
                 type={showRetypePassword ? "text" : "password"}
                 className={clsx(
-                  "  w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal",
+                  "  w-full bg-input-container py-1.5 px-3  border-2 rounded-lg text-Base-normal",
                   passwordMatchError && retypePassword.length !== 0
                     ? "border-error outline-error"
                     : "border-input-border"
