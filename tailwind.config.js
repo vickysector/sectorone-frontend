@@ -22,6 +22,7 @@ module.exports = {
         "input-container": "#F7F7F7",
         "text-description": "#676767",
         "text-disabled": "#00000040",
+        success: "#389E0D",
       },
       fontSize: {
         "heading-1": [
