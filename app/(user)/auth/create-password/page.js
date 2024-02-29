@@ -12,6 +12,7 @@ import {
 } from "@/app/_lib/CalculatePassword";
 import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
 import { Button } from "@/app/_ui/components/Button";
+import Password from "@/app/_ui/components/inputs/Password";
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -72,45 +73,16 @@ export default function Home() {
 
           <form action="">
             <div className="bg-input-container relative ">
-              <input
-                type={showPassword ? "text" : "password"}
-                className=" w-full bg-input-container py-1.5 px-3 border-input-border border-2 rounded-lg text-Base-normal"
-                placeholder="Password"
-                value={password}
-                onChange={handlePasswordChange}
-                onFocus={handlePasswordFocus}
+              <Password
+                showPassword={showPassword}
+                password={password}
+                toggleShowPasswordVisibility={toggleShowPasswordVisibility}
+                isPasswordFocused={isPasswordFocused}
+                passwordRequirement={passwordRequirement}
                 onBlur={handlePasswordBlur}
-              />
-              <span
-                className={clsx(
-                  " z-10  bg-white absolute top-[100%] left-0 shadow-lg w-[60%] p-3 rounded-md",
-                  isPasswordFocused ? "block" : "hidden",
-                  !passwordRequirement ? "block" : "hidden"
-                )}
-              >
-                <h1 className="text-Base-strong text-black mb-2.5">
-                  Password requirements
-                </h1>
-                <p className="text-Base-normal text-black">
-                  Password must have 8 character or longer. At least one number
-                  or symbol (like !@#$%^)
-                </p>
-              </span>
-              <EyeOutlined
-                className={clsx(
-                  "absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer",
-                  !showPassword ? "hidden" : "block"
-                )}
-                style={{ color: "#00000040" }}
-                onClick={toggleShowPasswordVisibility}
-              />
-              <EyeInvisibleOutlined
-                className={clsx(
-                  "absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer",
-                  showPassword ? "hidden" : "block"
-                )}
-                style={{ color: "#00000040" }}
-                onClick={toggleShowPasswordVisibility}
+                onFocus={handlePasswordFocus}
+                onChange={handlePasswordChange}
+                hasTooltip={true}
               />
             </div>
             <div
