@@ -11,6 +11,7 @@ import {
   GetCalculatePasswordStrengthByNumber,
 } from "@/app/_lib/CalculatePassword";
 import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
+import { Button } from "@/app/_ui/components/Button";
 
 export default function Home() {
   const [showPassword, setShowPassword] = useState(false);
@@ -207,18 +208,7 @@ export default function Home() {
               </label>
             </div>
 
-            <button
-              type="submit"
-              className={clsx(
-                "cursor-pointer w-full  py-1.5 px-3  rounded-lg text-Base-normal ",
-                !agreements
-                  ? "cursor-not-allowed bg-input-container border-input-border border-2 text-text-disabled"
-                  : "bg-primary-base border-2 border-primary-base text-white"
-              )}
-              disabled={!agreements}
-            >
-              Create Password
-            </button>
+            <Button agreements={agreements} />
           </form>
         </div>
         <div className="absolute bottom-[10%] left-[9.5%]">
