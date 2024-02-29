@@ -9,6 +9,7 @@ import clsx from "clsx";
 import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
+import Link from "next/link";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -27,9 +28,11 @@ export default function LoginPage() {
     <main className="h-auth-screen -500 flex relative">
       <section className="flex-1 flex flex-col items-center justify-center h-full w-full ">
         <div className="">
-          <h1 className="text-heading-1">Create password</h1>
+          <h1 className="text-heading-1 w-[80%]">
+            Securing your digital world
+          </h1>
           <p className="text-LG-normal text-text-description mt-[8px] mb-8">
-            To get started, let’s set up a strong password for your account
+            Welcome back, please login to your account.
           </p>
 
           <form action="">
@@ -55,7 +58,16 @@ export default function LoginPage() {
 
             <AuthButton value={"Login"} />
           </form>
+          <div className="flex items-center mt-4 justify-between">
+            <a href="#" className="block text-text-description text-LG-normal">
+              Need help?
+            </a>
+            <Link href="#" className="block text-LG-normal text-primary-base">
+              Forgot password?
+            </Link>
+          </div>
         </div>
+
         <div className="absolute bottom-[10%] left-[9.5%]">
           <p className="text-Base-normal text-text-description">
             &copy; 2024 Sector. All right reserved.
@@ -64,7 +76,7 @@ export default function LoginPage() {
       </section>
       <section className="flex-1 bg-primary-200 w-full h-full flex items-center justify-center">
         <Image
-          src={"/images/sector_image_auth_lock.svg"}
+          src={"/images/sector_image_auth_login.svg"}
           width={640}
           height={640}
           alt="hero image auth"
