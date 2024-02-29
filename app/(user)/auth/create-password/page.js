@@ -75,14 +75,16 @@ export default function Home() {
             <div className="bg-input-container relative ">
               <Password
                 showPassword={showPassword}
-                password={password}
-                toggleShowPasswordVisibility={toggleShowPasswordVisibility}
+                value={password}
+                toggleShowIcon={toggleShowPasswordVisibility}
                 isPasswordFocused={isPasswordFocused}
                 passwordRequirement={passwordRequirement}
                 onBlur={handlePasswordBlur}
                 onFocus={handlePasswordFocus}
                 onChange={handlePasswordChange}
                 hasTooltip={true}
+                passwordMatchError={false}
+                placeholder={"Password"}
               />
             </div>
             <div
@@ -120,34 +122,14 @@ export default function Home() {
               </p>
             </div>
             <div className=" mt-4 text-right relative">
-              <input
-                type={showRetypePassword ? "text" : "password"}
-                className={clsx(
-                  "  w-full bg-input-container py-1.5 px-3  border-2 rounded-lg text-Base-normal",
-                  passwordMatchError && retypePassword.length !== 0
-                    ? "border-error outline-error"
-                    : "border-input-border"
-                )}
-                placeholder="Retype password"
+              <Password
+                showPassword={showRetypePassword}
                 value={retypePassword}
+                toggleShowIcon={toggleShowRetypePasswordVisibility}
                 onChange={handleRetypePasswordChange}
-              />
-              <EyeOutlined
-                className={clsx(
-                  "absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer",
-                  !showRetypePassword ? "hidden" : "block"
-                )}
-                style={{ color: "#00000040" }}
-                onClick={toggleShowRetypePasswordVisibility}
-              />
-
-              <EyeInvisibleOutlined
-                className={clsx(
-                  "absolute top-[50%] right-4 translate-y-[-50%] cursor-pointer",
-                  showRetypePassword ? "hidden" : "block"
-                )}
-                style={{ color: "#00000040" }}
-                onClick={toggleShowRetypePasswordVisibility}
+                hasTooltip={false}
+                passwordMatchError={passwordMatchError}
+                placeholder={"Retype password"}
               />
             </div>
             <div className="w-full mt-2">
