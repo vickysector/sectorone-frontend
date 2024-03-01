@@ -48,9 +48,6 @@ export default function VerificaitonLogin() {
             <a href="#" className="block text-text-description text-LG-normal">
               Need help?
             </a>
-            <Link href="#" className="block text-LG-normal text-primary-base">
-              Forgot password?
-            </Link>
           </div>
         </div>
 
