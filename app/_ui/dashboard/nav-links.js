@@ -56,7 +56,7 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex items-center mb-4 py-3 px-8 text-center hover:bg-primary-base text-text-description hover:text-white",
+              "flex items-center mb-4 py-3 px-6 text-center hover:bg-primary-base text-text-description hover:text-white overflow-hidden",
               {
                 "bg-primary-base text-white": pathname === link.href,
               }
@@ -70,9 +70,12 @@ export default function NavLinks() {
               }}
             />
             <p
-              className={clsx("ml-4  text-LG-normal hover:text-white", {
-                "text-white text-LG-strong": pathname === link.href,
-              })}
+              className={clsx(
+                "ml-6  text-LG-normal hover:text-white w-full text-left",
+                {
+                  "text-white text-LG-strong": pathname === link.href,
+                }
+              )}
             >
               {" "}
               {link.name}{" "}
