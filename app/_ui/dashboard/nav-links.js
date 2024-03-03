@@ -66,7 +66,7 @@ export default function NavLinks() {
             />
             <p
               className={clsx("ml-4 text-text-description text-LG-normal", {
-                "text-white": pathname === link.href,
+                "text-white text-LG-strong": pathname === link.href,
               })}
             >
               {" "}

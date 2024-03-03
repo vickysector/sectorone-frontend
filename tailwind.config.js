@@ -54,6 +54,15 @@ module.exports = {
           },
         ],
 
+        "LG-strong": [
+          "16px",
+          {
+            lineHeight: "24px",
+            fontWeight: "600",
+            letterSpacing: "1px",
+          },
+        ],
+
         "Base-normal": [
           "14px",
           {
