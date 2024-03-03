@@ -1,3 +1,4 @@
+import Sidenav from "@/app/_ui/dashboard/Sidenav";
 import Image from "next/image";
 
 export default function DashboardLayout({ children }) {
@@ -27,7 +28,9 @@ export default function DashboardLayout({ children }) {
         </div>
       </nav>
       <section className="bg-input-container flex">
-        <aside className="bg-blue-400 h-auth-screen w-[230px] flex-none "></aside>
+        <aside className=" h-auth-screen w-[230px] flex-none ">
+          <Sidenav />
+        </aside>
         <div className="bg-orange-600 flex-grow">{children}</div>
       </section>
     </main>
