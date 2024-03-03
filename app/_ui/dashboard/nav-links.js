@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
 import { usePathname } from "next/navigation";
+import "./nav-links.css";
 import {
   SafetyOutlined,
   LineChartOutlined,
@@ -54,18 +55,22 @@ export default function NavLinks() {
           <Link
             key={link.name}
             href={link.href}
-            className={clsx("flex items-center mb-4 py-3 px-8 text-center", {
-              "bg-primary-base text-white": pathname === link.href,
-            })}
+            className={clsx(
+              "flex items-center mb-4 py-3 px-8 text-center hover:bg-primary-base text-text-description hover:text-white",
+              {
+                "bg-primary-base text-white": pathname === link.href,
+              }
+            )}
           >
             <LinkIcon
+              className="link-icon"
               style={{
                 fontSize: "24px",
                 color: pathname === link.href ? "#fff" : "#676767",
               }}
             />
             <p
-              className={clsx("ml-4 text-text-description text-LG-normal", {
+              className={clsx("ml-4  text-LG-normal hover:text-white", {
                 "text-white text-LG-strong": pathname === link.href,
               })}
             >
