@@ -14,7 +14,7 @@ export default function DashboardLayout({ children }) {
   };
 
   return (
-    <main className="">
+    <main className="relative bg-input-container">
       <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white">
         <Image
           src={"/images/sector_logo.png"}
@@ -65,7 +65,14 @@ export default function DashboardLayout({ children }) {
           </div>
           <Sidenav />
         </aside>
-        <div className="bg-orange-600 flex-grow h-[1000px]">{children}</div>
+        <div
+          className={clsx(
+            "flex-grow min-h-screen h-full  min-w-screen w-full fixed bg-input-container left-0 right-0 overflow-y-scroll pl-[260px] pt-[100px] transition-all ",
+            hide ? "pl-[100px]" : "pl-[260px]"
+          )}
+        >
+          {children}
+        </div>
       </section>
     </main>
   );
