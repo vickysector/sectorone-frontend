@@ -79,7 +79,7 @@ export default function NewPasswordPage() {
   //   );
   // };
 
-  console.log("agreements", agreements);
+  // console.log("agreements", agreements);
 
   return (
     <main className="h-screen bg-input-container flex items-center justify-center">
