@@ -3,6 +3,7 @@
 import clsx from "clsx";
 import copy from "copy-to-clipboard";
 import { useState } from "react";
+import "./chunk.css";
 import { CloseCircleOutlined, CopyOutlined } from "@ant-design/icons";
 
 export default function Chunk({ children, level }) {
@@ -30,7 +31,7 @@ export default function Chunk({ children, level }) {
     <main className="relative">
       <div
         className={clsx(
-          "absolute right-[-60px] top-[-20px] bg-white p-2 border-2 border-input-border rounded-lg ",
+          "absolute right-[50%] translate-x-[50%] top-[-100px] bg-white p-2 border-2 border-input-border rounded-lg ",
           copied ? "visible" : "hidden"
         )}
       >
@@ -38,7 +39,7 @@ export default function Chunk({ children, level }) {
       </div>
       <div
         className={clsx(
-          "bg-white shadow-md p-3 rounded-lg flex items-center justify-between absolute top-[-50px] left-[-50px]",
+          "bg-white shadow-md p-2 rounded-lg flex items-center absolute top-[-50px] left-[-50px] text-left",
           !show ? "hidden" : "show"
         )}
       >
@@ -56,7 +57,7 @@ export default function Chunk({ children, level }) {
       </div>
 
       <div
-        className=" flex items-center mb-2 cursor-pointer"
+        className=" flex items-center mb-2.5 cursor-pointer"
         onClick={handleOpenShow}
       >
         {" "}
@@ -66,7 +67,9 @@ export default function Chunk({ children, level }) {
             `bg-${level}`
           )}
         ></span>{" "}
-        <p className="ml-3 text-LG-normal text-black">{children}</p>{" "}
+        <p className="ml-3 text-LG-normal text-black w-[470px] text-left more">
+          {children}
+        </p>{" "}
       </div>
     </main>
   );
