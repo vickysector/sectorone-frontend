@@ -39,11 +39,11 @@ export default function Chunk({ children, level }) {
       </div>
       <div
         className={clsx(
-          "bg-white shadow-md p-2 rounded-lg flex items-center absolute top-[-50px] left-[-50px] text-left",
+          "bg-white shadow-md p-2 rounded-lg flex items-center absolute top-[-50px] left-[-50px] text-left ",
           !show ? "hidden" : "show"
         )}
       >
-        {children}
+        <p className="">{children}</p>
         <CopyOutlined
           style={{ fontSize: "21px", color: "#FF6F1E" }}
           className="mr-2 ml-3 cursor-pointer"
