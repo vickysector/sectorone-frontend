@@ -67,7 +67,7 @@ export default function DashboardLayout({ children }) {
         </aside>
         <div
           className={clsx(
-            "flex-grow min-h-screen h-full  min-w-screen w-full fixed bg-input-container left-0 right-0 overflow-y-scroll pl-[260px] pt-[100px] transition-all ",
+            "flex-grow min-h-screen h-full  min-w-screen w-full fixed bg-input-container left-0 right-0 overflow-y-auto  pt-[100px] transition-all pr-[32px]",
             hide ? "pl-[100px]" : "pl-[260px]"
           )}
         >
