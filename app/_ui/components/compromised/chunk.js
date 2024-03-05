@@ -7,10 +7,15 @@ import { CloseCircleOutlined, CopyOutlined } from "@ant-design/icons";
 
 export default function Chunk({ children, level }) {
   const [show, setShow] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   const copyToClipboard = (text) => {
     copy(text);
-    alert("copied");
+    setCopied(true);
+
+    setTimeout(() => {
+      setCopied(false);
+    }, 3000);
   };
 
   const handleOpenShow = () => {
@@ -23,6 +28,14 @@ export default function Chunk({ children, level }) {
 
   return (
     <main className="relative">
+      <div
+        className={clsx(
+          "absolute right-[-60px] top-[-20px] bg-white p-2 border-2 border-input-border rounded-lg ",
+          copied ? "visible" : "hidden"
+        )}
+      >
+        <p className="text-Base-normal text-text-description">Copied!</p>
+      </div>
       <div
         className={clsx(
           "bg-white shadow-md p-3 rounded-lg flex items-center justify-between absolute top-[-50px] left-[-50px]",
