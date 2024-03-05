@@ -25,7 +25,7 @@ ChartJS.register(
 const options = {
   plugins: {
     legend: {
-      display: true,
+      display: false,
 
       position: "top",
       align: "start",
@@ -113,8 +113,18 @@ export default function UserDashboardPage() {
         <div className="p-8 bg-white border-input-border border-2 mt-4 rounded-[16px]">
           <button>2024</button>
           <button>All (Employee & User)</button>
-          <div className="border-2 border-input-border rounded-[16px] mt-4 p-8 flex justify-center items-center w-full">
-            <Bar options={options} data={data} />
+          <div className="border-2 border-input-border rounded-[16px] mt-4 p-8 flex justify-center items-center w-full relative">
+            <div className="absolute top-[32px] left-[32px] flex items-center">
+              {" "}
+              <span className="w-[16px] h-[16px] bg-orange-chart block rounded-[50%]"></span>{" "}
+              <p className="ml-3 text-LG-normal text-black">Employee</p>{" "}
+            </div>
+            <div className="absolute top-[32px] left-[150px] flex items-center">
+              {" "}
+              <span className="w-[16px] h-[16px] bg-blue-chart block rounded-[50%]"></span>{" "}
+              <p className="ml-3 text-LG-normal text-black">Users</p>{" "}
+            </div>
+            <Bar options={options} data={data} className="mt-12" />
           </div>
         </div>
       </section>
