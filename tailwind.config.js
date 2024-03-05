@@ -53,6 +53,14 @@ module.exports = {
             letterSpacing: "1px",
           },
         ],
+        "heading-4": [
+          "20px",
+          {
+            lineHeight: "28px",
+            fontWeight: "600",
+            letterSpacing: "1px",
+          },
+        ],
         "LG-normal": [
           "16px",
           {
