@@ -1,5 +1,9 @@
 "use client";
 
+import {
+  compromisedDataUrl,
+  compromisedDataUser,
+} from "@/app/_lib/TempCompromisedData";
 import ChangeUrlButton from "@/app/_ui/components/buttons/ChangeUrlButton";
 import PieChartCard from "@/app/_ui/components/cards/PieChartCard";
 import ChartBarVertical from "@/app/_ui/components/charts/ChartBarVertical";
@@ -37,13 +41,13 @@ export default function UserDashboardPage() {
           <h1 className="text-heading-4 text-black mb-6">
             Top compromised URL(s){" "}
           </h1>
-          <PieChartCard />
+          <PieChartCard compromisedData={compromisedDataUrl} />
         </div>
         <div className="w-[50%] ml-6 h-full">
           <h1 className="text-heading-4 text-black mb-6">
             Top compromised User(s)
           </h1>
-          <PieChartCard />
+          <PieChartCard compromisedData={compromisedDataUser} />
         </div>
       </section>
     </main>

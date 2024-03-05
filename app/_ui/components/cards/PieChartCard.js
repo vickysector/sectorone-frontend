@@ -41,60 +41,7 @@ const data = {
   ],
 };
 
-const compromisedData = [
-  {
-    key: 1,
-    data: "http://Sector.com/Signup/Regform/faskfjlsakfjlkwjrkjgoaowiaowiaskfjslkfjklfsafsakfjasklfjslkj fasfsalfslafjaslkjl;j;",
-    color: "blue-chart",
-  },
-  {
-    key: 2,
-    data: "http://Sector.com/Signup/Regform",
-    color: "orange-3-chart",
-  },
-  {
-    key: 3,
-    data: "http://Sector.com/Signup/Regform",
-    color: "blue-4-chart",
-  },
-  {
-    key: 4,
-    data: "http://Sector.com/Signup/Regform",
-    color: "green-4-chart",
-  },
-  {
-    key: 5,
-    data: "http://Sector.com/Signup/Regform",
-    color: "cyan-6-chart",
-  },
-  {
-    key: 6,
-    data: "http://Sector.com/Signup/Regform",
-    color: "lime-6-chart",
-  },
-  {
-    key: 7,
-    data: "http://Sector.com/Signup/Regform",
-    color: "geekblue-5-chart",
-  },
-  {
-    key: 8,
-    data: "http://Sector.com/Signup/Regform",
-    color: "success-chart",
-  },
-  {
-    key: 9,
-    data: "http://Sector.com/Signup/Regform",
-    color: "gold-chart",
-  },
-  {
-    key: 10,
-    data: "http://Sector.com/Signup/Regform",
-    color: "gold-2-chart",
-  },
-];
-
-export default function PieChartCard() {
+export default function PieChartCard({ compromisedData }) {
   return (
     <>
       <div className="bg-white border-input-border border-2 rounded-lg p-8 items-center flex flex-col text-center">
