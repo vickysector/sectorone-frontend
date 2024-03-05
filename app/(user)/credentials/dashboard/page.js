@@ -134,8 +134,7 @@ export default function UserDashboardPage() {
             <div className="mt-8 self-start">
               {compromisedData.map((data, index) => (
                 <Chunk key={data.key} level={data.color}>
-                  {" "}
-                  {data.data}{" "}
+                  {data.data}
                 </Chunk>
               ))}
             </div>
