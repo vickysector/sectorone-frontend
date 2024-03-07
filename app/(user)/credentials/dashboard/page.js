@@ -4,6 +4,7 @@ import {
   compromisedDataUrl,
   compromisedDataUser,
 } from "@/app/_lib/TempCompromisedData";
+import { dataOverview } from "@/app/_lib/TempDataOverview";
 import { antivirusData, malwareData } from "@/app/_lib/TempMalwareData";
 import ChangeUrlButton from "@/app/_ui/components/buttons/ChangeUrlButton";
 import PieChartCard from "@/app/_ui/components/cards/PieChartCard";
@@ -11,27 +12,6 @@ import ChartBarHorizontal from "@/app/_ui/components/charts/ChartBarHorizontal";
 import ChartBarVertical from "@/app/_ui/components/charts/ChartBarVertical";
 import OverviewCard from "@/app/_ui/dashboard/OverviewCard";
 import { useState } from "react";
-
-const dataOverview = [
-  {
-    id: 1,
-    total: 2738,
-    desc: "Corporate credentials found",
-    imageLink: "/images/sector_image_magnifier.svg",
-  },
-  {
-    id: 2,
-    total: 100,
-    desc: "Employee compromised",
-    imageLink: "/images/sector_image_location-like.svg",
-  },
-  {
-    id: 3,
-    total: 2638,
-    desc: "User compromised",
-    imageLink: "/images/sector_image_user-like.svg",
-  },
-];
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(null);
