@@ -9,7 +9,29 @@ import ChangeUrlButton from "@/app/_ui/components/buttons/ChangeUrlButton";
 import PieChartCard from "@/app/_ui/components/cards/PieChartCard";
 import ChartBarHorizontal from "@/app/_ui/components/charts/ChartBarHorizontal";
 import ChartBarVertical from "@/app/_ui/components/charts/ChartBarVertical";
+import OverviewCard from "@/app/_ui/dashboard/OverviewCard";
 import { useState } from "react";
+
+const dataOverview = [
+  {
+    id: 1,
+    total: 2738,
+    desc: "Corporate credentials found",
+    imageLink: "/images/sector_image_magnifier.svg",
+  },
+  {
+    id: 2,
+    total: 100,
+    desc: "Employee compromised",
+    imageLink: "/images/sector_image_location-like.svg",
+  },
+  {
+    id: 3,
+    total: 2638,
+    desc: "User compromised",
+    imageLink: "/images/sector_image_user-like.svg",
+  },
+];
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(null);
@@ -31,16 +53,28 @@ export default function UserDashboardPage() {
     <main>
       <section>
         <h1 className="text-heading-2 text-black mb-4">Overview</h1>
-        <div className="bg-white flex items-center p-12 rounded-xl">
-          <div className="h-[80px] w-[80px] bg-input-container "></div>
-          <div className="ml-4">
-            <h1 className="text-heading-3">URL name</h1>
-            <h2 className="text-LG-strong text-text-description mt-2">
-              Last update: 08 Jan 2023/02:00
-            </h2>
+        <div className="bg-white  p-12 rounded-xl">
+          <div className="flex items-center">
+            <div className="h-[80px] w-[80px] bg-input-container "></div>
+            <div className="ml-4">
+              <h1 className="text-heading-3">URL name</h1>
+              <h2 className="text-LG-strong text-text-description mt-2">
+                Last update: 08 Jan 2023/02:00
+              </h2>
+            </div>
+            <div className="flex flex-grow justify-end items-center">
+              <ChangeUrlButton>Change URL</ChangeUrlButton>
+            </div>
           </div>
-          <div className="flex flex-grow justify-end items-center">
-            <ChangeUrlButton>Change URL</ChangeUrlButton>
+          <div className="mt-8 flex justify-between">
+            {dataOverview.map((data) => (
+              <OverviewCard
+                key={data.id}
+                descriptions={data.desc}
+                image={data.imageLink}
+                total={data.total}
+              />
+            ))}
           </div>
         </div>
       </section>
