@@ -1,5 +1,6 @@
 import { dataOverview } from "@/app/_lib/TempDataOverview";
 import ChangeUrlButton from "@/app/_ui/components/buttons/ChangeUrlButton";
+import CompromiseButton from "@/app/_ui/components/buttons/CompromiseButton";
 import OverviewCard from "@/app/_ui/dashboard/OverviewCard";
 
 export default function CompromisedDashboard() {
@@ -30,6 +31,25 @@ export default function CompromisedDashboard() {
           ))}
         </div>
       </div>
+      <section className="mt-10">
+        <h1 className="text-heading-4 text-black">Detail compromised</h1>
+        <div className="mt-4 bg-white border-2 border-input-border rounded-lg">
+          <section className="p-8 border-b-2 border-input-border ">
+            <CompromiseButton isActive={true} total={300} value={"Employee"} />
+
+            <CompromiseButton isActive={false} total={300} value={"User"} />
+
+            <CompromiseButton
+              isActive={false}
+              total={100}
+              value={"Third-party"}
+            />
+
+            <CompromiseButton isActive={false} total={100} value={"Device"} />
+          </section>
+          <section className="p-8"></section>
+        </div>
+      </section>
     </main>
   );
 }
