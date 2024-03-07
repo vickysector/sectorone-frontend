@@ -38,7 +38,7 @@ export default function LoginPage() {
           <form action="">
             <div className="bg-input-container relative ">
               <input
-                type={showPassword ? "text" : "password"}
+                type="email"
                 className={clsx(
                   " w-full bg-input-container py-1.5 px-3  border-2 rounded-lg text-Base-normal border-input-border"
                 )}

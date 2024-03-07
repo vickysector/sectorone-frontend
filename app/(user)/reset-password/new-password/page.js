@@ -79,7 +79,7 @@ export default function NewPasswordPage() {
   //   );
   // };
 
-  console.log("agreements", agreements);
+  // console.log("agreements", agreements);
 
   return (
     <main className="h-screen bg-input-container flex items-center justify-center">
@@ -99,7 +99,7 @@ export default function NewPasswordPage() {
             height={200}
           />
 
-          <h1 className="text-heading-2 text-black mb-4">Reset password</h1>
+          <h1 className="text-heading-2 text-black mb-4">Create password</h1>
           <p className="text-text-description text-LG-normal mb-8">
             Your new password must be different from previous  used passwords.
           </p>
@@ -115,7 +115,7 @@ export default function NewPasswordPage() {
               onChange={handlePasswordChange}
               hasTooltip={true}
               passwordMatchError={false}
-              placeholder={"Password"}
+              placeholder={"New password"}
             />
           </div>
           <ProgressBar data={strengths} />
@@ -127,7 +127,7 @@ export default function NewPasswordPage() {
               onChange={handleRetypePasswordChange}
               hasTooltip={false}
               passwordMatchError={passwordMatchError}
-              placeholder={"Retype password"}
+              placeholder={"Re-confirm password"}
             />
           </div>
           <div className="w-full mt-2 text-left">
