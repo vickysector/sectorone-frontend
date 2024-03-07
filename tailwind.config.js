@@ -22,6 +22,7 @@ module.exports = {
         "input-container": "#F7F7F7",
         "text-description": "#676767",
         "text-disabled": "#00000040",
+        "text-color": "#000000E0",
         "orange-chart": "#FAAD14",
         "blue-chart": "#1677FF",
         "orange-3-chart": "#FFD591",
