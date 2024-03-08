@@ -34,6 +34,7 @@ module.exports = {
         "success-chart": "#52C41A",
         "gold-chart": "#FAAD14",
         "gold-2-chart": "#FADb14",
+        "blue-export": "#2F54EB",
         success: "#389E0D",
         error: "#CF1322",
       },

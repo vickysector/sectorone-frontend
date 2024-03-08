@@ -4,6 +4,9 @@ import CompromiseButton from "@/app/_ui/components/buttons/CompromiseButton";
 import OutlineButton from "@/app/_ui/components/buttons/OutlineButton";
 import OverviewCard from "@/app/_ui/dashboard/OverviewCard";
 import "@/app/_ui/CheckboxCustom2.css";
+import clsx from "clsx";
+import Image from "next/image";
+import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 
 export default function CompromisedDashboard() {
   return (
@@ -58,22 +61,45 @@ export default function CompromisedDashboard() {
             <OutlineButton isActive={false} total={100} value={"Validated "} />
             <OutlineButton isActive={false} total={100} value={"Bookmark "} />
 
-            <div className="mt-8">
-              <div>
-                <input
-                  type="checkbox"
-                  name=""
-                  id="agreements"
-                  value="I agree to the Terms & Conditions and Privacy Policy"
-                  className=" text-Base-normal"
-                />
-                <label
-                  htmlFor="agreements"
-                  className="text-Base-normal ml-1.5 text-text-description"
-                ></label>
+            <div className="mt-8 ">
+              <div className="flex items-center">
+                <div>
+                  <input
+                    type="checkbox"
+                    name=""
+                    id="agreements"
+                    value="I agree to the Terms & Conditions and Privacy Policy"
+                    className=" text-Base-normal"
+                  />
+                  <label
+                    htmlFor="agreements"
+                    className="text-Base-normal ml-1.5 text-text-description"
+                  ></label>
+                </div>
+                <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[470px]">
+                  <input
+                    type="email"
+                    className={clsx(
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full cursor-pointer "
+                    )}
+                    placeholder={"Search by URL/Email"}
+                  />
+                  <div className="px-3 cursor-pointer">
+                    <Image
+                      src={"/images/sector_image_search.svg"}
+                      alt="search icon"
+                      width={16}
+                      height={16}
+                    />
+                  </div>
+                </div>
+                <div className="ml-auto ">
+                  <ExportButton />
+                </div>
               </div>
             </div>
           </section>
+          <section>{/* TODO */}</section>
         </div>
       </section>
     </main>
