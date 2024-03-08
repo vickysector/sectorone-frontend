@@ -1,7 +1,9 @@
 import { dataOverview } from "@/app/_lib/TempDataOverview";
 import ChangeUrlButton from "@/app/_ui/components/buttons/ChangeUrlButton";
 import CompromiseButton from "@/app/_ui/components/buttons/CompromiseButton";
+import OutlineButton from "@/app/_ui/components/buttons/OutlineButton";
 import OverviewCard from "@/app/_ui/dashboard/OverviewCard";
+import "@/app/_ui/CheckboxCustom2.css";
 
 export default function CompromisedDashboard() {
   return (
@@ -47,7 +49,31 @@ export default function CompromisedDashboard() {
 
             <CompromiseButton isActive={false} total={100} value={"Device"} />
           </section>
-          <section className="p-8"></section>
+          <section className="p-8">
+            <OutlineButton
+              isActive={true}
+              total={100}
+              value={"Data compromise "}
+            />
+            <OutlineButton isActive={false} total={100} value={"Validated "} />
+            <OutlineButton isActive={false} total={100} value={"Bookmark "} />
+
+            <div className="mt-8">
+              <div>
+                <input
+                  type="checkbox"
+                  name=""
+                  id="agreements"
+                  value="I agree to the Terms & Conditions and Privacy Policy"
+                  className=" text-Base-normal"
+                />
+                <label
+                  htmlFor="agreements"
+                  className="text-Base-normal ml-1.5 text-text-description"
+                ></label>
+              </div>
+            </div>
+          </section>
         </div>
       </section>
     </main>
