@@ -7,6 +7,190 @@ import "@/app/_ui/CheckboxCustom2.css";
 import clsx from "clsx";
 import Image from "next/image";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
+import { EyeOutlined, BookOutlined } from "@ant-design/icons";
+
+const dataSource = [
+  {
+    id: 1,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Weak",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 2,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Medium",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 3,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Strong",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 4,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Medium",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 5,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Medium",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 6,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Strong",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 7,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Medium",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 8,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Weak",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 9,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Weak",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 10,
+    date: "27/12/2023 02:23",
+    url: "adminpanel.sector.co",
+    login: "Example@mail.com",
+    pass: "Pass1234",
+    strength: "Weak",
+    action: (
+      <div className="flex">
+        <div>
+          <EyeOutlined style={{ fontSize: "18px" }} />
+        </div>
+        <div className="ml-auto mr-auto">
+          <BookOutlined style={{ fontSize: "18px" }} />
+        </div>
+      </div>
+    ),
+  },
+];
 
 export default function CompromisedDashboard() {
   return (
@@ -80,7 +264,7 @@ export default function CompromisedDashboard() {
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full cursor-pointer "
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
                     )}
                     placeholder={"Search by URL/Email"}
                   />
@@ -99,7 +283,53 @@ export default function CompromisedDashboard() {
               </div>
             </div>
           </section>
-          <section>{/* TODO */}</section>
+          <section className="p-8">
+            <div className="border-2 rounded-xl border-input-border">
+              <table className="bg-white  w-full rounded-xl">
+                <thead className="text-black text-Base-strong bg-[#00000005]">
+                  <tr className="border-b-[1px] border-[#D5D5D5]">
+                    <td className="py-[19px] px-[16px]">No</td>
+                    <td className="py-[19px] px-[16px]">Date compromised</td>
+                    <td className="py-[19px] px-[16px]">URL</td>
+                    <td className="py-[19px] px-[16px]">Login</td>
+                    <td className="py-[19px] px-[16px]">Password</td>
+                    <td className="py-[19px] px-[16px]">Password strength</td>
+                    <td className="py-[19px] px-[16px]">Action</td>
+                  </tr>
+                </thead>
+                <tbody className="text-Base-normal text-text-description">
+                  {dataSource.map((data, index) => (
+                    <tr
+                      className="border-b-[2px] border-[#D5D5D5]"
+                      key={data.id}
+                    >
+                      <td className="py-[19px] px-[16px]"> {index + 1} </td>
+                      <td className="py-[19px] px-[16px]"> {data.date} </td>
+                      <td className="py-[19px] px-[16px]"> {data.url} </td>
+                      <td className="py-[19px] px-[16px]"> {data.login} </td>
+                      <td className="py-[19px] px-[16px]"> {data.pass} </td>
+                      <td className="py-[19px] px-[16px]">
+                        {" "}
+                        <p
+                          className={clsx(
+                            data.strength.toLowerCase() === "weak" &&
+                              "text-pink",
+                            data.strength.toLowerCase() === "medium" &&
+                              "text-text-orange",
+                            data.strength.toLowerCase() === "strong" &&
+                              "text-text-green"
+                          )}
+                        >
+                          {data.strength}
+                        </p>{" "}
+                      </td>
+                      <td className="py-[19px] px-[16px]"> {data.action} </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
         </div>
       </section>
     </main>
