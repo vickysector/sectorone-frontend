@@ -1,3 +1,5 @@
+"use client";
+
 import { dataOverview } from "@/app/_lib/TempDataOverview";
 import ChangeUrlButton from "@/app/_ui/components/buttons/ChangeUrlButton";
 import CompromiseButton from "@/app/_ui/components/buttons/CompromiseButton";
@@ -9,6 +11,7 @@ import Image from "next/image";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import { EyeOutlined, BookOutlined } from "@ant-design/icons";
 import { Pagination, ConfigProvider } from "antd";
+import { useState } from "react";
 
 const dataSource = [
   {
@@ -194,6 +197,8 @@ const dataSource = [
 ];
 
 export default function CompromisedDashboard() {
+  const [showDate, setShowDate] = useState(false);
+
   return (
     <main>
       <h1 className="text-heading-2 text-black mb-4">Compromised</h1>
@@ -292,8 +297,15 @@ export default function CompromisedDashboard() {
                     <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
                       No
                     </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed flex justify-between">
                       Date compromised
+                      <Image
+                        alt="Sort by date"
+                        width={8}
+                        height={8}
+                        src={"/images/sector_sort.svg"}
+                        className="cursor-pointer"
+                      />
                     </td>
                     <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
                       URL
