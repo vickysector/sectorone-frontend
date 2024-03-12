@@ -8,6 +8,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import { EyeOutlined, BookOutlined } from "@ant-design/icons";
+import { Pagination, ConfigProvider } from "antd";
 
 const dataSource = [
   {
@@ -288,12 +289,24 @@ export default function CompromisedDashboard() {
               <table className="bg-white  w-full rounded-xl">
                 <thead className="text-black text-Base-strong bg-[#00000005]">
                   <tr className="border-b-[1px] border-[#D5D5D5]">
-                    <td className="py-[19px] px-[16px]">No</td>
-                    <td className="py-[19px] px-[16px]">Date compromised</td>
-                    <td className="py-[19px] px-[16px]">URL</td>
-                    <td className="py-[19px] px-[16px]">Login</td>
-                    <td className="py-[19px] px-[16px]">Password</td>
-                    <td className="py-[19px] px-[16px]">Password strength</td>
+                    <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                      No
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      Date compromised
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      URL
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      Login
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      Password
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      Password strength
+                    </td>
                     <td className="py-[19px] px-[16px]">Action</td>
                   </tr>
                 </thead>
@@ -328,6 +341,35 @@ export default function CompromisedDashboard() {
                   ))}
                 </tbody>
               </table>
+              <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                <p className="text-Base-normal text-[#676767] ">
+                  Showing 10 to 100 entries
+                </p>
+                <div>
+                  <ConfigProvider
+                    theme={{
+                      components: {
+                        Pagination: {
+                          itemActiveBg: "#FF6F1E",
+                          itemLinkBg: "#fff",
+                          itemInputBg: "#fff",
+                        },
+                      },
+                      token: {
+                        colorPrimary: "white",
+                      },
+                    }}
+                  >
+                    <Pagination
+                      type="primary"
+                      defaultCurrent={1}
+                      total={50}
+                      showSizeChanger={false}
+                      style={{ color: "#FF6F1E" }}
+                    />
+                  </ConfigProvider>
+                </div>
+              </div>
             </div>
           </section>
         </div>
