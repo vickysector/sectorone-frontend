@@ -10,7 +10,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import { EyeOutlined, BookOutlined } from "@ant-design/icons";
-import { Pagination, ConfigProvider } from "antd";
+import { Pagination, ConfigProvider, DatePicker } from "antd";
 import { useState } from "react";
 
 const dataSource = [
@@ -196,8 +196,15 @@ const dataSource = [
   },
 ];
 
+const { RangePicker } = DatePicker;
+
 export default function CompromisedDashboard() {
   const [showDate, setShowDate] = useState(false);
+
+  const handleRangePicker = (date, datestring) => {
+    console.log("date : ", date);
+    console.log("datestring: ", datestring);
+  };
 
   return (
     <main>
@@ -266,7 +273,7 @@ export default function CompromisedDashboard() {
                     className="text-Base-normal ml-1.5 text-text-description"
                   ></label>
                 </div>
-                <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[470px]">
+                <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
                   <input
                     type="email"
                     className={clsx(
@@ -282,6 +289,36 @@ export default function CompromisedDashboard() {
                       height={16}
                     />
                   </div>
+                </div>
+                <div>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorBgContainer: "#F7F7F7",
+                        colorBorder: "#D5D5D5",
+                        colorText: "#000000E0",
+                        fontWeightStrong: true,
+                        colorPrimary: "#FF6F1E",
+                      },
+                      components: {
+                        DatePicker: {
+                          cellHeight: 20,
+                          cellWidth: 32,
+                          hoverBorderColor: "#FF6F1E",
+                          cellActiveWithRangeBg: "#FFEBD4",
+                          cellRangeBorderColor: "#FFD3A8",
+                          activeBorderColor: "#FFEBD4",
+                        },
+                      },
+                    }}
+                  >
+                    <RangePicker
+                      renderExtraFooter={() => "extra footer"}
+                      onChange={handleRangePicker}
+                      className="ml-8"
+                      size="large"
+                    />
+                  </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
                   <ExportButton />
