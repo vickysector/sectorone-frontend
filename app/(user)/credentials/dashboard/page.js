@@ -12,6 +12,7 @@ import ChartBarHorizontal from "@/app/_ui/components/charts/ChartBarHorizontal";
 import ChartBarVertical from "@/app/_ui/components/charts/ChartBarVertical";
 import OverviewCard from "@/app/_ui/dashboard/OverviewCard";
 import { useState } from "react";
+import { Select, ConfigProvider } from "antd";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(null);
@@ -27,6 +28,10 @@ export default function UserDashboardPage() {
     setStatusSelect(event.target.value);
 
     console.log("user : ", event.target.value);
+  };
+
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
   };
 
   return (
@@ -61,26 +66,45 @@ export default function UserDashboardPage() {
       <section className="mt-8">
         <h1 className="text-heading-4 text-black ">Total compromised</h1>
         <div className="p-8 bg-white border-input-border border-2 mt-4 rounded-[16px]">
-          <select
-            name="years"
-            id="years"
-            onChange={selectYearChange}
-            className="border-2 border-input-border rounded-lg bg-input-container py-2 px-4 text-Base-normal text-text-color custom-select"
+          <ConfigProvider
+            theme={{
+              token: {
+                colorBgContainer: "#F7F7F7",
+                colorBorder: "#D5D5D5",
+                colorText: "#000000E0",
+                fontWeightStrong: true,
+              },
+              components: {
+                Select: {
+                  optionActiveBg: "#F7F7F7",
+                  optionSelectedBg: "#FFEBD4",
+                },
+              },
+            }}
           >
-            <option value="2023">2023</option>
-            <option value="2024">2024</option>
-          </select>
+            <Select
+              defaultValue="2024"
+              style={{ width: 91 }}
+              onChange={handleChange}
+              options={[
+                { value: "2024", label: "2024" },
 
-          <select
-            name="status"
-            id="status"
-            onChange={selectYearChange}
-            className="border-2 border-input-border rounded-lg bg-input-container py-2 px-4 text-Base-normal text-text-color custom-select ml-8"
-          >
-            <option value="All">All (Employee & User)</option>
-            <option value="Employee">Employee</option>
-            <option value="User">User</option>
-          </select>
+                { value: "2023", label: "2023" },
+              ]}
+            />
+
+            <Select
+              defaultValue="all"
+              style={{ width: 200 }}
+              onChange={handleChange}
+              options={[
+                { value: "all", label: "All (Employee & User)" },
+                { value: "user", label: "User" },
+                { value: "employee", label: "Emlpoyee" },
+              ]}
+              className="ml-8"
+            />
+          </ConfigProvider>
           <div className="border-2 border-input-border rounded-[16px] mt-4 p-8 flex justify-center items-center w-full relative">
             <ChartBarVertical />
           </div>
