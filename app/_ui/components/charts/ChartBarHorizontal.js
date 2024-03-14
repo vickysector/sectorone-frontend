@@ -16,7 +16,7 @@ export default function ChartBarHorizontal({
           isMalware && "bg-gold-chart"
         )}
       >
-        <div className={`absolute top-0 left-0 right-0   bottom-0 `}></div>
+        <div className={``}></div>
         <p className={clsx("ml-4 text-white text-SM-normal")}>{name}</p>
       </div>
       <p className="text-black text-SM-normal ml-3">{number}</p>
