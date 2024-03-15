@@ -334,15 +334,8 @@ export default function CompromisedDashboard() {
                     <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
                       No
                     </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed flex justify-between">
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
                       Date compromised
-                      <Image
-                        alt="Sort by date"
-                        width={8}
-                        height={8}
-                        src={"/images/sector_sort.svg"}
-                        className="cursor-pointer"
-                      />
                     </td>
                     <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
                       URL
