@@ -6,7 +6,7 @@ import Menu from "@/app/_ui/components/accounts-menu/Menu";
 const documentation = {
   title: "Sector API(s)",
   description:
-    "Sector API Connect is a full lifecycle API management solution that uses an intuitive  experience to help consistently create, manage, secure, socialize and APIs, helping  power digital transformation on premises and across security.",
+    "Sector API Connect is a full lifecycle API management solution that uses an intuitive experience to help consistently create, manage, secure, socialize and APIs, helping power digital transformation on premises and across security.",
   imageLink: "images/sector_accounts_documentation.svg",
   href: "#",
 };
