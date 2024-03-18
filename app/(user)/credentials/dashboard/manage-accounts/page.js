@@ -15,7 +15,7 @@ const changePassword = {
   title: "Change password",
   description: "Last changed 01 Jan 2023",
   imageLink: "images/sector_accounts_change-password.svg",
-  href: "#",
+  href: "/accounts/manage-accounts/reset-password",
 };
 
 export default function SettingsUserPage() {
