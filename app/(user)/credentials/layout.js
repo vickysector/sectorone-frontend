@@ -41,8 +41,8 @@ export default function DashboardLayout({ children }) {
       <section className="bg-input-container flex">
         <aside
           className={clsx(
-            " h-auth-screen w-[230px] flex-none transition-all fixed left-0 bottom-0 bg-white z-10 ",
-            hide ? "w-[72px]" : "w-[230px] overflow-x-hidden overflow-y-hidden"
+            " h-auth-screen w-[260px] flex-none transition-all fixed left-0 bottom-0 bg-white z-10 ",
+            hide ? "w-[102px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
           )}
         >
           <div className="mt-2 flex justify-end mr-5">
@@ -68,7 +68,7 @@ export default function DashboardLayout({ children }) {
         <div
           className={clsx(
             "flex-grow min-h-screen h-full  min-w-screen w-full fixed bg-input-container left-0 right-0 overflow-y-auto  pt-[100px] transition-all pr-[32px] pb-[64px]",
-            hide ? "pl-[100px]" : "pl-[260px]"
+            hide ? "pl-[130px]" : "pl-[290px]"
           )}
         >
           {children}
