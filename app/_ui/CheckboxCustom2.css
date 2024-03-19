@@ -4,7 +4,7 @@ input[type="checkbox"]:checked + label::after {
   width: 1.2ex;
   height: 0.7ex;
   background: #ff6f1e;
-  top: 0.9ex;
+  top: 0.5ex;
   left: 0.6ex;
   border: 3px solid white;
   border-top: none;
