@@ -69,23 +69,23 @@ export default function DashboardLayout({ children }) {
             />
           </div> */}
           <Sidenav />
+          <div
+            className={clsx(
+              "bg-white border-2 border-input-border w-[38px] h-[38px] rounded-full fixed top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer",
+              hide ? "left-[87px]" : "left-[240px]"
+            )}
+            onClick={toggleHideIcon}
+          >
+            <LeftOutlined
+              style={{ fontSize: "16px" }}
+              className={clsx("cursor-pointer", hide ? "hidden" : "visible")}
+            />
+            <RightOutlined
+              style={{ fontSize: "16px" }}
+              className={clsx("cursor-pointer", hide ? "visible" : "hidden")}
+            />
+          </div>
         </aside>
-        <div
-          className={clsx(
-            "bg-white border-2 border-input-border w-[38px] h-[38px] rounded-full absolute top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer",
-            hide ? "left-[87px]" : "left-[15.9%]"
-          )}
-          onClick={toggleHideIcon}
-        >
-          <LeftOutlined
-            style={{ fontSize: "16px" }}
-            className={clsx("cursor-pointer", hide ? "hidden" : "visible")}
-          />
-          <RightOutlined
-            style={{ fontSize: "16px" }}
-            className={clsx("cursor-pointer", hide ? "visible" : "hidden")}
-          />
-        </div>
         <div
           className={clsx(
             "flex-grow min-h-screen h-full  min-w-screen w-full fixed bg-input-container left-0 right-0 overflow-y-auto  pt-[75px] transition-all pr-[32px] pb-[64px]",
