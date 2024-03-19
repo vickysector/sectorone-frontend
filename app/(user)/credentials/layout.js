@@ -46,7 +46,7 @@ export default function DashboardLayout({ children }) {
       <section className="bg-input-container flex relative">
         <aside
           className={clsx(
-            " h-auth-screen w-[260px] flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border ",
+            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border ",
             hide ? "w-[102px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
           )}
         >
