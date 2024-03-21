@@ -11,6 +11,7 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import Link from "next/link";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
+import { setCookie } from "cookies-next";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -49,11 +50,14 @@ export default function LoginPage() {
         }),
       });
 
-      console.log("res: ", res);
-
       if (!res.ok) {
         throw new Error("Error");
       }
+      const data = await res.json();
+
+      setCookie("access_token", data.data.access_token);
+
+      console.log("response: ", data);
     } catch (error) {
       console.error(error);
       setIsError(true);
