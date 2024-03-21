@@ -10,10 +10,15 @@ import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import Link from "next/link";
+import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -24,9 +29,51 @@ export default function LoginPage() {
     setPassword(newPassword);
   };
 
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      setLoading(true);
+      const res = await fetch(`${APIKEY}auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "app_secret!!!",
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password,
+        }),
+      });
+
+      console.log("res: ", res);
+
+      if (!res.ok) {
+        throw new Error("Error");
+      }
+    } catch (error) {
+      console.error(error);
+      setIsError(true);
+      setErrorMessage("Incorrect Email or Password. Please Try Again!");
+      setTimeout(() => {
+        setIsError(false);
+      }, 5000);
+    } finally {
+      setLoading(false);
+    }
+
+    setPassword("");
+    setEmail("");
+  };
+
+  const canSumbit = password && email;
+
   return (
     <main className="h-auth-screen -500 flex relative">
-      <section className="flex-1 flex flex-col items-center justify-center h-full w-full ">
+      <section className="flex-1 flex flex-col items-center justify-center h-full w-full relative ">
         <div className="">
           <h1 className="text-heading-1 w-[80%]">
             Securing your digital world
@@ -43,20 +90,34 @@ export default function LoginPage() {
                   " w-full bg-input-container py-1.5 px-3  border-2 rounded-lg text-Base-normal border-input-border"
                 )}
                 placeholder={"Email"}
+                onChange={handleEmailChange}
+                value={email}
               />
+              {/* <p className="text-Base-normal text-error mt-2 ">
+                Incorrect Email. Please Try Again{" "}
+              </p> */}
             </div>
-            <div className=" mt-4 text-right relative mb-8">
-              <Password
-                showPassword={showPassword}
-                value={password}
-                toggleShowIcon={toggleShowPasswordVisibility}
-                onChange={handlePasswordChange}
-                hasTooltip={false}
-                placeholder={"Password"}
-              />
+            <div className="mt-4 mb-8">
+              <div className="  text-right relative ">
+                <Password
+                  showPassword={showPassword}
+                  value={password}
+                  toggleShowIcon={toggleShowPasswordVisibility}
+                  onChange={handlePasswordChange}
+                  hasTooltip={false}
+                  placeholder={"Password"}
+                />
+              </div>
+              {/* <p className="text-Base-normal text-error mt-2 ">
+                Incorrect Password. Please Try Again{" "}
+              </p> */}
             </div>
 
-            <AuthButton value={"Login"} />
+            <AuthButton
+              agreements={canSumbit}
+              value={"Login"}
+              onClick={handleSubmit}
+            />
           </form>
           <div className="flex items-center mt-4 justify-between">
             <a href="#" className="block text-text-description text-LG-normal">
@@ -68,10 +129,18 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="absolute bottom-[10%] left-[9.5%]">
+        <div className="absolute bottom-[10%] left-[19%]">
           <p className="text-Base-normal text-text-description">
             &copy; 2024 Sector. All right reserved.
           </p>
+        </div>
+        <div
+          className={clsx(
+            "absolute left-[19%] top-[11%] bg-[#FFF1F0] py-2 px-8 text-Base-normal text-black rounded-lg shadow-lg",
+            isError ? "visible" : "hidden"
+          )}
+        >
+          {errorMessage}
         </div>
       </section>
       <section className="flex-1 bg-primary-200 w-full h-full flex items-center justify-center">

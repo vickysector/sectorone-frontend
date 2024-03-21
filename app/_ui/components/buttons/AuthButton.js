@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export function AuthButton({ agreements, value }) {
+export function AuthButton({ agreements, value, onClick }) {
   return (
     <button
       type="submit"
@@ -11,6 +11,7 @@ export function AuthButton({ agreements, value }) {
           : "cursor-pointer bg-primary-base border-2 border-primary-base text-white"
       )}
       disabled={!agreements}
+      onClick={onClick}
     >
       {value}
     </button>
