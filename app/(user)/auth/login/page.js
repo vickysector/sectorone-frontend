@@ -11,7 +11,7 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import Link from "next/link";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
-import { setCookie } from "cookies-next";
+import { setCookie, getCookie } from "cookies-next";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +20,7 @@ export default function LoginPage() {
   const [isError, setIsError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loadingQr, setLoadingQr] = useState(false);
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -57,7 +58,7 @@ export default function LoginPage() {
 
       setCookie("access_token", data.data.access_token);
 
-      console.log("response: ", data);
+      PushToQrCode();
     } catch (error) {
       console.error(error);
       setIsError(true);
@@ -71,6 +72,34 @@ export default function LoginPage() {
 
     setPassword("");
     setEmail("");
+  };
+
+  const PushToQrCode = async () => {
+    try {
+      setLoadingQr(true);
+      // const headers = new Headers();
+      // headers.append("Cookie", `access_token=${getCookie("access_token")}`);
+      const res = await fetch(`${APIKEY}register/2fa`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Cookie: `access_token=${getCookie("access_token")}`,
+        },
+      });
+
+      const data = await res.json();
+
+      console.log("res: ", res);
+      console.log("data: ", data);
+
+      if (!res.ok) {
+        throw new Error("Error");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingQr(false);
+    }
   };
 
   const canSumbit = password && email;
