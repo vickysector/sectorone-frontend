@@ -4,12 +4,15 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Password from "@/app/_ui/components/inputs/Password";
+import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
 
 export default function VerificaitonLogin() {
   const [showOtp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState("");
+  const [loadingQr, setLoadingQr] = useState(false);
+  const [qrCode, setQrCode] = useState("");
 
   const toggleShowOtpVisibility = () => {
     setShowOtp((prevPasswordState) => !prevPasswordState);
@@ -19,6 +22,30 @@ export default function VerificaitonLogin() {
     const newPassword = e.target.value;
     setOtp(newPassword);
   };
+
+  const GetQRCode = async () => {
+    try {
+      setLoadingQr(true);
+
+      const res = await fetch(`${APIKEY}register/2fa`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await res.json();
+
+      console.log("after useeffect: ", data);
+      setQrCode(data.data.qrcode);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoadingQr(false);
+    }
+  };
+
+  useEffect(() => {
+    GetQRCode();
+  }, []);
 
   return (
     <main className="h-auth-screen -500 flex relative">
@@ -59,7 +86,7 @@ export default function VerificaitonLogin() {
       </section>
       <section className="flex-1 bg-primary-200 w-full h-full flex items-center justify-center">
         <Image
-          src={"/images/sector_qr_code.png"}
+          src={`data:image/png;base64,${qrCode}`}
           width={435}
           height={435}
           alt="hero image auth"
