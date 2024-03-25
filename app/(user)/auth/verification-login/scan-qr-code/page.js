@@ -75,8 +75,6 @@ export default function VerificaitonLogin() {
 
         const data = await res.json();
 
-        console.log("Data after otp: ", data);
-
         if (data.data === null) {
           throw new Error("Error");
         }
@@ -99,7 +97,7 @@ export default function VerificaitonLogin() {
   }, []);
 
   if (!qrCode || !getCookie("access_token")) {
-    return nulll;
+    return null;
   }
 
   return (

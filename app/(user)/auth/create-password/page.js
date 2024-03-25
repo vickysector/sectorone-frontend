@@ -14,6 +14,7 @@ import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import { ProgressBar } from "@/app/_ui/components/utils/ProgressBar";
+import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
 
 export default function CreatePasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -70,6 +71,19 @@ export default function CreatePasswordPage() {
 
   const handleAgreements = (e) => {
     setAgreements((prevState) => !prevState);
+  };
+
+  const canSave =
+    agreements && password && retypePassword && !passwordMatchError;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (canSave) {
+      try {
+        const res = await fetch(`${APIKEY}auth/new/password`, {});
+      } catch (error) {}
+    }
   };
 
   return (
@@ -139,7 +153,11 @@ export default function CreatePasswordPage() {
               </label>
             </div>
 
-            <AuthButton agreements={agreements} value={"Create Password"} />
+            <AuthButton
+              onClick={handleSubmit}
+              agreements={canSave}
+              value={"Create Password"}
+            />
           </form>
         </div>
         <div className="absolute bottom-[10%] left-[9.5%]">
