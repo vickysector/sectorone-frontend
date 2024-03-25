@@ -13,6 +13,8 @@ export default function Password({
   hasTooltip,
   passwordMatchError,
   placeholder,
+  max,
+  errorState,
 }) {
   return (
     <>
@@ -20,16 +22,20 @@ export default function Password({
         type={showPassword ? "text" : "password"}
         className={clsx(
           " w-full bg-input-container py-1.5 px-3  border-2 rounded-lg text-Base-normal",
+
           !passwordMatchError && "border-input-border",
           passwordMatchError && value.length !== 0
             ? "border-error outline-error"
-            : "border-input-border"
+            : "border-input-border",
+          errorState ? "border-error outline-error" : "border-input-border"
         )}
         placeholder={placeholder}
         value={value}
         onChange={onChange}
         onFocus={onFocus}
         onBlur={onBlur}
+        maxLength={max}
+        required
       />
       {hasTooltip && (
         <span
