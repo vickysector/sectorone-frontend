@@ -62,6 +62,8 @@ export default function LoginPage() {
         throw new Error(data.message);
       }
 
+      setCookie("access_token", data.data.access_token);
+
       PushToQrCode();
     } catch (error) {
       setIsError(true);
