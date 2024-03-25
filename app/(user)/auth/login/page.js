@@ -13,6 +13,7 @@ import Link from "next/link";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
 import { setCookie, getCookie, hasCookie } from "cookies-next";
 import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,12 +23,7 @@ export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingQr, setLoadingQr] = useState(false);
-
-  // const cookie = getCookie("access_token_me");
-  const cookie_be = getCookie("access_token");
-
-  // console.log("cookie me: ", cookie);
-  console.log("cookie be: ", cookie_be);
+  const router = useRouter();
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -60,18 +56,14 @@ export default function LoginPage() {
         credentials: "include",
       });
 
-      console.log("res: ", res);
+      const data = await res.json();
 
-      // if (!res) {
-      //   throw new Error("Error");
-      // }
-      // const data = await res.json();
-
-      // setCookie("access_token_me", res.data.data.access_token);
+      if (data.success === false || !data.data) {
+        throw new Error(data.message);
+      }
 
       PushToQrCode();
     } catch (error) {
-      console.error(error);
       setIsError(true);
       setErrorMessage("Incorrect Email or Password. Please Try Again!");
       setTimeout(() => {
@@ -88,14 +80,6 @@ export default function LoginPage() {
   const PushToQrCode = async () => {
     try {
       setLoadingQr(true);
-      // const headers = new Headers();
-      // headers.append("Cookie", `access_token=${getCookie("access_token")}`);
-      // const res = await axios.post(`${APIKEY}register/2fa`, {
-      //   // headers: {
-      //   //   Cookie: `access_token=${cookie}`,
-      //   // },
-      //   withCredentials: true,
-      // });
 
       const res = await fetch(`${APIKEY}register/2fa`, {
         method: "POST",
@@ -104,11 +88,13 @@ export default function LoginPage() {
 
       const data = await res.json();
 
-      console.log("res: ", res);
-      console.log("data: ", data);
-
-      if (!res.ok) {
-        throw new Error("Error");
+      if (data.data === null) {
+        router.push("/auth/verification-login/2fa-verification");
+        return;
+      }
+      if (data.data !== null) {
+        router.push("/auth/verification-login/scan-qr-code");
+        return;
       }
     } catch (error) {
       console.error(error);
@@ -117,13 +103,13 @@ export default function LoginPage() {
     }
   };
 
-  // console.log("Cookie: ", getCookie("access_token"));
-
   const canSumbit = password && email;
 
   return (
     <main className="h-auth-screen -500 flex relative">
-      <LoadingSpin />
+      <div className={clsx(loading || loadingQr ? "visible" : "hidden")}>
+        <LoadingSpin />
+      </div>
       <section className="flex-1 flex flex-col items-center justify-center h-full w-full relative ">
         <div className="">
           <h1 className="text-heading-1 w-[80%]">
