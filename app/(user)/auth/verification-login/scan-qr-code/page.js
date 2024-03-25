@@ -8,8 +8,8 @@ import { useState, useRef, useEffect } from "react";
 import Password from "@/app/_ui/components/inputs/Password";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
 import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
-import { setCookie, getCookie, hasCookie } from "cookies-next";
-import { useRouter } from "next/navigation";
+import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { useRouter, redirect } from "next/navigation";
 
 export default function VerificaitonLogin() {
   const [showOtp, setShowOtp] = useState(false);
@@ -81,6 +81,7 @@ export default function VerificaitonLogin() {
           throw new Error("Error");
         }
 
+        deleteCookie("access_token");
         router.push("/credentials/dashboard");
       } catch (error) {
         setErrorOtpMessage("Inccorrect OTP. Please try again");
@@ -90,6 +91,16 @@ export default function VerificaitonLogin() {
       }
     }
   };
+
+  useEffect(() => {
+    if (!qrCode || !getCookie("access_token")) {
+      return redirect("/auth/login");
+    }
+  }, []);
+
+  if (!qrCode || !getCookie("access_token")) {
+    return nulll;
+  }
 
   return (
     <main className="h-auth-screen -500 flex relative">
