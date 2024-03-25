@@ -11,7 +11,8 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import Link from "next/link";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
-import { setCookie, getCookie } from "cookies-next";
+import { setCookie, getCookie, hasCookie } from "cookies-next";
+import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -21,6 +22,12 @@ export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [loadingQr, setLoadingQr] = useState(false);
+
+  // const cookie = getCookie("access_token_me");
+  const cookie_be = getCookie("access_token");
+
+  // console.log("cookie me: ", cookie);
+  console.log("cookie be: ", cookie_be);
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -39,24 +46,28 @@ export default function LoginPage() {
     e.preventDefault();
     try {
       setLoading(true);
+
       const res = await fetch(`${APIKEY}auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: "app_secret!!!",
-        },
         body: JSON.stringify({
-          email: email,
-          password: password,
+          email,
+          password,
         }),
+        headers: {
+          Authorization: "app_secret!!!",
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
       });
 
-      if (!res.ok) {
-        throw new Error("Error");
-      }
-      const data = await res.json();
+      console.log("res: ", res);
 
-      setCookie("access_token", data.data.access_token);
+      // if (!res) {
+      //   throw new Error("Error");
+      // }
+      // const data = await res.json();
+
+      // setCookie("access_token_me", res.data.data.access_token);
 
       PushToQrCode();
     } catch (error) {
@@ -79,12 +90,16 @@ export default function LoginPage() {
       setLoadingQr(true);
       // const headers = new Headers();
       // headers.append("Cookie", `access_token=${getCookie("access_token")}`);
+      // const res = await axios.post(`${APIKEY}register/2fa`, {
+      //   // headers: {
+      //   //   Cookie: `access_token=${cookie}`,
+      //   // },
+      //   withCredentials: true,
+      // });
+
       const res = await fetch(`${APIKEY}register/2fa`, {
         method: "POST",
         credentials: "include",
-        headers: {
-          Cookie: `access_token=${getCookie("access_token")}`,
-        },
       });
 
       const data = await res.json();
@@ -102,10 +117,13 @@ export default function LoginPage() {
     }
   };
 
+  // console.log("Cookie: ", getCookie("access_token"));
+
   const canSumbit = password && email;
 
   return (
     <main className="h-auth-screen -500 flex relative">
+      <LoadingSpin />
       <section className="flex-1 flex flex-col items-center justify-center h-full w-full relative ">
         <div className="">
           <h1 className="text-heading-1 w-[80%]">
