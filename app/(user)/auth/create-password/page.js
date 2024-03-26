@@ -120,8 +120,6 @@ export default function CreatePasswordPage() {
 
         const data = await res.json();
 
-        console.log("data: ", data);
-
         if (!data.success) {
           throw new Error("");
         }
