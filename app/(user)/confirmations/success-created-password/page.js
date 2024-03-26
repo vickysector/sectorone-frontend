@@ -24,7 +24,7 @@ export default function SuccessCreatePasswordPage() {
             Your password has been created successfully!
           </p>
           <a
-            href="#"
+            href="/auth/login"
             className="text-Base-normal text-white text-center p-2 bg-primary-base rounded-lg w-[300px]"
           >
             Login
