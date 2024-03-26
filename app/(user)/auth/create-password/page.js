@@ -4,7 +4,7 @@ import Image from "next/image";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import "@/app/_ui/Tooltip.css";
 import "@/app/_ui/CheckboxCustom.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import clsx from "clsx";
 import {
   CalculatePasswordStrength,
@@ -15,6 +15,7 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import { ProgressBar } from "@/app/_ui/components/utils/ProgressBar";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
+import { useSearchParams, redirect } from "next/navigation";
 
 export default function CreatePasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -24,6 +25,16 @@ export default function CreatePasswordPage() {
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState(false);
   const [agreements, setAgreements] = useState(false);
+
+  // ---------- Start of: Page Access Validation -----------------
+  const searchParams = useSearchParams();
+
+  const code = searchParams.has("code");
+  const codeValid = searchParams.get("code").length === 4;
+  const tokenId = searchParams.has("id");
+  const tokenIdValid = searchParams.get("id").length > 4;
+
+  // ---------- End of:  Page Access Validation ------------
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -85,6 +96,16 @@ export default function CreatePasswordPage() {
       } catch (error) {}
     }
   };
+
+  useEffect(() => {
+    if (!code || !codeValid || !tokenId || !tokenIdValid) {
+      return redirect("/auth/login");
+    }
+  }, []);
+
+  if (!code || !codeValid || !tokenId || !tokenIdValid) {
+    return null;
+  }
 
   return (
     <main className="h-auth-screen -500 flex relative">
