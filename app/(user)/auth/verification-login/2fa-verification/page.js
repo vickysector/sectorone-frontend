@@ -71,9 +71,9 @@ export default function FaAuthPage() {
     }
   }, []);
 
-  if (!getCookie("access_token")) {
-    return null;
-  }
+  // if (!getCookie("access_token")) {
+  //   return null;
+  // }
 
   return (
     <main className="h-auth-screen -500 flex relative">

@@ -91,14 +91,14 @@ export default function VerificaitonLogin() {
   };
 
   useEffect(() => {
-    if (!qrCode || !getCookie("access_token")) {
+    if (!getCookie("access_token")) {
       return redirect("/auth/login");
     }
   }, []);
 
-  if (!qrCode || !getCookie("access_token")) {
-    return null;
-  }
+  // if (!qrCode || !getCookie("access_token")) {
+  //   return null;
+  // }
 
   return (
     <main className="h-auth-screen -500 flex relative">
