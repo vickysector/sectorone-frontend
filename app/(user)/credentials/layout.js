@@ -8,15 +8,35 @@ import {
   LeftOutlined,
   RightOutlined,
 } from "@ant-design/icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
+import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { useRouter, redirect } from "next/navigation";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
 
+  // Start of: Checking Users Credentials
+
+  const CredentialsEmail = getCookie("email_credentials");
+  const CredentialsAccess_Token = getCookie("access_token");
+  const CredentialsRefresh_Token = getCookie("refresh_token");
+
+  // End of: Checking Users Credentials
+
   const toggleHideIcon = () => {
     setHide((prevState) => !prevState);
   };
+
+  useEffect(() => {
+    if (
+      !CredentialsEmail ||
+      !CredentialsAccess_Token ||
+      !CredentialsRefresh_Token
+    ) {
+      return redirect("/auth/login");
+    }
+  }, []);
 
   return (
     <main className="relative bg-input-container">

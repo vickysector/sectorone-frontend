@@ -55,6 +55,9 @@ export default function FaAuthPage() {
         }
 
         deleteCookie("access_token");
+        setCookie("refresh_token", data.data.refresh_token);
+        setCookie("access_token", data.data.access_token);
+        setCookie("email_credentials", data.data.email);
         router.push("/credentials/dashboard");
       } catch (error) {
         setErrorOtpMessage("Inccorrect OTP. Please try again");
