@@ -9,15 +9,26 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import { ProgressBar } from "@/app/_ui/components/utils/ProgressBar";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import clsx from "clsx";
+import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
+import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { useRouter, redirect } from "next/navigation";
+import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
 
 export default function ResetPasswordUserAfterLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [showRetypePassword, setShowRetypePassword] = useState(false);
   const [isPasswordFocused, setIsPasswordFocused] = useState(false);
-  const [password, setPassword] = useState("");
-  const [retypePassword, setRetypePassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [errorNewPassword, setErrorNewPassword] = useState(false);
+  const [messageErrorNewPassword, setMessageErrorNewPassword] = useState("");
+  const [errorOldPassword, setErrorOldPassword] = useState(false);
+  const [messageErrorOldPassword, setMessageErrorOldPassword] = useState("");
+
+  const router = useRouter();
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -36,18 +47,101 @@ export default function ResetPasswordUserAfterLogin() {
 
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
-    setPassword(newPassword);
+    setOldPassword(newPassword);
   };
 
   const handleRetypePasswordChange = (e) => {
     const newRetypePassword = e.target.value;
-    setRetypePassword(newRetypePassword);
+    setNewPassword(newRetypePassword);
   };
 
-  const canSave = password && retypePassword;
+  const canSave = oldPassword && newPassword;
+
+  const handleChangePassword = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch(`${APIDATAV1}setting/change/password`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          old_password: oldPassword,
+          new_password: newPassword,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (
+        data.message.includes("sandi") ||
+        data.message.includes("satu huruf")
+      ) {
+        setErrorNewPassword(true);
+        setMessageErrorNewPassword(data.message);
+        console.log(data.message);
+        setTimeout(() => {
+          setErrorNewPassword(false);
+        }, 3000);
+      }
+
+      if (data.message.includes("Old") || data.message.includes("password")) {
+        setErrorOldPassword(true);
+        setMessageErrorOldPassword(data.message);
+        console.log(data.message);
+        setTimeout(() => {
+          setErrorOldPassword(false);
+        }, 3000);
+      }
+
+      if (data.message.includes("Token") || data.message.includes("expired")) {
+        deleteCookie("access_token");
+        deleteCookie("email_credentials");
+        deleteCookie("refresh_token");
+        router.push("/auth/login");
+      }
+
+      if (data.success) {
+        deleteCookie("access_token");
+        deleteCookie("email_credentials");
+        deleteCookie("refresh_token");
+        router.push("/accounts/manage-accounts/success-reset-password");
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!getCookie("access_token") || !getCookie("refresh_token")) {
+      router.push("/auth/login");
+    }
+  }, []);
 
   return (
     <main className="h-screen bg-input-container flex items-center justify-center">
+      <div className={clsx(loading ? "visible" : "hidden")}>
+        <LoadingSpin />
+      </div>
+      <div
+        className={clsx(
+          "absolute left-[50%] translate-x-[-50%] top-[10%] bg-[#FFF1F0] py-2 px-8 text-Base-normal text-black rounded-lg shadow-lg z-20 ",
+          errorOldPassword ? "visible" : "hidden"
+        )}
+      >
+        <p> {errorOldPassword && messageErrorOldPassword} </p>
+      </div>
+      <div
+        className={clsx(
+          "absolute left-[50%] translate-x-[-50%] top-[10%] bg-[#FFF1F0] py-2 px-8 text-Base-normal text-black rounded-lg shadow-lg z-20 ",
+          errorNewPassword ? "visible" : "hidden"
+        )}
+      >
+        <p> {errorNewPassword && messageErrorNewPassword} </p>
+      </div>
       <div className="bg-white w-[50%] py-[40px] px-[110px]">
         <div className="text-center flex items-center justify-center flex-col w-[80%] mx-auto">
           <Image
@@ -90,7 +184,7 @@ export default function ResetPasswordUserAfterLogin() {
           <div className="bg-input-container relative w-full text-left">
             <Password
               showPassword={showPassword}
-              value={password}
+              value={oldPassword}
               toggleShowIcon={toggleShowPasswordVisibility}
               isPasswordFocused={isPasswordFocused}
               onBlur={handlePasswordBlur}
@@ -102,7 +196,7 @@ export default function ResetPasswordUserAfterLogin() {
           <div className=" mt-4 text-left relative w-full ">
             <Password
               showPassword={showRetypePassword}
-              value={retypePassword}
+              value={newPassword}
               toggleShowIcon={toggleShowRetypePasswordVisibility}
               onChange={handleRetypePasswordChange}
               hasTooltip={false}
@@ -111,7 +205,11 @@ export default function ResetPasswordUserAfterLogin() {
           </div>
 
           <div className="w-full m-8">
-            <AuthButton value={"Reset password"} agreements={canSave} />
+            <AuthButton
+              value={"Reset password"}
+              agreements={canSave}
+              onClick={handleChangePassword}
+            />
           </div>
         </div>
       </div>
