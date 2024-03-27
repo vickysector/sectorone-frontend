@@ -4,7 +4,7 @@ import Image from "next/image";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import "@/app/_ui/Tooltip.css";
 import "@/app/_ui/CheckboxCustom.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import clsx from "clsx";
 import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
@@ -13,7 +13,7 @@ import Link from "next/link";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
 import { setCookie, getCookie, hasCookie } from "cookies-next";
 import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
-import { useRouter } from "next/navigation";
+import { useRouter, redirect } from "next/navigation";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -78,6 +78,13 @@ export default function LoginPage() {
     setPassword("");
     setEmail("");
   };
+
+  useEffect(() => {
+    if (getCookie("access_token") || getCookie("refresh_token")) {
+      // router.push("/credentials/dashboard");
+      return redirect("/credentials/dashboard");
+    }
+  }, []);
 
   const PushToQrCode = async () => {
     try {
