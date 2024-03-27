@@ -12,9 +12,15 @@ import { useEffect, useState } from "react";
 import clsx from "clsx";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { useRouter, redirect } from "next/navigation";
+import { LogoutOutlined } from "@ant-design/icons";
+import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
+import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
+  const [accountShow, setAccountShow] = useState(false);
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [errorLogout, setErrorLogout] = useState(false);
 
   // Start of: Checking Users Credentials
 
@@ -28,6 +34,58 @@ export default function DashboardLayout({ children }) {
     setHide((prevState) => !prevState);
   };
 
+  // Start of: Handle Logout
+
+  const toggleAccount = () => {
+    setAccountShow((prevState) => !prevState);
+  };
+
+  const Logout = async () => {
+    try {
+      setLogoutLoading(true);
+      const res = await fetch(`${APIDATAV1}logout`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${CredentialsAccess_Token}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        throw new Error("");
+      }
+
+      const data = await res.json();
+
+      if (data.success) {
+        deleteCookie("access_token");
+        deleteCookie("email_credentials");
+        deleteCookie("refresh_token");
+        return redirect("/auth/login");
+      }
+    } catch (error) {
+      setErrorLogout(true);
+      setTimeout(() => {
+        setErrorLogout(false);
+      }, 3000);
+    } finally {
+      setLogoutLoading(false);
+    }
+  };
+
+  // useEffect(() => {
+  //   const LogoutStatus = async () => {
+  //     const logoutStatus = await Logout();
+  //     if (logoutStatus.success) {
+  //       return redirect("/auth/login");
+  //     }
+  //   };
+
+  //   LogoutStatus();
+  // }, []);
+
+  // End of: Handle Logout
+
   useEffect(() => {
     if (
       !CredentialsEmail ||
@@ -40,6 +98,9 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div className={clsx(logoutLoading ? "visible" : "hidden")}>
+        <LoadingSpin />
+      </div>
       <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white">
         <Image
           src={"/images/sector_logo.png"}
@@ -48,22 +109,56 @@ export default function DashboardLayout({ children }) {
           height={38}
         />
         <div className="flex items-center">
-          <Image
-            src={"/images/sector_notification.svg"}
-            alt="Notif"
-            width={22}
-            height={22}
-            className="mr-5"
-          />
-          <Image
-            src={"/images/sector_avatar.svg"}
-            alt="Avatar Profile"
-            width={28}
-            height={28}
-          />
+          <div className="cursor-pointer">
+            <Image
+              src={"/images/sector_notification.svg"}
+              alt="Notif"
+              width={22}
+              height={22}
+              className="mr-5"
+            />
+          </div>
+          <div className="cursor-pointer" onClick={toggleAccount}>
+            <Image
+              src={"/images/sector_avatar.svg"}
+              alt="Avatar Profile"
+              width={28}
+              height={28}
+            />
+          </div>
+          <div
+            className={clsx(
+              "fixed right-[48px] top-[50px] bg-white p-[32px] shadow-xl rounded-2xl transition-all ",
+              accountShow ? "visible" : "hidden"
+            )}
+          >
+            <p className="text-heading-4"></p>
+            <div className="w-full h-[1px] bg-input-border my-[24px]"></div>
+            <div className="flex items-center cursor-pointer" onClick={Logout}>
+              <div>
+                <Image
+                  src={"/images/image_logout.svg"}
+                  alt="Avatar Profile"
+                  width={24}
+                  height={24}
+                />
+              </div>
+              <p className="text-error ml-[8px]">Log out of account</p>
+            </div>
+          </div>
         </div>
       </nav>
       <section className="bg-input-container flex relative">
+        <div
+          className={clsx(
+            "fixed top-[50px] left-[50%] translate-x-[-50%] bg-white p-[20px] shadow-lg transition-all",
+            errorLogout ? "visible" : "hidden"
+          )}
+        >
+          <h1 className="text-text-description ">
+            Oops ada keslaahan saat Logout
+          </h1>
+        </div>
         <aside
           className={clsx(
             " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border ",
