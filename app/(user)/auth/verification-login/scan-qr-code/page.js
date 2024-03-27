@@ -97,6 +97,9 @@ export default function VerificaitonLogin() {
     if (!getCookie("access_token")) {
       return redirect("/auth/login");
     }
+    if (getCookie("refresh_token")) {
+      return redirect("/credentials/dashboard");
+    }
   }, []);
 
   // if (!qrCode || !getCookie("access_token")) {

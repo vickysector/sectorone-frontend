@@ -9,13 +9,15 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import { ProgressBar } from "@/app/_ui/components/utils/ProgressBar";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
 import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
 import OutlineButton from "@/app/_ui/components/buttons/OutlineButton";
 import { SecondaryButton } from "@/app/_ui/components/buttons/SecondaryButton";
 import { PrimaryButton } from "@/app/_ui/components/buttons/PrimaryButton";
+import { useRouter, redirect } from "next/navigation";
+import { setCookie, getCookie, hasCookie } from "cookies-next";
 
 export default function ResetPasswordPage() {
   const [agreements, setAgreements] = useState(false);
@@ -61,6 +63,13 @@ export default function ResetPasswordPage() {
       }
     }
   };
+
+  useEffect(() => {
+    if (getCookie("access_token") || getCookie("refresh_token")) {
+      // router.push("/credentials/dashboard");
+      return redirect("/credentials/dashboard");
+    }
+  }, []);
 
   return (
     <main className="h-screen bg-input-container flex items-center justify-center">

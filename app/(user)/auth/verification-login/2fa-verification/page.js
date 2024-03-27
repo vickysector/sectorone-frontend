@@ -72,6 +72,9 @@ export default function FaAuthPage() {
     if (!getCookie("access_token")) {
       return redirect("/auth/login");
     }
+    if (getCookie("refresh_token")) {
+      return redirect("/credentials/dashboard");
+    }
   }, []);
 
   // if (!getCookie("access_token")) {
