@@ -22,6 +22,8 @@ export default function DashboardLayout({ children }) {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [errorLogout, setErrorLogout] = useState(false);
 
+  const router = useRouter();
+
   // Start of: Checking Users Credentials
 
   const CredentialsEmail = getCookie("email_credentials");
@@ -61,7 +63,7 @@ export default function DashboardLayout({ children }) {
         deleteCookie("access_token");
         deleteCookie("email_credentials");
         deleteCookie("refresh_token");
-        return redirect("/auth/login");
+        router.push("/auth/login");
       }
     } catch (error) {
       setErrorLogout(true);
