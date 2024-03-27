@@ -13,7 +13,38 @@ import { useState } from "react";
 import clsx from "clsx";
 
 export default function ResetPasswordUserAfterLogin() {
-  const [agreements, setAgreements] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRetypePassword, setShowRetypePassword] = useState(false);
+  const [isPasswordFocused, setIsPasswordFocused] = useState(false);
+  const [password, setPassword] = useState("");
+  const [retypePassword, setRetypePassword] = useState("");
+
+  const toggleShowPasswordVisibility = () => {
+    setShowPassword((prevPasswordState) => !prevPasswordState);
+  };
+  const toggleShowRetypePasswordVisibility = () => {
+    setShowRetypePassword((prevPasswordState) => !prevPasswordState);
+  };
+
+  const handlePasswordFocus = () => {
+    setIsPasswordFocused(true);
+  };
+
+  const handlePasswordBlur = () => {
+    setIsPasswordFocused(false);
+  };
+
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+  };
+
+  const handleRetypePasswordChange = (e) => {
+    const newRetypePassword = e.target.value;
+    setRetypePassword(newRetypePassword);
+  };
+
+  const canSave = password && retypePassword;
 
   return (
     <main className="h-screen bg-input-container flex items-center justify-center">
@@ -38,7 +69,7 @@ export default function ResetPasswordUserAfterLogin() {
             If you’d like to change your password, enter your current passwords
             here.
           </p>
-          <div className="bg-input-container w-full relative ">
+          {/* <div className="bg-input-container w-full relative ">
             <input
               type="email"
               className={clsx(
@@ -47,9 +78,40 @@ export default function ResetPasswordUserAfterLogin() {
               placeholder={"Email"}
             />
           </div>
+          <div className="bg-input-container w-full relative ">
+            <input
+              type="email"
+              className={clsx(
+                " w-full bg-input-container py-1.5 px-3  border-2 rounded-lg text-Base-normal border-input-border"
+              )}
+              placeholder={"Email"}
+            />
+          </div> */}
+          <div className="bg-input-container relative w-full text-left">
+            <Password
+              showPassword={showPassword}
+              value={password}
+              toggleShowIcon={toggleShowPasswordVisibility}
+              isPasswordFocused={isPasswordFocused}
+              onBlur={handlePasswordBlur}
+              onFocus={handlePasswordFocus}
+              onChange={handlePasswordChange}
+              placeholder={"Old Password"}
+            />
+          </div>
+          <div className=" mt-4 text-left relative w-full ">
+            <Password
+              showPassword={showRetypePassword}
+              value={retypePassword}
+              toggleShowIcon={toggleShowRetypePasswordVisibility}
+              onChange={handleRetypePasswordChange}
+              hasTooltip={false}
+              placeholder={"New Password "}
+            />
+          </div>
 
           <div className="w-full m-8">
-            <AuthButton value={"Reset password"} agreements={agreements} />
+            <AuthButton value={"Reset password"} agreements={canSave} />
           </div>
         </div>
       </div>
