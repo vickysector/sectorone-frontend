@@ -11,28 +11,100 @@ import PieChartCard from "@/app/_ui/components/cards/PieChartCard";
 import ChartBarHorizontal from "@/app/_ui/components/charts/ChartBarHorizontal";
 import ChartBarVertical from "@/app/_ui/components/charts/ChartBarVertical";
 import OverviewCard from "@/app/_ui/dashboard/OverviewCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Select, ConfigProvider } from "antd";
+import { useRouter, redirect } from "next/navigation";
+import { APIDATAV1, APIKEY } from "@/app/_lib/helpers/APIKEYS";
+import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { produce } from "immer";
+import Image from "next/image";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(null);
   const [statusSelect, setStatusSelect] = useState(null);
+  const [loadingBreaches, setLoadingBreaches] = useState(false);
 
-  const selectYearChange = (event) => {
-    setYearSelect(event.target.value);
+  // Start of: Breaches Data
+  const [breachesAll, setBreachesAll] = useState();
+  const [employeeBreaches, setEmployeeBreaches] = useState();
+  const [usersBreaches, setUserBreaches] = useState();
+  const [urlBreaches, setUrlBreaches] = useState();
+  const [iconBreaches, setIconBreaches] = useState();
+  const [lastUpdate, setLastUpdate] = useState();
 
-    console.log("user : ", event.target.value);
+  // End of: Breaches Data
+  const router = useRouter();
+
+  const selectYearChange = (value) => {
+    setYearSelect(value);
+
+    console.log("user : ", value);
   };
 
-  const selectStatusChange = (event) => {
-    setStatusSelect(event.target.value);
+  const selectStatusChange = (value) => {
+    setStatusSelect(value);
 
-    console.log("user : ", event.target.value);
+    console.log("user : ", value);
   };
 
-  const handleChange = (value) => {
-    console.log(`selected ${value}`);
+  const getBreachesData = async () => {
+    try {
+      const res = await fetch(
+        `${APIDATAV1}breaches?year=2024&type=overview&status=all`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      console.log("res: ", res);
+
+      if (res.status === 401 || res.status === 403) {
+        deleteCookie("access_token");
+        deleteCookie("email_credentials");
+        deleteCookie("refresh_token");
+        router.push("/auth/login");
+      }
+
+      const data = await res.json();
+
+      console.log("data: ", data);
+      setBreachesAll(data.data.all_breaches);
+      setEmployeeBreaches(data.data.employee_breaches);
+      setUserBreaches(data.data.user_breaches);
+      setUrlBreaches(data.data.name_domain);
+      setIconBreaches(data.data.icon_domain);
+      setLastUpdate(data.data.last_update);
+    } catch (error) {}
   };
+
+  useEffect(() => {
+    getBreachesData();
+    // getRefreshToken();
+  }, []);
+
+  // const getRefreshToken = async () => {
+  //   try {
+  //     const res = await fetch(`${APIDATAV1}refresh-token`, {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: {
+  //         Authorization: "app_secret!!!",
+  //       },
+  //     });
+
+  //     console.log("refresh token res: ", res);
+
+  //     const data = await res.json();
+
+  //     console.log("refresh token data: ", data);
+  //   } catch (error) {
+  //   } finally {
+  //   }
+  // };
 
   return (
     <main>
@@ -40,11 +112,23 @@ export default function UserDashboardPage() {
         <h1 className="text-heading-2 text-black mb-4">Overview</h1>
         <div className="bg-white  p-12 rounded-xl">
           <div className="flex items-center">
-            <div className="h-[80px] w-[80px] bg-input-container "></div>
+            <div className="h-[80px] w-[80px] bg-input-container ">
+              <Image
+                width={80}
+                height={80}
+                src={iconBreaches && iconBreaches}
+                alt="Icon Logo Users"
+                // style={{
+                //   objectFit: "cover",
+                //   backgroundSize: "cover",
+                //   width: "100%",
+                // }}
+              />
+            </div>
             <div className="ml-4">
-              <h1 className="text-heading-3">URL name</h1>
+              <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
               <h2 className="text-LG-strong text-text-description mt-2">
-                Last update: 08 Jan 2023/02:00
+                {lastUpdate && lastUpdate}
               </h2>
             </div>
             <div className="flex flex-grow justify-end items-center">
@@ -52,14 +136,21 @@ export default function UserDashboardPage() {
             </div>
           </div>
           <div className="mt-8 flex justify-between">
-            {dataOverview.map((data) => (
-              <OverviewCard
-                key={data.id}
-                descriptions={data.desc}
-                image={data.imageLink}
-                total={data.total}
-              />
-            ))}
+            <OverviewCard
+              descriptions={"Corporate credentials found"}
+              image={"/images/sector_image_magnifier.svg"}
+              total={breachesAll && breachesAll}
+            />
+            <OverviewCard
+              descriptions={"Employee compromised"}
+              image={"/images/sector_image_location-like.svg"}
+              total={employeeBreaches && employeeBreaches}
+            />
+            <OverviewCard
+              descriptions={"User compromised"}
+              image={"/images/sector_image_user-like.svg"}
+              total={usersBreaches && usersBreaches}
+            />
           </div>
         </div>
       </section>
@@ -85,7 +176,7 @@ export default function UserDashboardPage() {
             <Select
               defaultValue="2024"
               style={{ width: 91 }}
-              onChange={handleChange}
+              onChange={selectYearChange}
               options={[
                 { value: "2024", label: "2024" },
 
@@ -96,7 +187,7 @@ export default function UserDashboardPage() {
             <Select
               defaultValue="all"
               style={{ width: 200 }}
-              onChange={handleChange}
+              onChange={selectStatusChange}
               options={[
                 { value: "all", label: "All (Employee & User)" },
                 { value: "user", label: "User" },
