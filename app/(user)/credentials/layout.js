@@ -21,6 +21,7 @@ export default function DashboardLayout({ children }) {
   const [accountShow, setAccountShow] = useState(false);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [errorLogout, setErrorLogout] = useState(false);
+  const [usersData, setUsersData] = useState();
 
   const router = useRouter();
 
@@ -88,6 +89,33 @@ export default function DashboardLayout({ children }) {
 
   // End of: Handle Logout
 
+  // Start of: Handle Get Users and Get ID Users.
+
+  const getUsersData = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}setting/user`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      const data = await res.json();
+
+      setUsersData(data.data.email);
+      setCookie("user_identifier", data.data.id);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    getUsersData();
+  }, []);
+
+  // End of: Handle Get Users and Get ID Users.
+
   useEffect(() => {
     if (
       !CredentialsEmail ||
@@ -134,7 +162,7 @@ export default function DashboardLayout({ children }) {
               accountShow ? "visible" : "hidden"
             )}
           >
-            <p className="text-heading-4"></p>
+            <p className="text-heading-4"> {usersData && usersData} </p>
             <div className="w-full h-[1px] bg-input-border my-[24px]"></div>
             <div className="flex items-center cursor-pointer" onClick={Logout}>
               <div>
