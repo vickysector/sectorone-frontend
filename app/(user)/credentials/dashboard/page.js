@@ -18,10 +18,12 @@ import { APIDATAV1, APIKEY } from "@/app/_lib/helpers/APIKEYS";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { produce } from "immer";
 import Image from "next/image";
+import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
+import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 
 export default function UserDashboardPage() {
-  const [yearSelect, setYearSelect] = useState(null);
-  const [statusSelect, setStatusSelect] = useState(null);
+  const [yearSelect, setYearSelect] = useState("2024");
+  const [statusSelect, setStatusSelect] = useState("all");
   const [loadingBreaches, setLoadingBreaches] = useState(false);
 
   // Start of: Breaches Data
@@ -60,18 +62,13 @@ export default function UserDashboardPage() {
         }
       );
 
-      console.log("res: ", res);
-
       if (res.status === 401 || res.status === 403) {
-        deleteCookie("access_token");
-        deleteCookie("email_credentials");
-        deleteCookie("refresh_token");
-        router.push("/auth/login");
+        DeleteCookies();
+        RedirectToLogin();
       }
 
       const data = await res.json();
 
-      console.log("data: ", data);
       setBreachesAll(data.data.all_breaches);
       setEmployeeBreaches(data.data.employee_breaches);
       setUserBreaches(data.data.user_breaches);
@@ -174,7 +171,8 @@ export default function UserDashboardPage() {
             }}
           >
             <Select
-              defaultValue="2024"
+              defaultValue={yearSelect}
+              value={yearSelect}
               style={{ width: 91 }}
               onChange={selectYearChange}
               options={[
@@ -185,7 +183,8 @@ export default function UserDashboardPage() {
             />
 
             <Select
-              defaultValue="all"
+              defaultValue={statusSelect}
+              value={statusSelect}
               style={{ width: 200 }}
               onChange={selectStatusChange}
               options={[

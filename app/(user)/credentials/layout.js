@@ -13,8 +13,11 @@ import clsx from "clsx";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { useRouter, redirect } from "next/navigation";
 import { LogoutOutlined } from "@ant-design/icons";
-import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
+import { APIDATAV1, APIKEY } from "@/app/_lib/helpers/APIKEYS";
 import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
+import { PrimaryButton } from "@/app/_ui/components/buttons/PrimaryButton";
+import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
+import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -22,6 +25,7 @@ export default function DashboardLayout({ children }) {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [errorLogout, setErrorLogout] = useState(false);
   const [usersData, setUsersData] = useState();
+  const [sessionExpired, setSessionExpired] = useState();
 
   const router = useRouter();
 
@@ -61,9 +65,7 @@ export default function DashboardLayout({ children }) {
       const data = await res.json();
 
       if (data.success) {
-        deleteCookie("access_token");
-        deleteCookie("email_credentials");
-        deleteCookie("refresh_token");
+        DeleteCookies();
         router.push("/auth/login");
       }
     } catch (error) {
@@ -75,17 +77,6 @@ export default function DashboardLayout({ children }) {
       setLogoutLoading(false);
     }
   };
-
-  // useEffect(() => {
-  //   const LogoutStatus = async () => {
-  //     const logoutStatus = await Logout();
-  //     if (logoutStatus.success) {
-  //       return redirect("/auth/login");
-  //     }
-  //   };
-
-  //   LogoutStatus();
-  // }, []);
 
   // End of: Handle Logout
 
@@ -100,6 +91,11 @@ export default function DashboardLayout({ children }) {
           Authorization: `Bearer ${getCookie("access_token")}`,
         },
       });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
 
       const data = await res.json();
 
@@ -116,6 +112,50 @@ export default function DashboardLayout({ children }) {
 
   // End of: Handle Get Users and Get ID Users.
 
+  // Start of: Refresh Token
+
+  const getRefreshToken = async () => {
+    try {
+      const res = await fetch(`${APIKEY}refresh-token`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: "app_secret!!!",
+        },
+      });
+
+      console.log("refresh token res: ", res);
+
+      if (res.status === 401 || res.status === 403 || res.status === 400) {
+        setSessionExpired(true);
+        setTimeout(() => {
+          setSessionExpired(false);
+          DeleteCookies();
+          router.push("/auth/login");
+        }, 7000);
+      }
+
+      const data = await res.json();
+
+      deleteCookie("access_token");
+      setCookie("access_token", data.data.access_token);
+
+      console.log("refresh token data: ", data);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    const IntervalId = setInterval(() => {
+      getRefreshToken();
+    }, 15 * 60 * 1000);
+
+    return () => clearInterval(IntervalId);
+  }, []);
+
+  // End of: Refresh Token
+
   useEffect(() => {
     if (
       !CredentialsEmail ||
@@ -128,6 +168,30 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center",
+          sessionExpired ? "visible" : "hidden"
+        )}
+      >
+        <div className="bg-white p-[32px] rounded-lg w-[30%]">
+          <h1 className="text-LG-strong ">User session expired</h1>
+          <p className="text-Base-normal text-text-description mt-[12px]">
+            You have been logged out. if you still operating this site you must
+            re-Login
+          </p>
+          <p className="text-Base-strong text-primary-base mt-6">
+            You will automatically redirected to Login Page or You can
+            immedieately to Login Page by Clicking the button below
+          </p>
+          <div className="mt-8 flex justify-end ">
+            <div>
+              <PrimaryButton value={"Login"} href={"/auth/login"} />
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className={clsx(logoutLoading ? "visible" : "hidden")}>
         <LoadingSpin />
       </div>

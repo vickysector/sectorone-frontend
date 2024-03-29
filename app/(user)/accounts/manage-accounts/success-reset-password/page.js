@@ -2,6 +2,7 @@
 import Image from "next/image";
 import { useEffect } from "react";
 import { useRouter, redirect } from "next/navigation";
+import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 
 export default function ManageAccountSuccessResetPasswordPage() {
   const router = useRouter();

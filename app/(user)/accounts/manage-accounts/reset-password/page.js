@@ -15,6 +15,8 @@ import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { useRouter, redirect } from "next/navigation";
 import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
+import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
+import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 
 export default function ResetPasswordUserAfterLogin() {
   const [showPassword, setShowPassword] = useState(false);
@@ -97,16 +99,12 @@ export default function ResetPasswordUserAfterLogin() {
       }
 
       if (data.message.includes("Token") || data.message.includes("expired")) {
-        deleteCookie("access_token");
-        deleteCookie("email_credentials");
-        deleteCookie("refresh_token");
-        router.push("/auth/login");
+        DeleteCookies();
+        RedirectToLogin();
       }
 
       if (data.success) {
-        deleteCookie("access_token");
-        deleteCookie("email_credentials");
-        deleteCookie("refresh_token");
+        DeleteCookies();
         router.push("/accounts/manage-accounts/success-reset-password");
       }
     } catch (error) {
@@ -117,7 +115,7 @@ export default function ResetPasswordUserAfterLogin() {
 
   useEffect(() => {
     if (!getCookie("access_token") || !getCookie("refresh_token")) {
-      router.push("/auth/login");
+      RedirectToLogin();
     }
   }, []);
 
