@@ -105,8 +105,32 @@ export default function DashboardLayout({ children }) {
     }
   };
 
+  const getUserDomain = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}domain`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      setCookie("user_identifier", data.data.id_domain);
+    } catch (error) {
+    } finally {
+    }
+  };
+
   useEffect(() => {
     getUsersData();
+    getUserDomain();
   }, []);
 
   // End of: Handle Get Users and Get ID Users.
