@@ -61,7 +61,7 @@ export default function UserDashboardPage() {
   const getBreachesData = async () => {
     try {
       const res = await fetch(
-        `${APIDATAV1}breaches?year=2024&type=overview&status=all`,
+        `${APIDATAV1}breaches?year=${yearSelect}&type=overview&status=all`,
         {
           method: "GET",
           credentials: "include",
@@ -92,7 +92,7 @@ export default function UserDashboardPage() {
   useEffect(() => {
     getBreachesData();
     // getRefreshToken();
-  }, []);
+  }, [yearSelect]);
 
   //  Start of: Get data Compromised
 
