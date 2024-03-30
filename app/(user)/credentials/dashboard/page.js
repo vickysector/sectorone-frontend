@@ -36,6 +36,7 @@ export default function UserDashboardPage() {
     TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_ALL
   );
   const [loadingBreaches, setLoadingBreaches] = useState(false);
+  const [loadingTopCompromised, setLoadingTopCompromised] = useState(false);
 
   // Start of: Breaches Data
   const [breachesAll, setBreachesAll] = useState();
@@ -46,6 +47,8 @@ export default function UserDashboardPage() {
   const [lastUpdate, setLastUpdate] = useState();
   const [usersData, setUsersData] = useState();
   const [employeeData, setEmployeeData] = useState();
+  const [userTopCompromised, setUserTopCompromised] = useState();
+  const [urlTopCompromised, setUrlTopCompromised] = useState();
 
   // End of: Breaches Data
   const router = useRouter();
@@ -94,9 +97,52 @@ export default function UserDashboardPage() {
     // getRefreshToken();
   }, [yearSelect]);
 
-  //  Start of: Get data Compromised
+  //  Start of: Get data Top Compromised
 
-  //  End of: Get data Compromised
+  const getTopCompromisedUser = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}overview/top/user`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      const data = await res.json();
+
+      setUserTopCompromised(data.data.top_user);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  const getTopCompromisedUrl = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}overview/top/url`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      const data = await res.json();
+
+      console.log("Data url: ", data);
+
+      setUrlTopCompromised(data.data.top_url);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    getTopCompromisedUser();
+    getTopCompromisedUrl();
+  }, []);
+
+  //  End of: Get data Top Compromised
 
   return (
     <main>
@@ -220,13 +266,19 @@ export default function UserDashboardPage() {
           <h1 className="text-heading-4 text-black mb-6">
             Top compromised URL(s){" "}
           </h1>
-          <PieChartCard compromisedData={compromisedDataUrl} />
+          <PieChartCard
+            compromisedData={compromisedDataUrl}
+            datasets={urlTopCompromised && urlTopCompromised}
+          />
         </div>
         <div className="w-[50%] ml-6 h-full">
           <h1 className="text-heading-4 text-black mb-6">
             Top compromised User(s)
           </h1>
-          <PieChartCard compromisedData={compromisedDataUser} />
+          <PieChartCard
+            compromisedData={compromisedDataUser}
+            datasets={userTopCompromised && userTopCompromised}
+          />
         </div>
       </section>
       <section className="flex mt-10">
