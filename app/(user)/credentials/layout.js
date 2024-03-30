@@ -100,7 +100,6 @@ export default function DashboardLayout({ children }) {
       const data = await res.json();
 
       setUsersData(data.data.email);
-      setCookie("user_identifier", data.data.id);
     } catch (error) {
     } finally {
     }
