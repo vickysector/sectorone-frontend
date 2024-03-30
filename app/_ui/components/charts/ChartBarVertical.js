@@ -19,7 +19,9 @@ ChartJS.register(
   Legend
 );
 
-export default function ChartBarVertical(BarData) {
+export default function ChartBarVertical(props) {
+  const { employeeData, usersData, minValue = 0, status } = props;
+
   const options = {
     plugins: {
       legend: {
@@ -56,18 +58,18 @@ export default function ChartBarVertical(BarData) {
   };
 
   const labels = [
-    "Jan",
-    "Feb",
+    "January",
+    "February",
     "March",
-    "Apr",
+    "April",
     "May",
     "June",
     "July",
-    "Aug",
-    "Sept",
-    "Okt",
-    "Nov",
-    "Dec",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
 
   const data = {
@@ -75,15 +77,29 @@ export default function ChartBarVertical(BarData) {
     datasets: [
       {
         label: "Employees",
-        data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
+        data: labels.map((month) => {
+          return employeeData
+            ? employeeData[month] === undefined
+              ? 0
+              : employeeData[month]
+            : 0;
+        }),
         backgroundColor: "#FAAD14",
         borderRadius: 5,
+        hidden: status === "user",
       },
       {
         label: "Users",
-        data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
+        data: labels.map((month) =>
+          usersData
+            ? usersData[month] !== undefined
+              ? usersData[month]
+              : 0
+            : 0
+        ),
         backgroundColor: "#1677FF",
         borderRadius: 5,
+        hidden: status === "employee",
       },
     ],
   };
@@ -100,7 +116,11 @@ export default function ChartBarVertical(BarData) {
         <span className="w-[16px] h-[16px] bg-blue-chart block rounded-[50%]"></span>{" "}
         <p className="ml-3 text-LG-normal text-black">Users</p>{" "}
       </div>
-      <Bar options={options} data={data} className="mt-12" />
+      <Bar
+        options={{ ...options, scales: { y: { min: minValue } } }}
+        data={data}
+        className="mt-12"
+      />
     </>
   );
 }

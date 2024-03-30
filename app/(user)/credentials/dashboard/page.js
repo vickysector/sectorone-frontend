@@ -33,20 +33,18 @@ export default function UserDashboardPage() {
   const [urlBreaches, setUrlBreaches] = useState();
   const [iconBreaches, setIconBreaches] = useState();
   const [lastUpdate, setLastUpdate] = useState();
+  const [usersData, setUsersData] = useState();
+  const [employeeData, setEmployeeData] = useState();
 
   // End of: Breaches Data
   const router = useRouter();
 
   const selectYearChange = (value) => {
     setYearSelect(value);
-
-    console.log("user : ", value);
   };
 
   const selectStatusChange = (value) => {
     setStatusSelect(value);
-
-    console.log("user : ", value);
   };
 
   const getBreachesData = async () => {
@@ -75,6 +73,8 @@ export default function UserDashboardPage() {
       setUrlBreaches(data.data.name_domain);
       setIconBreaches(data.data.icon_domain);
       setLastUpdate(data.data.last_update);
+      setUsersData(data.data.user);
+      setEmployeeData(data.data.employee);
     } catch (error) {}
   };
 
@@ -83,25 +83,9 @@ export default function UserDashboardPage() {
     // getRefreshToken();
   }, []);
 
-  // const getRefreshToken = async () => {
-  //   try {
-  //     const res = await fetch(`${APIDATAV1}refresh-token`, {
-  //       method: "POST",
-  //       credentials: "include",
-  //       headers: {
-  //         Authorization: "app_secret!!!",
-  //       },
-  //     });
+  //  Start of: Get data Compromised
 
-  //     console.log("refresh token res: ", res);
-
-  //     const data = await res.json();
-
-  //     console.log("refresh token data: ", data);
-  //   } catch (error) {
-  //   } finally {
-  //   }
-  // };
+  //  End of: Get data Compromised
 
   return (
     <main>
@@ -196,7 +180,12 @@ export default function UserDashboardPage() {
             />
           </ConfigProvider>
           <div className="border-2 border-input-border rounded-[16px] mt-4 p-8 flex justify-center items-center w-full relative">
-            <ChartBarVertical />
+            <ChartBarVertical
+              employeeData={employeeData}
+              usersData={usersData}
+              minValue={0}
+              status={statusSelect}
+            />
           </div>
         </div>
       </section>
