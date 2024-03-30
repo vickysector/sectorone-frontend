@@ -51,6 +51,7 @@ export default function UserDashboardPage() {
   const [urlTopCompromised, setUrlTopCompromised] = useState();
   const [antivirusTopCompromised, setAntivirusTopCompromised] = useState();
   const [malwareTopCompromised, setMalwareTopCompromised] = useState();
+  const [domainUsers, setDomainUsers] = useState();
 
   // End of: Breaches Data
   const router = useRouter();
@@ -98,6 +99,32 @@ export default function UserDashboardPage() {
     getBreachesData();
     // getRefreshToken();
   }, [yearSelect]);
+
+  // Start of: Change URL - Get Domain USERS
+
+  const getListDomainUsers = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}list/domain`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      const data = await res.json();
+
+      setDomainUsers(data.data);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    getListDomainUsers();
+  }, []);
+
+  // End of: Change URL - Get Domain USERS
 
   //  Start of: Get data Top Compromised
 
@@ -173,8 +200,6 @@ export default function UserDashboardPage() {
 
       const data = await res.json();
 
-      console.log("data antivirus: ", data);
-
       setAntivirusTopCompromised(data.data.top_url);
     } catch (error) {
     } finally {
@@ -197,8 +222,6 @@ export default function UserDashboardPage() {
       }
 
       const data = await res.json();
-
-      console.log("data malware: ", data);
 
       setMalwareTopCompromised(data.data.top_malware);
     } catch (error) {
@@ -239,7 +262,11 @@ export default function UserDashboardPage() {
               </h2>
             </div>
             <div className="flex flex-grow justify-end items-center">
-              <ChangeUrlButton>Change URL</ChangeUrlButton>
+              <ChangeUrlButton disabled={domainUsers && domainUsers.length > 1}>
+                {domainUsers && domainUsers.length > 1
+                  ? "Change URL"
+                  : "No Data"}
+              </ChangeUrlButton>
             </div>
           </div>
           <div className="mt-8 flex justify-between">
