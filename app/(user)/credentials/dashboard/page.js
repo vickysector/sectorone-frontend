@@ -20,10 +20,21 @@ import { produce } from "immer";
 import Image from "next/image";
 import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
 import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
+import {
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_ALL,
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_EMPLOYEE,
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_USER,
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2023,
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2024,
+} from "@/app/_lib/variables/Variables";
 
 export default function UserDashboardPage() {
-  const [yearSelect, setYearSelect] = useState("2024");
-  const [statusSelect, setStatusSelect] = useState("all");
+  const [yearSelect, setYearSelect] = useState(
+    TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2024
+  );
+  const [statusSelect, setStatusSelect] = useState(
+    TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_ALL
+  );
   const [loadingBreaches, setLoadingBreaches] = useState(false);
 
   // Start of: Breaches Data
@@ -160,9 +171,15 @@ export default function UserDashboardPage() {
               style={{ width: 91 }}
               onChange={selectYearChange}
               options={[
-                { value: "2024", label: "2024" },
+                {
+                  value: TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2024,
+                  label: "2024",
+                },
 
-                { value: "2023", label: "2023" },
+                {
+                  value: TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2023,
+                  label: "2023",
+                },
               ]}
             />
 
@@ -172,9 +189,18 @@ export default function UserDashboardPage() {
               style={{ width: 200 }}
               onChange={selectStatusChange}
               options={[
-                { value: "all", label: "All (Employee & User)" },
-                { value: "user", label: "User" },
-                { value: "employee", label: "Emlpoyee" },
+                {
+                  value: TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_ALL,
+                  label: "All (Employee & User)",
+                },
+                {
+                  value: TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_USER,
+                  label: "User",
+                },
+                {
+                  value: TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_EMPLOYEE,
+                  label: "Emlpoyee",
+                },
               ]}
               className="ml-8"
             />

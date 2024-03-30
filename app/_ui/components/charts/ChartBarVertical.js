@@ -9,6 +9,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import {
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_EMPLOYEE,
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_USER,
+} from "@/app/_lib/variables/Variables";
 
 ChartJS.register(
   CategoryScale,
@@ -86,7 +90,7 @@ export default function ChartBarVertical(props) {
         }),
         backgroundColor: "#FAAD14",
         borderRadius: 5,
-        hidden: status === "user",
+        hidden: status === TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_USER,
       },
       {
         label: "Users",
@@ -99,7 +103,7 @@ export default function ChartBarVertical(props) {
         ),
         backgroundColor: "#1677FF",
         borderRadius: 5,
-        hidden: status === "employee",
+        hidden: status === TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_EMPLOYEE,
       },
     ],
   };
