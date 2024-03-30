@@ -6,6 +6,7 @@ export default function ChartBarHorizontal({
   isMalware,
   isAntivirus,
   isHighest,
+  datasets,
 }) {
   return (
     <div className={clsx(`flex items-center `)}>

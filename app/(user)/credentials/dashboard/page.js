@@ -49,6 +49,8 @@ export default function UserDashboardPage() {
   const [employeeData, setEmployeeData] = useState();
   const [userTopCompromised, setUserTopCompromised] = useState();
   const [urlTopCompromised, setUrlTopCompromised] = useState();
+  const [antivirusTopCompromised, setAntivirusTopCompromised] = useState();
+  const [malwareTopCompromised, setMalwareTopCompromised] = useState();
 
   // End of: Breaches Data
   const router = useRouter();
@@ -109,6 +111,11 @@ export default function UserDashboardPage() {
         },
       });
 
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
       const data = await res.json();
 
       setUserTopCompromised(data.data.top_user);
@@ -127,9 +134,12 @@ export default function UserDashboardPage() {
         },
       });
 
-      const data = await res.json();
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
 
-      console.log("Data url: ", data);
+      const data = await res.json();
 
       setUrlTopCompromised(data.data.top_url);
     } catch (error) {
@@ -143,6 +153,65 @@ export default function UserDashboardPage() {
   }, []);
 
   //  End of: Get data Top Compromised
+
+  // Start of: Get data Top Antivirus and Malware
+
+  const getTopComrpomisedAntivirus = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}overview/top/antivirus`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      console.log("data antivirus: ", data);
+
+      setAntivirusTopCompromised(data.data.top_url);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  const getTopComrpomisedMalware = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}overview/top/malware`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      console.log("data malware: ", data);
+
+      setMalwareTopCompromised(data.data.top_malware);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    getTopComrpomisedAntivirus();
+    getTopComrpomisedMalware();
+  }, []);
+
+  // End of: Get data Top Antivirus and Malware
 
   return (
     <main>
@@ -287,17 +356,22 @@ export default function UserDashboardPage() {
             Top antivirus compromised
           </h1>
           <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
-            <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
-              {antivirusData.map((data) => (
-                <div className="mb-4" key={data.id}>
-                  <ChartBarHorizontal
-                    name={data.name}
-                    number={data.number}
-                    isAntivirus={true}
-                  />
-                </div>
-              ))}
-            </div>
+            {antivirusTopCompromised ? (
+              <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
+                {antivirusData.map((data) => (
+                  <div className="mb-4" key={data.id}>
+                    <ChartBarHorizontal
+                      name={data.name}
+                      number={data.number}
+                      isAntivirus={true}
+                      datasets={antivirusTopCompromised}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No Data Available</p>
+            )}
           </div>
         </div>
         <div className="w-[50%] h-full ml-6 ">
@@ -305,17 +379,22 @@ export default function UserDashboardPage() {
             Top malware compromised
           </h1>
           <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
-            <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
-              {malwareData.map((data) => (
-                <div className="mb-4" key={data.id}>
-                  <ChartBarHorizontal
-                    name={data.name}
-                    number={data.number}
-                    isMalware={true}
-                  />
-                </div>
-              ))}
-            </div>
+            {malwareTopCompromised ? (
+              <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
+                {malwareData.map((data) => (
+                  <div className="mb-4" key={data.id}>
+                    <ChartBarHorizontal
+                      name={data.name}
+                      number={data.number}
+                      isMalware={true}
+                      datasets={malwareTopCompromised}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>No Data Available</p>
+            )}
           </div>
         </div>
       </section>

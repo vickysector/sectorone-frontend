@@ -10,7 +10,7 @@ export default function Chunk({ children, level }) {
   const [show, setShow] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  console.log("level", level);
+  // console.log("level", level);
 
   const copyToClipboard = (text) => {
     copy(text);
