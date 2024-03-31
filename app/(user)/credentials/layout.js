@@ -7,6 +7,7 @@ import {
   MenuUnfoldOutlined,
   LeftOutlined,
   RightOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
@@ -18,7 +19,8 @@ import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
 import { PrimaryButton } from "@/app/_ui/components/buttons/PrimaryButton";
 import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
 import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -29,10 +31,9 @@ export default function DashboardLayout({ children }) {
   const [sessionExpired, setSessionExpired] = useState();
 
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const changeUrlState = useSelector((state) => state.changeUrl);
-
-  console.log("react redux change url in layout: ", changeUrlState);
+  const changeUrlState = useSelector((state) => state.changeUrl.status);
 
   // Start of: Checking Users Credentials
 
@@ -44,6 +45,10 @@ export default function DashboardLayout({ children }) {
 
   const toggleHideIcon = () => {
     setHide((prevState) => !prevState);
+  };
+
+  const handleChangeUrlClose = () => {
+    dispatch(setChangeUrl(false));
   };
 
   // Start of: Handle Logout
@@ -196,6 +201,41 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center text-black",
+          changeUrlState ? "visible" : "hidden"
+        )}
+      >
+        <div className="w-[40%] bg-white rounded-lg p-[32px]   ">
+          <div className="flex justify-between border-b-[1px] pb-6 border-[#D5D5D5] ">
+            <h1 className="text-LG-strong">URL list</h1>
+            <CloseOutlined
+              style={{ color: "#676767" }}
+              onClick={handleChangeUrlClose}
+            />
+          </div>
+          <div className="mt-6">
+            <div className=" bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-full ">
+              <input
+                type="email"
+                className={clsx(
+                  " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
+                )}
+                placeholder={"Search by URL"}
+              />
+              <div className="px-3 cursor-pointer">
+                <Image
+                  src={"/images/sector_image_search.svg"}
+                  alt="search icon"
+                  width={16}
+                  height={16}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center",

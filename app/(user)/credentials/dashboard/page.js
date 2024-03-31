@@ -27,7 +27,8 @@ import {
   TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2023,
   TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2024,
 } from "@/app/_lib/variables/Variables";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 
 import clsx from "clsx";
 
@@ -58,10 +59,9 @@ export default function UserDashboardPage() {
 
   // End of: Breaches Data
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const changeUrlState = useSelector((state) => state.changeUrl);
-
-  console.log("react redux change url: ", changeUrlState);
 
   const selectYearChange = (value) => {
     setYearSelect(value);
@@ -69,6 +69,10 @@ export default function UserDashboardPage() {
 
   const selectStatusChange = (value) => {
     setStatusSelect(value);
+  };
+
+  const handleChangeUrlOpen = (value) => {
+    dispatch(setChangeUrl(true));
   };
 
   const getBreachesData = async () => {
@@ -275,7 +279,10 @@ export default function UserDashboardPage() {
               </h2>
             </div>
             <div className="flex flex-grow justify-end items-center">
-              <ChangeUrlButton disabled={domainUsers && domainUsers.length > 1}>
+              <ChangeUrlButton
+                onClick={handleChangeUrlOpen}
+                disabled={domainUsers && domainUsers.length > 1}
+              >
                 {domainUsers && domainUsers.length > 1
                   ? "Change URL"
                   : "No Data"}
