@@ -67,7 +67,7 @@ export default function PieChartCard({ compromisedData, datasets }) {
         <div className="mt-8 self-start ">
           {labels ? (
             labels.map((data, index) => (
-              <Chunk key={data.key} level={backgrounds[index]}>
+              <Chunk key={data} level={backgrounds[index]}>
                 {data}
               </Chunk>
             ))

@@ -18,6 +18,7 @@ import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
 import { PrimaryButton } from "@/app/_ui/components/buttons/PrimaryButton";
 import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
 import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
+import { useSelector } from "react-redux";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -28,6 +29,10 @@ export default function DashboardLayout({ children }) {
   const [sessionExpired, setSessionExpired] = useState();
 
   const router = useRouter();
+
+  const changeUrlState = useSelector((state) => state.changeUrl);
+
+  console.log("react redux change url in layout: ", changeUrlState);
 
   // Start of: Checking Users Credentials
 

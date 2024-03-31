@@ -27,6 +27,9 @@ import {
   TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2023,
   TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2024,
 } from "@/app/_lib/variables/Variables";
+import { useSelector } from "react-redux";
+
+import clsx from "clsx";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(
@@ -55,6 +58,10 @@ export default function UserDashboardPage() {
 
   // End of: Breaches Data
   const router = useRouter();
+
+  const changeUrlState = useSelector((state) => state.changeUrl);
+
+  console.log("react redux change url: ", changeUrlState);
 
   const selectYearChange = (value) => {
     setYearSelect(value);
@@ -238,6 +245,12 @@ export default function UserDashboardPage() {
 
   return (
     <main>
+      {/* <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center"
+        )}
+      ></div> */}
+
       <section>
         <h1 className="text-heading-2 text-black mb-4">Overview</h1>
         <div className="bg-white  p-12 rounded-xl">
