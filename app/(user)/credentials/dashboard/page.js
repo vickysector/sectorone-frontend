@@ -31,6 +31,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 
 import clsx from "clsx";
+import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(
@@ -62,6 +63,7 @@ export default function UserDashboardPage() {
   const dispatch = useDispatch();
 
   const changeUrlState = useSelector((state) => state.changeUrl);
+  const chooseUrlState = useSelector((state) => state.chooseUrl);
 
   const selectYearChange = (value) => {
     setYearSelect(value);
@@ -123,9 +125,15 @@ export default function UserDashboardPage() {
         },
       });
 
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
       const data = await res.json();
 
       setDomainUsers(data.data);
+      dispatch(setUrlData(data.data));
     } catch (error) {
     } finally {
     }

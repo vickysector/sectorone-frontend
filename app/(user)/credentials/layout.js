@@ -29,11 +29,14 @@ export default function DashboardLayout({ children }) {
   const [errorLogout, setErrorLogout] = useState(false);
   const [usersData, setUsersData] = useState();
   const [sessionExpired, setSessionExpired] = useState();
+  const [isUrlListSelected, setIsUrlListSelected] = useState(false);
+  const [idDomainUrl, setIdDomainUrl] = useState();
 
   const router = useRouter();
   const dispatch = useDispatch();
 
   const changeUrlState = useSelector((state) => state.changeUrl.status);
+  const UrlsList = useSelector((state) => state.chooseUrl.urlData);
 
   // Start of: Checking Users Credentials
 
@@ -50,6 +53,63 @@ export default function DashboardLayout({ children }) {
   const handleChangeUrlClose = () => {
     dispatch(setChangeUrl(false));
   };
+
+  // Start of: Update Domain
+
+  const handleUrlListSelected = (domain) => {
+    if (getCookie("user_identifier") != domain) {
+      setIsUrlListSelected(true);
+      setIdDomainUrl(domain);
+      console.log("domain: ", domain);
+    }
+  };
+
+  const handleUrlListCancel = () => {
+    setIdDomainUrl("");
+    setIsUrlListSelected(false);
+  };
+
+  const handleUrlListYes = () => {
+    UpdateDomain();
+  };
+
+  const UpdateDomain = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}domain`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${CredentialsAccess_Token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id_domain: idDomainUrl,
+        }),
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      console.log("data handleListSelected: ", data);
+
+      if (data.data.Severity === "ERROR") {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      if (!data.data) {
+        window.location.reload();
+      }
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  // End of: Update Domain
 
   // Start of: Handle Logout
 
@@ -203,11 +263,42 @@ export default function DashboardLayout({ children }) {
     <main className="relative bg-input-container">
       <div
         className={clsx(
-          "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center text-black",
+          "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center text-black ",
+          isUrlListSelected ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            {" "}
+            Are you sure change to this Domain?{" "}
+          </h1>
+          <p className="mb-6 text-text-description ">
+            After change it will automatically refresh and load all data
+            relevant to this domain
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleUrlListYes}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleUrlListCancel}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-40 flex items-center justify-center text-black",
           changeUrlState ? "visible" : "hidden"
         )}
       >
-        <div className="w-[40%] bg-white rounded-lg p-[32px]   ">
+        <div className="w-[45%] bg-white rounded-lg p-[32px]  overflow-y-scroll max-h-[370px] ">
           <div className="flex justify-between border-b-[1px] pb-6 border-[#D5D5D5] ">
             <h1 className="text-LG-strong">URL list</h1>
             <CloseOutlined
@@ -232,6 +323,36 @@ export default function DashboardLayout({ children }) {
                   height={16}
                 />
               </div>
+            </div>
+            <div className="mt-8">
+              {UrlsList &&
+                UrlsList.map((data) => (
+                  <div
+                    className={clsx(
+                      "flex justify-between items-center  hover:opacity-70 transition-all mt-6",
+                      getCookie("user_identifier") == data.id_domain
+                        ? "cursor-not-allowed opacity-75"
+                        : "cursor-pointer"
+                    )}
+                    key={data.id_domain}
+                    onClick={() => handleUrlListSelected(data.id_domain)}
+                  >
+                    {" "}
+                    <h1 className="text-Base-normal">
+                      {data.name_domain}
+                    </h1>{" "}
+                    <p
+                      className={clsx(
+                        "bg-primary-base rounded-lg px-[20px] py-[3px] text-white",
+                        getCookie("user_identifier") == data.id_domain
+                          ? "visible"
+                          : "hidden"
+                      )}
+                    >
+                      Active
+                    </p>
+                  </div>
+                ))}
             </div>
           </div>
         </div>
