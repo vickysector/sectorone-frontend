@@ -1,6 +1,6 @@
 import clsx from "clsx";
 
-export default function ChangeUrlButton({ children, disabled }) {
+export default function ChangeUrlButton({ children, disabled, onClick }) {
   return (
     <button
       className={clsx(
@@ -10,6 +10,7 @@ export default function ChangeUrlButton({ children, disabled }) {
           : "cursor-pointer opacity-100"
       )}
       disabled={!disabled}
+      onClick={onClick}
     >
       {children}
     </button>
