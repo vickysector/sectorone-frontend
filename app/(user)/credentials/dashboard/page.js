@@ -33,6 +33,14 @@ import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 import clsx from "clsx";
 import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
 import { WidthNumberTopCompromisedVirusAndMalware } from "@/app/_lib/helpers/WidthNumberTopComrpomised";
+import {
+  setBreachesEmployee,
+  setBreachesEmployeeAndUsers,
+  setBreachesUsers,
+  setIcon,
+  setLastUpdateUsers,
+  setUrl,
+} from "@/app/_lib/store/features/Breaches/BreachesSlices";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(
@@ -45,26 +53,40 @@ export default function UserDashboardPage() {
   const [loadingTopCompromised, setLoadingTopCompromised] = useState(false);
 
   // Start of: Breaches Data
-  const [breachesAll, setBreachesAll] = useState();
-  const [employeeBreaches, setEmployeeBreaches] = useState();
-  const [usersBreaches, setUserBreaches] = useState();
-  const [urlBreaches, setUrlBreaches] = useState();
-  const [iconBreaches, setIconBreaches] = useState();
-  const [lastUpdate, setLastUpdate] = useState();
+  // const [breachesAll, setBreachesAll] = useState();
+  // const [employeeBreaches, setEmployeeBreaches] = useState();
+  // const [usersBreaches, setUserBreaches] = useState();
+  // const [urlBreaches, setUrlBreaches] = useState();
+  // const [iconBreaches, setIconBreaches] = useState();
+  // const [lastUpdate, setLastUpdate] = useState();
   const [usersData, setUsersData] = useState();
   const [employeeData, setEmployeeData] = useState();
   const [userTopCompromised, setUserTopCompromised] = useState();
   const [urlTopCompromised, setUrlTopCompromised] = useState();
   const [antivirusTopCompromised, setAntivirusTopCompromised] = useState();
   const [malwareTopCompromised, setMalwareTopCompromised] = useState();
-  const [domainUsers, setDomainUsers] = useState();
+  // const [domainUsers, setDomainUsers] = useState();
 
   // End of: Breaches Data
   const router = useRouter();
   const dispatch = useDispatch();
 
   const changeUrlState = useSelector((state) => state.changeUrl);
-  const chooseUrlState = useSelector((state) => state.chooseUrl);
+  const domainUsers = useSelector((state) => state.chooseUrl.urlData);
+
+  const breachesAll = useSelector((state) => state.breaches.breachesAll);
+
+  const employeeBreaches = useSelector(
+    (state) => state.breaches.breachesEmployee
+  );
+
+  const usersBreaches = useSelector((state) => state.breaches.breachesUsers);
+
+  const urlBreaches = useSelector((state) => state.breaches.url);
+
+  const iconBreaches = useSelector((state) => state.breaches.icon);
+
+  const lastUpdate = useSelector((state) => state.breaches.lastUpdate);
 
   const selectYearChange = (value) => {
     setYearSelect(value);
@@ -101,12 +123,18 @@ export default function UserDashboardPage() {
 
       const data = await res.json();
 
-      setBreachesAll(data.data.all_breaches);
-      setEmployeeBreaches(data.data.employee_breaches);
-      setUserBreaches(data.data.user_breaches);
-      setUrlBreaches(data.data.name_domain);
-      setIconBreaches(data.data.icon_domain);
-      setLastUpdate(data.data.last_update);
+      // setBreachesAll(data.data.all_breaches);
+      // setEmployeeBreaches(data.data.employee_breaches);
+      // setUserBreaches(data.data.user_breaches);
+      // setUrlBreaches(data.data.name_domain);
+      // setIconBreaches(data.data.icon_domain);
+      // setLastUpdate(data.data.last_update);
+      dispatch(setBreachesEmployeeAndUsers(data.data.all_breaches));
+      dispatch(setBreachesEmployee(data.data.employee_breaches));
+      dispatch(setBreachesUsers(data.data.user_breaches));
+      dispatch(setUrl(data.data.name_domain));
+      dispatch(setIcon(data.data.icon_domain));
+      dispatch(setLastUpdateUsers(data.data.last_update));
       setUsersData(data.data.user);
       setEmployeeData(data.data.employee);
     } catch (error) {}
@@ -136,7 +164,7 @@ export default function UserDashboardPage() {
 
       const data = await res.json();
 
-      setDomainUsers(data.data);
+      // setDomainUsers(data.data);
       dispatch(setUrlData(data.data));
     } catch (error) {
     } finally {
