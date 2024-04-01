@@ -32,6 +32,7 @@ import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 
 import clsx from "clsx";
 import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
+import { WidthNumberTopCompromisedVirusAndMalware } from "@/app/_lib/helpers/WidthNumberTopComrpomised";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(
@@ -76,6 +77,9 @@ export default function UserDashboardPage() {
   const handleChangeUrlOpen = (value) => {
     dispatch(setChangeUrl(true));
   };
+
+  console.log("Antivirus top: ", antivirusTopCompromised);
+  console.log("Malware top: ", malwareTopCompromised);
 
   const getBreachesData = async () => {
     try {
@@ -413,13 +417,14 @@ export default function UserDashboardPage() {
           <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
             {antivirusTopCompromised ? (
               <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
-                {antivirusData.map((data) => (
+                {antivirusTopCompromised.map((data, index) => (
                   <div className="mb-4" key={data.id}>
                     <ChartBarHorizontal
-                      name={data.name}
-                      number={data.number}
+                      name={data.antivirus_name}
+                      number={data.count}
                       isAntivirus={true}
                       datasets={antivirusTopCompromised}
+                      width={WidthNumberTopCompromisedVirusAndMalware[index]}
                     />
                   </div>
                 ))}
@@ -436,13 +441,14 @@ export default function UserDashboardPage() {
           <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
             {malwareTopCompromised ? (
               <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
-                {malwareData.map((data) => (
+                {malwareTopCompromised.map((data, index) => (
                   <div className="mb-4" key={data.id}>
                     <ChartBarHorizontal
-                      name={data.name}
-                      number={data.number}
+                      name={data.malware_name}
+                      number={data.count}
                       isMalware={true}
                       datasets={malwareTopCompromised}
+                      width={WidthNumberTopCompromisedVirusAndMalware[index]}
                     />
                   </div>
                 ))}
