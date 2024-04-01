@@ -73,9 +73,7 @@ export default function DashboardLayout({ children }) {
 
   const handleUrlListYes = () => {
     UpdateDomain();
-    if (reloadChange) {
-      window.location.reload();
-    }
+    window.location.reload();
   };
 
   const UpdateDomain = async () => {
@@ -103,7 +101,7 @@ export default function DashboardLayout({ children }) {
         DeleteCookies();
         RedirectToLogin();
       }
-      setReloadChange(true);
+      // setReloadChange(true);
     } catch (error) {
     } finally {
     }
