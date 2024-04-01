@@ -102,9 +102,7 @@ export default function DashboardLayout({ children }) {
         RedirectToLogin();
       }
 
-      if (!data.data) {
-        window.location.reload();
-      }
+      window.location.reload();
     } catch (error) {
     } finally {
     }
