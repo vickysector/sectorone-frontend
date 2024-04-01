@@ -31,6 +31,7 @@ export default function DashboardLayout({ children }) {
   const [sessionExpired, setSessionExpired] = useState();
   const [isUrlListSelected, setIsUrlListSelected] = useState(false);
   const [idDomainUrl, setIdDomainUrl] = useState();
+  const [searchTerm, setSearchTerm] = useState("");
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -314,6 +315,8 @@ export default function DashboardLayout({ children }) {
                   " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
                 )}
                 placeholder={"Search by URL"}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
               />
               <div className="px-3 cursor-pointer">
                 <Image
@@ -326,7 +329,11 @@ export default function DashboardLayout({ children }) {
             </div>
             <div className="mt-8">
               {UrlsList &&
-                UrlsList.map((data) => (
+                UrlsList.filter((data) =>
+                  data.name_domain
+                    .toLowerCase()
+                    .includes(searchTerm.toLowerCase())
+                ).map((data) => (
                   <div
                     className={clsx(
                       "flex justify-between items-center  hover:opacity-70 transition-all mt-6",
