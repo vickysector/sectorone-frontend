@@ -32,6 +32,7 @@ export default function DashboardLayout({ children }) {
   const [isUrlListSelected, setIsUrlListSelected] = useState(false);
   const [idDomainUrl, setIdDomainUrl] = useState();
   const [searchTerm, setSearchTerm] = useState("");
+  const [reloadChange, setReloadChange] = useState(false);
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -72,6 +73,9 @@ export default function DashboardLayout({ children }) {
 
   const handleUrlListYes = () => {
     UpdateDomain();
+    if (reloadChange) {
+      window.location.reload();
+    }
   };
 
   const UpdateDomain = async () => {
@@ -95,14 +99,11 @@ export default function DashboardLayout({ children }) {
 
       const data = await res.json();
 
-      console.log("data handleListSelected: ", data);
-
       if (data.data.Severity === "ERROR") {
         DeleteCookies();
         RedirectToLogin();
       }
-
-      window.location.reload();
+      setReloadChange(true);
     } catch (error) {
     } finally {
     }
