@@ -100,9 +100,6 @@ export default function UserDashboardPage() {
     dispatch(setChangeUrl(true));
   };
 
-  console.log("Antivirus top: ", antivirusTopCompromised);
-  console.log("Malware top: ", malwareTopCompromised);
-
   const getBreachesData = async () => {
     try {
       const res = await fetch(

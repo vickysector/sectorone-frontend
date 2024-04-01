@@ -12,6 +12,17 @@ import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import { EyeOutlined, BookOutlined } from "@ant-design/icons";
 import { Pagination, ConfigProvider, DatePicker } from "antd";
 import { useState } from "react";
+import {
+  setBreachesEmployee,
+  setBreachesEmployeeAndUsers,
+  setBreachesUsers,
+  setIcon,
+  setLastUpdateUsers,
+  setUrl,
+} from "@/app/_lib/store/features/Breaches/BreachesSlices";
+import { useSelector, useDispatch } from "react-redux";
+import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 
 const dataSource = [
   {
@@ -201,6 +212,28 @@ const { RangePicker } = DatePicker;
 export default function CompromisedDashboard() {
   const [showDate, setShowDate] = useState(false);
 
+  const dispatch = useDispatch();
+
+  const domainUsers = useSelector((state) => state.chooseUrl.urlData);
+
+  const breachesAll = useSelector((state) => state.breaches.breachesAll);
+
+  const employeeBreaches = useSelector(
+    (state) => state.breaches.breachesEmployee
+  );
+
+  const usersBreaches = useSelector((state) => state.breaches.breachesUsers);
+
+  const urlBreaches = useSelector((state) => state.breaches.url);
+
+  const iconBreaches = useSelector((state) => state.breaches.icon);
+
+  const lastUpdate = useSelector((state) => state.breaches.lastUpdate);
+
+  const handleChangeUrlOpen = (value) => {
+    dispatch(setChangeUrl(true));
+  };
+
   const handleRangePicker = (date, datestring) => {
     console.log("date : ", date);
     console.log("datestring: ", datestring);
@@ -211,26 +244,50 @@ export default function CompromisedDashboard() {
       <h1 className="text-heading-2 text-black mb-4">Compromised</h1>
       <div className="bg-white  p-12 rounded-xl">
         <div className="flex items-center">
-          <div className="h-[80px] w-[80px] bg-input-container "></div>
+          <div className="h-[80px] w-[80px] bg-input-container ">
+            <Image
+              width={80}
+              height={80}
+              src={iconBreaches && iconBreaches}
+              alt="Icon Logo Users"
+              // style={{
+              //   objectFit: "cover",
+              //   backgroundSize: "cover",
+              //   width: "100%",
+              // }}
+            />
+          </div>
           <div className="ml-4">
-            <h1 className="text-heading-3">URL name</h1>
+            <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
             <h2 className="text-LG-strong text-text-description mt-2">
-              Last update: 08 Jan 2023/02:00
+              {lastUpdate && lastUpdate}
             </h2>
           </div>
           <div className="flex flex-grow justify-end items-center">
-            <ChangeUrlButton>Change URL</ChangeUrlButton>
+            <ChangeUrlButton
+              onClick={handleChangeUrlOpen}
+              disabled={domainUsers && domainUsers.length > 1}
+            >
+              {domainUsers && domainUsers.length > 1 ? "Change URL" : "No Data"}
+            </ChangeUrlButton>
           </div>
         </div>
         <div className="mt-8 flex justify-between">
-          {dataOverview.map((data) => (
-            <OverviewCard
-              key={data.id}
-              descriptions={data.desc}
-              image={data.imageLink}
-              total={data.total}
-            />
-          ))}
+          <OverviewCard
+            descriptions={"Corporate credentials found"}
+            image={"/images/sector_image_magnifier.svg"}
+            total={breachesAll && breachesAll}
+          />
+          <OverviewCard
+            descriptions={"Employee compromised"}
+            image={"/images/sector_image_location-like.svg"}
+            total={employeeBreaches && employeeBreaches}
+          />
+          <OverviewCard
+            descriptions={"User compromised"}
+            image={"/images/sector_image_user-like.svg"}
+            total={usersBreaches && usersBreaches}
+          />
         </div>
       </div>
       <section className="mt-10">
