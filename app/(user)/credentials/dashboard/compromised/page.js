@@ -10,7 +10,7 @@ import clsx from "clsx";
 import Image from "next/image";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import { EyeOutlined, BookOutlined } from "@ant-design/icons";
-import { Pagination, ConfigProvider, DatePicker } from "antd";
+import { Pagination, ConfigProvider, DatePicker, Spin } from "antd";
 import { useEffect, useState } from "react";
 import {
   setBreachesEmployee,
@@ -36,6 +36,7 @@ import {
   CalculatePasswordStrengthWithReturnString,
   convertDateFormat,
 } from "@/app/_lib/CalculatePassword";
+import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 
 // const dataSource = [
 //   {
@@ -229,6 +230,10 @@ export default function CompromisedDashboard() {
   );
   const [dataSource, setDataSource] = useState();
 
+  const loadingCompromisedData = useSelector(
+    (state) => state.compromised.status
+  );
+
   const dispatch = useDispatch();
 
   const domainUsers = useSelector((state) => state.chooseUrl.urlData);
@@ -345,6 +350,7 @@ export default function CompromisedDashboard() {
 
   const fetchEmployeeData = async () => {
     try {
+      dispatch(setLoadingState(true));
       const res = await fetch(`${APIDATAV1}compromised/employee`, {
         method: "GET",
         credentials: "include",
@@ -366,11 +372,13 @@ export default function CompromisedDashboard() {
       setDataSource(mappedEmployeedata);
     } catch (error) {
     } finally {
+      dispatch(setLoadingState(false));
     }
   };
 
   const fetchUsersData = async () => {
     try {
+      dispatch(setLoadingState(true));
       const res = await fetch(`${APIDATAV1}compromised/users`, {
         method: "GET",
         credentials: "include",
@@ -390,11 +398,13 @@ export default function CompromisedDashboard() {
       setDataSource(mappedUsersData);
     } catch (error) {
     } finally {
+      dispatch(setLoadingState(false));
     }
   };
 
   const fetchThirdPartyData = async () => {
     try {
+      dispatch(setLoadingState(true));
       const res = await fetch(`${APIDATAV1}compromised/thirdparty`, {
         method: "GET",
         credentials: "include",
@@ -414,11 +424,13 @@ export default function CompromisedDashboard() {
       setDataSource(mappedThirdParty);
     } catch (error) {
     } finally {
+      dispatch(setLoadingState(false));
     }
   };
 
   const fetchDevicesData = async () => {
     try {
+      dispatch(setLoadingState(true));
       const res = await fetch(`${APIDATAV1}compromised/devices`, {
         method: "GET",
         credentials: "include",
@@ -438,6 +450,7 @@ export default function CompromisedDashboard() {
       setDataSource(mappedDevicesData);
     } catch (error) {
     } finally {
+      dispatch(setLoadingState(false));
     }
   };
 
@@ -641,191 +654,221 @@ export default function CompromisedDashboard() {
             </div>
           </section>
           <section className="p-8">
-            <div className="border-2 rounded-xl border-input-border">
-              <table className="bg-white  w-full rounded-xl">
-                <thead className="text-black text-Base-strong bg-[#00000005]">
-                  <tr className="border-b-[1px] border-[#D5D5D5]">
-                    <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
-                      No
-                    </td>
-                    {selectedButton ===
-                      DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE ||
-                    selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS ||
-                    selectedButton ===
-                      DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY ? (
-                      <>
-                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                          Date compromised
-                        </td>
-                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                          URL
-                        </td>
-                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                          Login
-                        </td>
-                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                          Password
-                        </td>
-                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                          Password strength
-                        </td>
-                        <td className="py-[19px] px-[16px]">Action</td>
-                      </>
-                    ) : (
-                      <>
-                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
-                          Date compromised
-                        </td>
-                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
-                          Devices name
-                        </td>
-                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
-                          IP address
-                        </td>
-                        <td className="py-[19px] px-[16px]">Action</td>
-                      </>
-                    )}
-                  </tr>
-                </thead>
-                <tbody className="text-Base-normal text-text-description">
-                  {dataSource &&
-                    dataSource.map((data, index) => (
-                      <tr
-                        className="border-b-[2px] border-[#D5D5D5]"
-                        key={data.id}
-                      >
-                        <td className="py-[19px] px-[16px]"> {index + 1} </td>
-                        {selectedButton ===
-                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE && (
-                          <>
-                            <td className="py-[19px] px-[16px]">{data.date}</td>
-                            <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                              {data.url}
-                            </td>
-                            <td className="py-[19px] px-[16px] text-wrap w-[100px]">
-                              {data.login}
-                            </td>
-                            <td className="py-[19px] px-[16px]">{data.pass}</td>
-                            <td className="py-[19px] px-[16px]">
-                              <p
-                                className={clsx(
-                                  "Medium" === "Weak" && "text-pink",
-                                  "Medium" === "Medium" && "text-text-orange",
-                                  "Medium" === "Strong" && "text-text-green"
-                                )}
-                              >
-                                Medium
-                              </p>
-                            </td>
-                            <td className="py-[19px] px-[16px]">
-                              {data.action}
-                            </td>
-                          </>
-                        )}
-                        {selectedButton ===
-                          DETAIL_COMPROMISED_COMPROMISE_USERS && (
-                          <>
-                            <td className="py-[19px] px-[16px]">{data.date}</td>
-                            <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                              {data.url}
-                            </td>
-                            <td className="py-[19px] px-[16px] text-wrap w-[100px]">
-                              {data.login}
-                            </td>
-                            <td className="py-[19px] px-[16px]">{data.pass}</td>
-                            <td className="py-[19px] px-[16px]">
-                              <p
-                                className={clsx(
-                                  "Medium" === "Weak" && "text-pink",
-                                  "Medium" === "Medium" && "text-text-orange",
-                                  "Medium" === "Strong" && "text-text-green"
-                                )}
-                              >
-                                Medium
-                              </p>
-                            </td>
-                            <td className="py-[19px] px-[16px]">
-                              {data.action}
-                            </td>
-                          </>
-                        )}
-                        {selectedButton ===
-                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY && (
-                          <>
-                            <td className="py-[19px] px-[16px]">{data.date}</td>
-                            <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                              {data.url}
-                            </td>
-                            <td className="py-[19px] px-[16px] text-wrap w-[100px]">
-                              {data.login}
-                            </td>
-                            <td className="py-[19px] px-[16px]">{data.pass}</td>
-                            <td className="py-[19px] px-[16px]">
-                              <p
-                                className={clsx(
-                                  "Medium" === "Weak" && "text-pink",
-                                  "Medium" === "Medium" && "text-text-orange",
-                                  "Medium" === "Strong" && "text-text-green"
-                                )}
-                              >
-                                Medium
-                              </p>
-                            </td>
-                            <td className="py-[19px] px-[16px]">
-                              {data.action}
-                            </td>
-                          </>
-                        )}
-                        {selectedButton ===
-                          DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
-                          <>
-                            <td className="py-[19px] px-[16px]">{data.date}</td>
-                            <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                              {data.devices_name}
-                            </td>
-                            <td className="py-[19px] px-[16px] text-wrap w-[100px]">
-                              {data.ip}
-                            </td>
+            {loadingCompromisedData ? (
+              <div className="text-center">
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorPrimary: "#FF6F1E",
+                    },
+                  }}
+                >
+                  <Spin size="large" />
+                </ConfigProvider>
+              </div>
+            ) : (
+              <div className="border-2 rounded-xl border-input-border">
+                <table className="bg-white  w-full rounded-xl">
+                  <thead className="text-black text-Base-strong bg-[#00000005]">
+                    <tr className="border-b-[1px] border-[#D5D5D5]">
+                      <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                        No
+                      </td>
+                      {selectedButton ===
+                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE ||
+                      selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS ||
+                      selectedButton ===
+                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY ? (
+                        <>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                            Date compromised
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                            URL
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                            Login
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                            Password
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                            Password strength
+                          </td>
+                          <td className="py-[19px] px-[16px]">Action</td>
+                        </>
+                      ) : (
+                        <>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                            Date compromised
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                            Devices name
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                            IP address
+                          </td>
+                          <td className="py-[19px] px-[16px]">Action</td>
+                        </>
+                      )}
+                    </tr>
+                  </thead>
 
-                            <td className="py-[19px] px-[16px]">
-                              {data.action}
-                            </td>
-                          </>
-                        )}
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-              <div className="flex items-center justify-between my-[19px] mx-[16px]">
-                <p className="text-Base-normal text-[#676767] ">
-                  Showing 10 to 100 entries
-                </p>
-                <div>
-                  <ConfigProvider
-                    theme={{
-                      components: {
-                        Pagination: {
-                          itemActiveBg: "#FF6F1E",
-                          itemLinkBg: "#fff",
-                          itemInputBg: "#fff",
+                  <tbody className="text-Base-normal text-text-description">
+                    {dataSource &&
+                      dataSource.map((data, index) => (
+                        <tr
+                          className="border-b-[2px] border-[#D5D5D5]"
+                          key={data.id}
+                        >
+                          <td className="py-[19px] px-[16px]"> {index + 1} </td>
+                          {selectedButton ===
+                            DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE && (
+                            <>
+                              <td className="py-[19px] px-[16px]">
+                                {data.date}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.url}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                                {data.login}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.pass}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <p
+                                  className={clsx(
+                                    "Medium" === "Weak" && "text-pink",
+                                    "Medium" === "Medium" && "text-text-orange",
+                                    "Medium" === "Strong" && "text-text-green"
+                                  )}
+                                >
+                                  Medium
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.action}
+                              </td>
+                            </>
+                          )}
+                          {selectedButton ===
+                            DETAIL_COMPROMISED_COMPROMISE_USERS && (
+                            <>
+                              <td className="py-[19px] px-[16px]">
+                                {data.date}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.url}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                                {data.login}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.pass}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <p
+                                  className={clsx(
+                                    "Medium" === "Weak" && "text-pink",
+                                    "Medium" === "Medium" && "text-text-orange",
+                                    "Medium" === "Strong" && "text-text-green"
+                                  )}
+                                >
+                                  Medium
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.action}
+                              </td>
+                            </>
+                          )}
+                          {selectedButton ===
+                            DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY && (
+                            <>
+                              <td className="py-[19px] px-[16px]">
+                                {data.date}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.url}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                                {data.login}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.pass}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <p
+                                  className={clsx(
+                                    "Medium" === "Weak" && "text-pink",
+                                    "Medium" === "Medium" && "text-text-orange",
+                                    "Medium" === "Strong" && "text-text-green"
+                                  )}
+                                >
+                                  Medium
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.action}
+                              </td>
+                            </>
+                          )}
+                          {selectedButton ===
+                            DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
+                            <>
+                              <td className="py-[19px] px-[16px]">
+                                {data.date}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.devices_name}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                                {data.ip}
+                              </td>
+
+                              <td className="py-[19px] px-[16px]">
+                                {data.action}
+                              </td>
+                            </>
+                          )}
+                        </tr>
+                      ))}
+                  </tbody>
+                </table>
+
+                <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                  <p className="text-Base-normal text-[#676767] ">
+                    Showing 10 to 100 entries
+                  </p>
+                  <div>
+                    <ConfigProvider
+                      theme={{
+                        components: {
+                          Pagination: {
+                            itemActiveBg: "#FF6F1E",
+                            itemLinkBg: "#fff",
+                            itemInputBg: "#fff",
+                          },
                         },
-                      },
-                      token: {
-                        colorPrimary: "white",
-                      },
-                    }}
-                  >
-                    <Pagination
-                      type="primary"
-                      defaultCurrent={1}
-                      total={50}
-                      showSizeChanger={false}
-                      style={{ color: "#FF6F1E" }}
-                    />
-                  </ConfigProvider>
+                        token: {
+                          colorPrimary: "white",
+                        },
+                      }}
+                    >
+                      <Pagination
+                        type="primary"
+                        defaultCurrent={1}
+                        total={50}
+                        showSizeChanger={false}
+                        style={{ color: "#FF6F1E" }}
+                      />
+                    </ConfigProvider>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </section>
         </div>
       </section>
