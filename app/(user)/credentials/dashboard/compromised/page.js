@@ -605,10 +605,10 @@ export default function CompromisedDashboard() {
                 </div>
               </div>
             ) : (
-              <div className="border-2 rounded-xl border-input-border">
-                <table className="bg-white  w-full rounded-xl">
-                  <thead className="text-black text-Base-strong bg-[#00000005]">
-                    <tr className="border-b-[1px] border-[#D5D5D5]">
+              <div className="border-2 rounded-xl border-input-border max-w-full w-full ">
+                <table className="bg-white  w-full max-w-full rounded-xl">
+                  <thead className="text-black text-Base-strong bg-[#00000005] w-full">
+                    <tr className="border-b-[1px] border-[#D5D5D5] w-full">
                       <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
                         No
                       </td>
@@ -652,11 +652,11 @@ export default function CompromisedDashboard() {
                     </tr>
                   </thead>
 
-                  <tbody className="text-Base-normal text-text-description">
+                  <tbody className="text-Base-normal text-text-description w-full">
                     {dataSource &&
                       dataSource.map((data, index) => (
                         <tr
-                          className="border-b-[2px] border-[#D5D5D5]"
+                          className="border-b-[2px] border-[#D5D5D5] w-full"
                           key={data.id}
                         >
                           <td className="py-[19px] px-[16px]"> {index + 1} </td>
@@ -669,8 +669,10 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
                                 {data.url}
                               </td>
-                              <td className="py-[19px] px-[16px] text-wrap w-[100px]">
-                                {data.login}
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
+                                <p className="text-wrap whitespace-pre-line">
+                                  {data.login}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.pass}
