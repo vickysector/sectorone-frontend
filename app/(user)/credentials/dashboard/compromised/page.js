@@ -38,189 +38,6 @@ import {
 } from "@/app/_lib/CalculatePassword";
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 
-// const dataSource = [
-//   {
-//     id: 1,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Weak",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 2,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Medium",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 3,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Strong",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 4,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Medium",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 5,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Medium",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 6,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Strong",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 7,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Medium",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 8,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Weak",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 9,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Weak",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-//   {
-//     id: 10,
-//     date: "27/12/2023 02:23",
-//     url: "adminpanel.sector.co",
-//     login: "Example@mail.com",
-//     pass: "Pass1234",
-//     strength: "Weak",
-//     action: (
-//       <div className="flex">
-//         <div>
-//           <EyeOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//         <div className="ml-auto mr-auto">
-//           <BookOutlined style={{ fontSize: "18px" }} />
-//         </div>
-//       </div>
-//     ),
-//   },
-// ];
-
 const { RangePicker } = DatePicker;
 
 export default function CompromisedDashboard() {
@@ -229,6 +46,19 @@ export default function CompromisedDashboard() {
     DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
   );
   const [dataSource, setDataSource] = useState();
+  const [lastId, setLastId] = useState("");
+  const [inputSearch, setInputSearch] = useState("");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [totalEmployee, setTotalEmployee] = useState();
+  const [totalUsers, setTotalUsers] = useState();
+  const [totalThirdParty, setTotalThirdParty] = useState();
+  const [totalDevice, setTotalDevice] = useState();
+  const [totalRows, setTotalRows] = useState("");
+
+  console.log("last id ", lastId);
+  console.log("start date  ", startDate);
+  console.log("end date ", endDate);
 
   const loadingCompromisedData = useSelector(
     (state) => state.compromised.status
@@ -257,14 +87,24 @@ export default function CompromisedDashboard() {
   };
 
   const handleRangePicker = (date, datestring) => {
-    console.log("date : ", date);
-    console.log("datestring: ", datestring);
+    // console.log("date : ", date);
+    // console.log("datestring: ", datestring);
+    setStartDate(datestring[0]);
+    setEndDate(datestring[1]);
+  };
+
+  const handleSearchKeyword = (e) => {
+    setInputSearch(e.target.value);
+  };
+
+  const handleClickSearch = () => {
+    fetchEmployeeData(inputSearch);
   };
 
   const mapEmployeeData = (data) => {
     return data.map((item) => ({
       id: item.id,
-      date: convertDateFormat(item.datetime_compromised),
+      date: convertDateFormat(item.datetime_added),
       url: item.url,
       login: item.login,
       pass: item.password,
@@ -286,7 +126,7 @@ export default function CompromisedDashboard() {
   const mapUsersData = (data) => {
     return data.map((item) => ({
       id: item.id,
-      date: convertDateFormat(item.datetime_compromised),
+      date: convertDateFormat(item.datetime_added),
       url: item.url,
       login: item.login,
       pass: item.password,
@@ -308,7 +148,7 @@ export default function CompromisedDashboard() {
   const mapThirdPartyData = (data) => {
     return data.map((item) => ({
       id: item.id,
-      date: convertDateFormat(item.datetime_compromised),
+      date: convertDateFormat(item.datetime_added),
       url: item.url,
       login: item.login,
       pass: item.password,
@@ -330,7 +170,7 @@ export default function CompromisedDashboard() {
   const mapDevicesData = (data) => {
     return data.map((item) => ({
       id: item.id,
-      date: convertDateFormat(item.datetime_compromised),
+      date: convertDateFormat(item.datetime_added),
       devices_name: item.computer_name,
       ip: item.ip,
       action: (
@@ -346,18 +186,23 @@ export default function CompromisedDashboard() {
     }));
   };
 
+  console.log("data source: ", dataSource);
+
   // Start of: Fetch Data compromised
 
-  const fetchEmployeeData = async () => {
+  const fetchEmployeeData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
-      const res = await fetch(`${APIDATAV1}compromised/employee`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-        },
-      });
+      const res = await fetch(
+        `${APIDATAV1}compromised/employee?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
 
       if (res.status === 401 || res.status === 403) {
         DeleteCookies();
@@ -365,27 +210,39 @@ export default function CompromisedDashboard() {
       }
 
       const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
 
       console.log("data employee: ", data);
 
-      const mappedEmployeedata = mapEmployeeData(data.data);
-      setDataSource(mappedEmployeedata);
+      if (data.data) {
+        setTotalEmployee(data.count_data);
+        setTotalRows(data.count_data);
+        const mappedEmployeedata = mapEmployeeData(data.data);
+        setDataSource(mappedEmployeedata);
+      }
     } catch (error) {
+      setDataSource(null);
     } finally {
       dispatch(setLoadingState(false));
     }
   };
 
-  const fetchUsersData = async () => {
+  const fetchUsersData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
-      const res = await fetch(`${APIDATAV1}compromised/users`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-        },
-      });
+      const res = await fetch(
+        `${APIDATAV1}compromised/users?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
 
       if (res.status === 401 || res.status === 403) {
         DeleteCookies();
@@ -394,24 +251,36 @@ export default function CompromisedDashboard() {
 
       const data = await res.json();
 
-      const mappedUsersData = mapUsersData(data.data);
-      setDataSource(mappedUsersData);
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setTotalUsers(data.count_data);
+        setTotalRows(data.count_data);
+        const mappedUsersData = mapUsersData(data.data);
+        setDataSource(mappedUsersData);
+      }
     } catch (error) {
+      setDataSource(null);
     } finally {
       dispatch(setLoadingState(false));
     }
   };
 
-  const fetchThirdPartyData = async () => {
+  const fetchThirdPartyData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
-      const res = await fetch(`${APIDATAV1}compromised/thirdparty`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-        },
-      });
+      const res = await fetch(
+        `${APIDATAV1}compromised/thirdparty?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
 
       if (res.status === 401 || res.status === 403) {
         DeleteCookies();
@@ -420,24 +289,36 @@ export default function CompromisedDashboard() {
 
       const data = await res.json();
 
-      const mappedThirdParty = mapThirdPartyData(data.data);
-      setDataSource(mappedThirdParty);
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setTotalThirdParty(data.count_data);
+        setTotalRows(data.count_data);
+        const mappedThirdParty = mapThirdPartyData(data.data);
+        setDataSource(mappedThirdParty);
+      }
     } catch (error) {
+      setDataSource(null);
     } finally {
       dispatch(setLoadingState(false));
     }
   };
 
-  const fetchDevicesData = async () => {
+  const fetchDevicesData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
-      const res = await fetch(`${APIDATAV1}compromised/devices`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-        },
-      });
+      const res = await fetch(
+        `${APIDATAV1}compromised/devices?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
 
       if (res.status === 401 || res.status === 403) {
         DeleteCookies();
@@ -446,9 +327,18 @@ export default function CompromisedDashboard() {
 
       const data = await res.json();
 
-      const mappedDevicesData = mapDevicesData(data.data);
-      setDataSource(mappedDevicesData);
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setTotalDevice(data.count_data);
+        setTotalRows(data.count_data);
+        const mappedDevicesData = mapDevicesData(data.data);
+        setDataSource(mappedDevicesData);
+      }
     } catch (error) {
+      setDataSource(null);
     } finally {
       dispatch(setLoadingState(false));
     }
@@ -456,30 +346,42 @@ export default function CompromisedDashboard() {
 
   const handleButtonClick = (value) => {
     setSelectedButton(value.target.name);
+    setInputSearch("");
+    setStartDate("");
+    setEndDate("");
+    setTotalRows("");
   };
 
   console.log("selectedbutton ", selectedButton);
 
   useEffect(() => {
+    fetchEmployeeData(inputSearch);
+    fetchUsersData(inputSearch);
+    fetchThirdPartyData(inputSearch);
+    fetchDevicesData(inputSearch);
+  }, []);
+
+  useEffect(() => {
     // fetchEmployeeData();
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
-        fetchEmployeeData();
+        fetchEmployeeData(inputSearch);
+
         break;
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
-        fetchDevicesData();
+        fetchDevicesData(inputSearch);
         break;
       // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
-        fetchUsersData();
+        fetchUsersData(inputSearch);
         break;
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
-        fetchThirdPartyData();
+        fetchThirdPartyData(inputSearch);
         break;
       default:
         break;
     }
-  }, [selectedButton]);
+  }, [selectedButton, endDate, startDate]);
 
   // End of: Fetch Data compromised
 
@@ -542,7 +444,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
               }
-              total={300}
+              total={totalEmployee && totalEmployee}
               value={"Employee"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE}
@@ -550,7 +452,7 @@ export default function CompromisedDashboard() {
 
             <CompromiseButton
               isActive={selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS}
-              total={300}
+              total={totalUsers && totalUsers}
               value={"User"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_USERS}
@@ -560,7 +462,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
               }
-              total={100}
+              total={totalThirdParty && totalThirdParty}
               value={"Third-party"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY}
@@ -570,7 +472,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES
               }
-              total={100}
+              total={totalDevice && totalDevice}
               value={"Device"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_DEVICES}
@@ -607,8 +509,18 @@ export default function CompromisedDashboard() {
                       " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
                     )}
                     placeholder={"Search by URL/Email"}
+                    onChange={handleSearchKeyword}
+                    value={inputSearch}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleClickSearch();
+                      }
+                    }}
                   />
-                  <div className="px-3 cursor-pointer">
+                  <div
+                    className="px-3 cursor-pointer"
+                    onClick={handleClickSearch}
+                  >
                     <Image
                       src={"/images/sector_image_search.svg"}
                       alt="search icon"
@@ -665,6 +577,23 @@ export default function CompromisedDashboard() {
                 >
                   <Spin size="large" />
                 </ConfigProvider>
+              </div>
+            ) : dataSource === null ? (
+              <div className="text-center flex flex-col justify-center items-center">
+                <div>
+                  <Image
+                    src={"/images/no_result_found_compromised.svg"}
+                    alt="search icon"
+                    width={129}
+                    height={121}
+                  />
+                </div>
+                <div className="mt-5">
+                  <h1 className="text-heading-3">No results found</h1>
+                  <p className="text-text-description text-LG-normal mt-4">
+                    Try different keywords or remove search filters
+                  </p>
+                </div>
               </div>
             ) : (
               <div className="border-2 rounded-xl border-input-border">
@@ -840,7 +769,7 @@ export default function CompromisedDashboard() {
 
                 <div className="flex items-center justify-between my-[19px] mx-[16px]">
                   <p className="text-Base-normal text-[#676767] ">
-                    Showing 10 to 100 entries
+                    Showing 10 to {totalRows && totalRows} entries
                   </p>
                   <div>
                     <ConfigProvider
@@ -860,9 +789,10 @@ export default function CompromisedDashboard() {
                       <Pagination
                         type="primary"
                         defaultCurrent={1}
-                        total={50}
+                        total={totalRows && totalRows}
                         showSizeChanger={false}
                         style={{ color: "#FF6F1E" }}
+                        hideOnSinglePage={true}
                       />
                     </ConfigProvider>
                   </div>
