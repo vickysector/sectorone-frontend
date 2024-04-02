@@ -14,7 +14,7 @@ import {
   BookOutlined,
   CheckCircleFilled,
 } from "@ant-design/icons";
-import { Pagination, ConfigProvider, DatePicker, Spin } from "antd";
+import { Pagination, ConfigProvider, DatePicker, Spin, Select } from "antd";
 import { useEffect, useState } from "react";
 import {
   setBreachesEmployee,
@@ -28,10 +28,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 import {
+  DETAIL_COMPROMISED_BOOKMARK,
   DETAIL_COMPROMISED_COMPROMISE_DEVICES,
   DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
   DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
   DETAIL_COMPROMISED_COMPROMISE_USERS,
+  DETAIL_COMPROMISED_DEFAULT,
+  DETAIL_COMPROMISED_TESTING,
 } from "@/app/_lib/variables/Variables";
 import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
@@ -59,6 +62,9 @@ export default function CompromisedDashboard() {
   const [selectedButton, setSelectedButton] = useState(
     DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
   );
+  const [selectedOutlineButton, setSelectedOutlineButton] = useState(
+    DETAIL_COMPROMISED_DEFAULT
+  );
   const [dataSource, setDataSource] = useState();
   const [lastId, setLastId] = useState("");
   const [inputSearch, setInputSearch] = useState("");
@@ -74,6 +80,18 @@ export default function CompromisedDashboard() {
   const [usersData, setUsersData] = useState(null);
   const [thirdPartyData, setThirdPartyData] = useState(null);
   const [devicesData, setDevicesData] = useState(null);
+  const [selectValidasi, setSelectValidasi] = useState();
+  const [validasiSuccess, setValidasiSuccess] = useState(null);
+
+  const [employeeBookmarkData, setEmployeeBookmarkData] = useState(null);
+  const [usersBookmarkData, setUsersBookmarkData] = useState(null);
+  const [thirdPartyBookmarkData, setThirdPartyBookmarkData] = useState(null);
+  const [devicesBookmarkData, setDevicesBookmarkData] = useState(null);
+
+  const [employeeValidatedData, setEmployeeValidatedData] = useState(null);
+  const [usersValidatedData, setUsersValidatedData] = useState(null);
+  const [thirdPartyValidatedData, setThirdPartyValidatedData] = useState(null);
+  const [devicesValidatedData, setDevicesValidatedData] = useState(null);
 
   console.log("last id ", lastId);
   console.log("start date  ", startDate);
@@ -133,7 +151,13 @@ export default function CompromisedDashboard() {
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         fetchEmployeeData(inputSearch);
-
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          fetchEmployeeBookmark(inputSearch);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          fetchEmployeeTesting(inputSearch);
+        } else {
+          fetchEmployeeData(inputSearch);
+        }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
         fetchDevicesData(inputSearch);
@@ -273,7 +297,51 @@ export default function CompromisedDashboard() {
     }));
   };
 
-  console.log("data source: ", dataSource);
+  const handleSelectValidation = (value, id) => {
+    setSelectValidasi(value);
+
+    UpdateValidateTesting(id, value);
+  };
+
+  const UpdateValidateTesting = async (id, validasi) => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(`${APIDATAV1}status/domain/employee`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          status_validasi: validasi,
+        }),
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.success === false) {
+        throw new Error("");
+      }
+
+      if (data.success) {
+        setValidasiSuccess(true);
+      }
+    } catch (error) {
+      setValidasiSuccess(false);
+    } finally {
+      dispatch(setLoadingState(false));
+      setTimeout(() => {
+        setValidasiSuccess(null);
+      }, 5000);
+    }
+  };
 
   // Start of: Fetch Data compromised
 
@@ -455,6 +523,84 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchEmployeeBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/employee?status=bookmark&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setEmployeeBookmarkData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      setEmployeeBookmarkData(null);
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchEmployeeTesting = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/employee?status=testing&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setEmployeeValidatedData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      setEmployeeValidatedData(null);
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
   const handleButtonClick = (value) => {
     setSelectedButton(value.target.name);
     setInputSearch("");
@@ -463,7 +609,13 @@ export default function CompromisedDashboard() {
     setTotalRows("");
   };
 
-  console.log("selectedbutton ", selectedButton);
+  const handleButtonOutlineClick = (value) => {
+    setSelectedOutlineButton(value.target.name);
+    setInputSearch("");
+    setStartDate("");
+    setEndDate("");
+    setTotalRows("");
+  };
 
   useEffect(() => {
     fetchEmployeeData(inputSearch);
@@ -477,7 +629,13 @@ export default function CompromisedDashboard() {
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         fetchEmployeeData(inputSearch);
-
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          fetchEmployeeBookmark(inputSearch);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          fetchEmployeeTesting(inputSearch);
+        } else {
+          fetchEmployeeData(inputSearch);
+        }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
         fetchDevicesData(inputSearch);
@@ -492,7 +650,14 @@ export default function CompromisedDashboard() {
       default:
         break;
     }
-  }, [selectedButton, endDate, startDate, bookmarkSuccessState]);
+  }, [
+    selectedButton,
+    endDate,
+    startDate,
+    bookmarkSuccessState,
+    selectedOutlineButton,
+    selectValidasi,
+  ]);
 
   // End of: Fetch Data compromised
 
@@ -591,12 +756,26 @@ export default function CompromisedDashboard() {
           </section>
           <section className="p-8">
             <OutlineButton
-              isActive={true}
+              isActive={selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT}
               total={100}
               value={"Data compromise "}
+              onClick={handleButtonOutlineClick}
+              nameData={DETAIL_COMPROMISED_DEFAULT}
             />
-            <OutlineButton isActive={false} total={100} value={"Validated "} />
-            <OutlineButton isActive={false} total={100} value={"Bookmark "} />
+            <OutlineButton
+              isActive={selectedOutlineButton === DETAIL_COMPROMISED_TESTING}
+              total={100}
+              value={"Validated "}
+              onClick={handleButtonOutlineClick}
+              nameData={DETAIL_COMPROMISED_TESTING}
+            />
+            <OutlineButton
+              isActive={selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK}
+              total={100}
+              value={"Bookmark "}
+              onClick={handleButtonOutlineClick}
+              nameData={DETAIL_COMPROMISED_BOOKMARK}
+            />
 
             <div className="mt-8 ">
               <div className="flex items-center">
@@ -699,6 +878,26 @@ export default function CompromisedDashboard() {
           ) : (
             ""
           )}
+          {validasiSuccess !== null ? (
+            validasiSuccess ? (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-success-chart rounded-lg shadow-lg">
+                <CheckCircleFilled style={{ color: "white" }} />
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Successfully change Testing Status
+                </p>
+              </section>
+            ) : (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-error rounded-lg shadow-lg">
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Oops something wrong when Change Testing Status data
+                </p>
+              </section>
+            )
+          ) : (
+            ""
+          )}
           <section className="p-8">
             {loadingCompromisedData ? (
               <div className="text-center">
@@ -715,6 +914,7 @@ export default function CompromisedDashboard() {
             ) : (
               <>
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT &&
                   employeeData && (
                     <div className="border-2 rounded-xl border-input-border">
                       <table className="bg-white  w-full rounded-xl">
@@ -824,7 +1024,212 @@ export default function CompromisedDashboard() {
                   )}
 
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT &&
                   employeeData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_TESTING &&
+                  employeeValidatedData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              URL
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Login
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password strength
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Status
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {employeeValidatedData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {convertDateFormat(data.datetime_added)}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.url}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
+                                <p className="text-wrap whitespace-pre-line">
+                                  {data.login}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.password}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <p
+                                  className={clsx(
+                                    "Medium" === "Weak" && "text-pink",
+                                    "Medium" === "Medium" && "text-text-orange",
+                                    "Medium" === "Strong" && "text-text-green"
+                                  )}
+                                >
+                                  {CalculatePasswordStrengthWithReturnPlainString(
+                                    data.password
+                                  )}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <ConfigProvider
+                                  theme={{
+                                    token: {
+                                      colorBgContainer: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#F7F7F7"
+                                          : "white"
+                                      }`,
+                                      colorBorder: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#D5D5D5"
+                                          : "#52C41A"
+                                      }`,
+                                      colorText: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#000000E0"
+                                          : "#52C41A"
+                                      }`,
+                                      fontWeightStrong: true,
+                                    },
+                                    components: {
+                                      Select: {
+                                        optionActiveBg: "#F7F7F7",
+                                        optionSelectedBg: "#FFEBD4",
+                                      },
+                                    },
+                                  }}
+                                >
+                                  <Select
+                                    defaultValue={data.status_validasi}
+                                    value={selectValidasi}
+                                    style={{ width: 91 }}
+                                    onChange={(value) =>
+                                      handleSelectValidation(value, data.id)
+                                    }
+                                    options={[
+                                      {
+                                        value: "invalid",
+                                        label: "Invalid",
+                                      },
+
+                                      {
+                                        value: "valid",
+                                        label: "Valid",
+                                      },
+                                    ]}
+                                  />
+                                </ConfigProvider>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <div className="flex">
+                                  <div
+                                    className="cursor-pointer"
+                                    onClick={() => handleDetails(data)}
+                                  >
+                                    <EyeOutlined style={{ fontSize: "18px" }} />
+                                  </div>
+                                  <div
+                                    className="ml-auto mr-auto cursor-pointer"
+                                    onClick={() =>
+                                      handleBookmarkConfirm(
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                      )
+                                    }
+                                  >
+                                    <BookOutlined
+                                      style={{ fontSize: "18px" }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {employeeValidatedData.size} to{" "}
+                          {employeeValidatedData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={employeeValidatedData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_TESTING &&
+                  employeeValidatedData === null && (
                     <div className="text-center flex flex-col justify-center items-center">
                       <div>
                         <Image

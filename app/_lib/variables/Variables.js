@@ -14,4 +14,8 @@ export const DETAIL_COMPROMISED_COMPROMISE_USERS = "users";
 export const DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY = "thirdparty";
 export const DETAIL_COMPROMISED_COMPROMISE_DEVICES = "devices";
 
+export const DETAIL_COMPROMISED_BOOKMARK = "bookmark";
+export const DETAIL_COMPROMISED_TESTING = "testing";
+export const DETAIL_COMPROMISED_DEFAULT = "compromised";
+
 // End of: Page Compromised - Detail Comrpomised
