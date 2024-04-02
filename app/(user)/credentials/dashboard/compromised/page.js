@@ -11,7 +11,7 @@ import Image from "next/image";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import { EyeOutlined, BookOutlined } from "@ant-design/icons";
 import { Pagination, ConfigProvider, DatePicker } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   setBreachesEmployee,
   setBreachesEmployeeAndUsers,
@@ -23,194 +23,211 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
+import {
+  DETAIL_COMPROMISED_COMPROMISE_DEVICES,
+  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+  DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
+  DETAIL_COMPROMISED_COMPROMISE_USERS,
+} from "@/app/_lib/variables/Variables";
+import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
+import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
+import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
+import {
+  CalculatePasswordStrengthWithReturnString,
+  convertDateFormat,
+} from "@/app/_lib/CalculatePassword";
 
-const dataSource = [
-  {
-    id: 1,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Weak",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 2,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Medium",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 3,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Strong",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 4,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Medium",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 5,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Medium",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 6,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Strong",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 7,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Medium",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 8,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Weak",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 9,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Weak",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 10,
-    date: "27/12/2023 02:23",
-    url: "adminpanel.sector.co",
-    login: "Example@mail.com",
-    pass: "Pass1234",
-    strength: "Weak",
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-];
+// const dataSource = [
+//   {
+//     id: 1,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Weak",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 2,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Medium",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 3,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Strong",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 4,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Medium",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 5,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Medium",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 6,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Strong",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 7,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Medium",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 8,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Weak",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 9,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Weak",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+//   {
+//     id: 10,
+//     date: "27/12/2023 02:23",
+//     url: "adminpanel.sector.co",
+//     login: "Example@mail.com",
+//     pass: "Pass1234",
+//     strength: "Weak",
+//     action: (
+//       <div className="flex">
+//         <div>
+//           <EyeOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//         <div className="ml-auto mr-auto">
+//           <BookOutlined style={{ fontSize: "18px" }} />
+//         </div>
+//       </div>
+//     ),
+//   },
+// ];
 
 const { RangePicker } = DatePicker;
 
 export default function CompromisedDashboard() {
   const [showDate, setShowDate] = useState(false);
+  const [selectedButton, setSelectedButton] = useState(
+    DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+  );
+  const [dataSource, setDataSource] = useState();
 
   const dispatch = useDispatch();
 
@@ -238,6 +255,220 @@ export default function CompromisedDashboard() {
     console.log("date : ", date);
     console.log("datestring: ", datestring);
   };
+
+  const mapEmployeeData = (data) => {
+    return data.map((item) => ({
+      id: item.id,
+      date: convertDateFormat(item.datetime_compromised),
+      url: item.url,
+      login: item.login,
+      pass: item.password,
+      strength: CalculatePasswordStrengthWithReturnString(item.password)
+        .strengthLabel,
+      action: (
+        <div className="flex">
+          <div className="cursor-pointer">
+            <EyeOutlined style={{ fontSize: "18px" }} />
+          </div>
+          <div className="ml-auto mr-auto cursor-pointer">
+            <BookOutlined style={{ fontSize: "18px" }} />
+          </div>
+        </div>
+      ),
+    }));
+  };
+
+  const mapUsersData = (data) => {
+    return data.map((item) => ({
+      id: item.id,
+      date: convertDateFormat(item.datetime_compromised),
+      url: item.url,
+      login: item.login,
+      pass: item.password,
+      strength: CalculatePasswordStrengthWithReturnString(item.password)
+        .strengthLabel,
+      action: (
+        <div className="flex">
+          <div className="cursor-pointer">
+            <EyeOutlined style={{ fontSize: "18px" }} />
+          </div>
+          <div className="ml-auto mr-auto cursor-pointer">
+            <BookOutlined style={{ fontSize: "18px" }} />
+          </div>
+        </div>
+      ),
+    }));
+  };
+
+  const mapThirdPartyData = (data) => {
+    return data.map((item) => ({
+      id: item.id,
+      date: convertDateFormat(item.datetime_compromised),
+      url: item.url,
+      login: item.login,
+      pass: item.password,
+      strength: CalculatePasswordStrengthWithReturnString(item.password)
+        .strengthLabel,
+      action: (
+        <div className="flex">
+          <div className="cursor-pointer">
+            <EyeOutlined style={{ fontSize: "18px" }} />
+          </div>
+          <div className="ml-auto mr-auto cursor-pointer">
+            <BookOutlined style={{ fontSize: "18px" }} />
+          </div>
+        </div>
+      ),
+    }));
+  };
+
+  const mapDevicesData = (data) => {
+    return data.map((item) => ({
+      id: item.id,
+      date: convertDateFormat(item.datetime_compromised),
+      devices_name: item.computer_name,
+      ip: item.ip,
+      action: (
+        <div className="flex">
+          <div className="cursor-pointer">
+            <EyeOutlined style={{ fontSize: "18px" }} />
+          </div>
+          <div className="ml-auto mr-auto cursor-pointer">
+            <BookOutlined style={{ fontSize: "18px" }} />
+          </div>
+        </div>
+      ),
+    }));
+  };
+
+  // Start of: Fetch Data compromised
+
+  const fetchEmployeeData = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}compromised/employee`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      console.log("data employee: ", data);
+
+      const mappedEmployeedata = mapEmployeeData(data.data);
+      setDataSource(mappedEmployeedata);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  const fetchUsersData = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}compromised/users`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      const mappedUsersData = mapUsersData(data.data);
+      setDataSource(mappedUsersData);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  const fetchThirdPartyData = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}compromised/thirdparty`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      const mappedThirdParty = mapThirdPartyData(data.data);
+      setDataSource(mappedThirdParty);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  const fetchDevicesData = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}compromised/devices`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      const mappedDevicesData = mapDevicesData(data.data);
+      setDataSource(mappedDevicesData);
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  const handleButtonClick = (value) => {
+    setSelectedButton(value.target.name);
+  };
+
+  console.log("selectedbutton ", selectedButton);
+
+  useEffect(() => {
+    // fetchEmployeeData();
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        fetchEmployeeData();
+        break;
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        fetchDevicesData();
+        break;
+      // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        fetchUsersData();
+        break;
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        fetchThirdPartyData();
+        break;
+      default:
+        break;
+    }
+  }, [selectedButton]);
+
+  // End of: Fetch Data compromised
 
   return (
     <main>
@@ -294,17 +525,43 @@ export default function CompromisedDashboard() {
         <h1 className="text-heading-4 text-black">Detail compromised</h1>
         <div className="mt-4 bg-white border-2 border-input-border rounded-lg">
           <section className="p-8 border-b-2 border-input-border ">
-            <CompromiseButton isActive={true} total={300} value={"Employee"} />
-
-            <CompromiseButton isActive={false} total={300} value={"User"} />
-
             <CompromiseButton
-              isActive={false}
-              total={100}
-              value={"Third-party"}
+              isActive={
+                selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+              }
+              total={300}
+              value={"Employee"}
+              onClick={handleButtonClick}
+              nameData={DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE}
             />
 
-            <CompromiseButton isActive={false} total={100} value={"Device"} />
+            <CompromiseButton
+              isActive={selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS}
+              total={300}
+              value={"User"}
+              onClick={handleButtonClick}
+              nameData={DETAIL_COMPROMISED_COMPROMISE_USERS}
+            />
+
+            <CompromiseButton
+              isActive={
+                selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+              }
+              total={100}
+              value={"Third-party"}
+              onClick={handleButtonClick}
+              nameData={DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY}
+            />
+
+            <CompromiseButton
+              isActive={
+                selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES
+              }
+              total={100}
+              value={"Device"}
+              onClick={handleButtonClick}
+              nameData={DETAIL_COMPROMISED_COMPROMISE_DEVICES}
+            />
           </section>
           <section className="p-8">
             <OutlineButton
@@ -391,53 +648,152 @@ export default function CompromisedDashboard() {
                     <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
                       No
                     </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                      Date compromised
-                    </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                      URL
-                    </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                      Login
-                    </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                      Password
-                    </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                      Password strength
-                    </td>
-                    <td className="py-[19px] px-[16px]">Action</td>
+                    {selectedButton ===
+                      DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE ||
+                    selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS ||
+                    selectedButton ===
+                      DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY ? (
+                      <>
+                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                          Date compromised
+                        </td>
+                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                          URL
+                        </td>
+                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                          Login
+                        </td>
+                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                          Password
+                        </td>
+                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                          Password strength
+                        </td>
+                        <td className="py-[19px] px-[16px]">Action</td>
+                      </>
+                    ) : (
+                      <>
+                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                          Date compromised
+                        </td>
+                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                          Devices name
+                        </td>
+                        <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                          IP address
+                        </td>
+                        <td className="py-[19px] px-[16px]">Action</td>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody className="text-Base-normal text-text-description">
-                  {dataSource.map((data, index) => (
-                    <tr
-                      className="border-b-[2px] border-[#D5D5D5]"
-                      key={data.id}
-                    >
-                      <td className="py-[19px] px-[16px]"> {index + 1} </td>
-                      <td className="py-[19px] px-[16px]"> {data.date} </td>
-                      <td className="py-[19px] px-[16px]"> {data.url} </td>
-                      <td className="py-[19px] px-[16px]"> {data.login} </td>
-                      <td className="py-[19px] px-[16px]"> {data.pass} </td>
-                      <td className="py-[19px] px-[16px]">
-                        {" "}
-                        <p
-                          className={clsx(
-                            data.strength.toLowerCase() === "weak" &&
-                              "text-pink",
-                            data.strength.toLowerCase() === "medium" &&
-                              "text-text-orange",
-                            data.strength.toLowerCase() === "strong" &&
-                              "text-text-green"
-                          )}
-                        >
-                          {data.strength}
-                        </p>{" "}
-                      </td>
-                      <td className="py-[19px] px-[16px]"> {data.action} </td>
-                    </tr>
-                  ))}
+                  {dataSource &&
+                    dataSource.map((data, index) => (
+                      <tr
+                        className="border-b-[2px] border-[#D5D5D5]"
+                        key={data.id}
+                      >
+                        <td className="py-[19px] px-[16px]"> {index + 1} </td>
+                        {selectedButton ===
+                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE && (
+                          <>
+                            <td className="py-[19px] px-[16px]">{data.date}</td>
+                            <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                              {data.url}
+                            </td>
+                            <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                              {data.login}
+                            </td>
+                            <td className="py-[19px] px-[16px]">{data.pass}</td>
+                            <td className="py-[19px] px-[16px]">
+                              <p
+                                className={clsx(
+                                  "Medium" === "Weak" && "text-pink",
+                                  "Medium" === "Medium" && "text-text-orange",
+                                  "Medium" === "Strong" && "text-text-green"
+                                )}
+                              >
+                                Medium
+                              </p>
+                            </td>
+                            <td className="py-[19px] px-[16px]">
+                              {data.action}
+                            </td>
+                          </>
+                        )}
+                        {selectedButton ===
+                          DETAIL_COMPROMISED_COMPROMISE_USERS && (
+                          <>
+                            <td className="py-[19px] px-[16px]">{data.date}</td>
+                            <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                              {data.url}
+                            </td>
+                            <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                              {data.login}
+                            </td>
+                            <td className="py-[19px] px-[16px]">{data.pass}</td>
+                            <td className="py-[19px] px-[16px]">
+                              <p
+                                className={clsx(
+                                  "Medium" === "Weak" && "text-pink",
+                                  "Medium" === "Medium" && "text-text-orange",
+                                  "Medium" === "Strong" && "text-text-green"
+                                )}
+                              >
+                                Medium
+                              </p>
+                            </td>
+                            <td className="py-[19px] px-[16px]">
+                              {data.action}
+                            </td>
+                          </>
+                        )}
+                        {selectedButton ===
+                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY && (
+                          <>
+                            <td className="py-[19px] px-[16px]">{data.date}</td>
+                            <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                              {data.url}
+                            </td>
+                            <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                              {data.login}
+                            </td>
+                            <td className="py-[19px] px-[16px]">{data.pass}</td>
+                            <td className="py-[19px] px-[16px]">
+                              <p
+                                className={clsx(
+                                  "Medium" === "Weak" && "text-pink",
+                                  "Medium" === "Medium" && "text-text-orange",
+                                  "Medium" === "Strong" && "text-text-green"
+                                )}
+                              >
+                                Medium
+                              </p>
+                            </td>
+                            <td className="py-[19px] px-[16px]">
+                              {data.action}
+                            </td>
+                          </>
+                        )}
+                        {selectedButton ===
+                          DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
+                          <>
+                            <td className="py-[19px] px-[16px]">{data.date}</td>
+                            <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                              {data.devices_name}
+                            </td>
+                            <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                              {data.ip}
+                            </td>
+
+                            <td className="py-[19px] px-[16px]">
+                              {data.action}
+                            </td>
+                          </>
+                        )}
+                      </tr>
+                    ))}
                 </tbody>
               </table>
               <div className="flex items-center justify-between my-[19px] mx-[16px]">

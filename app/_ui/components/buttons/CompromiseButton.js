@@ -1,6 +1,12 @@
 import clsx from "clsx";
 
-export default function CompromiseButton({ value, total, isActive }) {
+export default function CompromiseButton({
+  value,
+  total,
+  isActive,
+  onClick,
+  nameData,
+}) {
   return (
     <button
       className={clsx(
@@ -9,6 +15,8 @@ export default function CompromiseButton({ value, total, isActive }) {
           ? "bg-primary-base text-LG-strong text-white"
           : "bg-white border-2 border-input-borde text-text-description text-LG-normal"
       )}
+      onClick={onClick}
+      name={nameData}
     >
       {value} ({total})
     </button>
