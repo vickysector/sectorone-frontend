@@ -9,7 +9,11 @@ import "@/app/_ui/CheckboxCustom2.css";
 import clsx from "clsx";
 import Image from "next/image";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
-import { EyeOutlined, BookOutlined } from "@ant-design/icons";
+import {
+  EyeOutlined,
+  BookOutlined,
+  CheckCircleFilled,
+} from "@ant-design/icons";
 import { Pagination, ConfigProvider, DatePicker, Spin } from "antd";
 import { useEffect, useState } from "react";
 import {
@@ -41,6 +45,11 @@ import {
   setDataDetails,
   setDetailState,
 } from "@/app/_lib/store/features/Compromised/DetailSlices";
+import {
+  setBookmarkConfirmState,
+  setBookmarkDomainData,
+  setBookmarkIdData,
+} from "@/app/_lib/store/features/Compromised/BookmarkSlices";
 
 const { RangePicker } = DatePicker;
 
@@ -78,6 +87,14 @@ export default function CompromisedDashboard() {
     (state) => state.breaches.breachesEmployee
   );
 
+  const bookmarkSuccessState = useSelector(
+    (state) => state.bookmarkCompromise.success
+  );
+
+  const bookmarBannerState = useSelector(
+    (state) => state.bookmarkCompromise.banner
+  );
+
   const usersBreaches = useSelector((state) => state.breaches.breachesUsers);
 
   const urlBreaches = useSelector((state) => state.breaches.url);
@@ -110,6 +127,12 @@ export default function CompromisedDashboard() {
     fetchEmployeeData(inputSearch);
   };
 
+  const handleBookmarkConfirm = (dataID, domain) => {
+    dispatch(setBookmarkConfirmState(true));
+    dispatch(setBookmarkIdData(dataID));
+    dispatch(setBookmarkDomainData(domain));
+  };
+
   const mapEmployeeData = (data) => {
     return data.map((item) => ({
       id: item.id,
@@ -124,7 +147,15 @@ export default function CompromisedDashboard() {
           <div className="cursor-pointer" onClick={() => handleDetails(item)}>
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
-          <div className="ml-auto mr-auto cursor-pointer">
+          <div
+            className="ml-auto mr-auto cursor-pointer"
+            onClick={() =>
+              handleBookmarkConfirm(
+                item.id,
+                DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+              )
+            }
+          >
             <BookOutlined style={{ fontSize: "18px" }} />
           </div>
         </div>
@@ -146,7 +177,15 @@ export default function CompromisedDashboard() {
           <div className="cursor-pointer" onClick={() => handleDetails(item)}>
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
-          <div className="ml-auto mr-auto cursor-pointer">
+          <div
+            className="ml-auto mr-auto cursor-pointer"
+            onClick={() =>
+              handleBookmarkConfirm(
+                item.id,
+                DETAIL_COMPROMISED_COMPROMISE_USERS
+              )
+            }
+          >
             <BookOutlined style={{ fontSize: "18px" }} />
           </div>
         </div>
@@ -168,7 +207,15 @@ export default function CompromisedDashboard() {
           <div className="cursor-pointer" onClick={() => handleDetails(item)}>
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
-          <div className="ml-auto mr-auto cursor-pointer">
+          <div
+            className="ml-auto mr-auto cursor-pointer"
+            onClick={() =>
+              handleBookmarkConfirm(
+                item.id,
+                DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+              )
+            }
+          >
             <BookOutlined style={{ fontSize: "18px" }} />
           </div>
         </div>
@@ -187,7 +234,15 @@ export default function CompromisedDashboard() {
           <div className="cursor-pointer" onClick={() => handleDetails(item)}>
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
-          <div className="ml-auto mr-auto cursor-pointer">
+          <div
+            className="ml-auto mr-auto cursor-pointer"
+            onClick={() =>
+              handleBookmarkConfirm(
+                item.id,
+                DETAIL_COMPROMISED_COMPROMISE_DEVICES
+              )
+            }
+          >
             <BookOutlined style={{ fontSize: "18px" }} />
           </div>
         </div>
@@ -390,7 +445,7 @@ export default function CompromisedDashboard() {
       default:
         break;
     }
-  }, [selectedButton, endDate, startDate]);
+  }, [selectedButton, endDate, startDate, bookmarkSuccessState]);
 
   // End of: Fetch Data compromised
 
@@ -574,6 +629,29 @@ export default function CompromisedDashboard() {
               </div>
             </div>
           </section>
+          {
+            // Todo
+          }
+          {bookmarBannerState !== null ? (
+            bookmarBannerState ? (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-success-chart rounded-lg shadow-lg">
+                <CheckCircleFilled style={{ color: "white" }} />
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Successfully added to bookmarks
+                </p>
+              </section>
+            ) : (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-error rounded-lg shadow-lg">
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Oops something wrong when Bookmark data
+                </p>
+              </section>
+            )
+          ) : (
+            ""
+          )}
           <section className="p-8">
             {loadingCompromisedData ? (
               <div className="text-center">

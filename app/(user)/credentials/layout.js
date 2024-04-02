@@ -25,6 +25,11 @@ import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 import { setDetailState } from "@/app/_lib/store/features/Compromised/DetailSlices";
 import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import copy from "copy-to-clipboard";
+import {
+  setBookmarkBannerSuccess,
+  setBookmarkConfirmState,
+  setBookmarkStatusData,
+} from "@/app/_lib/store/features/Compromised/BookmarkSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -54,6 +59,18 @@ export default function DashboardLayout({ children }) {
     (state) => state.detailComrpomise.data
   );
 
+  const bookmarkCompromisedState = useSelector(
+    (state) => state.bookmarkCompromise.status
+  );
+
+  const bookmarkCompromisedId = useSelector(
+    (state) => state.bookmarkCompromise.id_data
+  );
+
+  const bookmarkCompromiseDomain = useSelector(
+    (state) => state.bookmarkCompromise.domain
+  );
+
   // Start of: Checking Users Credentials
 
   const CredentialsEmail = getCookie("email_credentials");
@@ -68,6 +85,10 @@ export default function DashboardLayout({ children }) {
 
   const handleChangeUrlClose = () => {
     dispatch(setChangeUrl(false));
+  };
+
+  const handleBookmarkCompromisedClose = () => {
+    dispatch(setBookmarkConfirmState(false));
   };
 
   // Start of: Update Domain
@@ -90,6 +111,11 @@ export default function DashboardLayout({ children }) {
     window.location.reload();
   };
 
+  const handleBookmarkCompromiseData = () => {
+    BookmarkCompromisedData();
+    dispatch(setBookmarkConfirmState(false));
+  };
+
   const handleDetailCompromisedState = () => {
     dispatch(setDetailState(false));
   };
@@ -101,6 +127,46 @@ export default function DashboardLayout({ children }) {
     setTimeout(() => {
       setCopied(false);
     }, 3000);
+  };
+
+  const BookmarkCompromisedData = async () => {
+    try {
+      const res = await fetch(
+        `${APIDATAV1}status/domain/${bookmarkCompromiseDomain}/boomark`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: [`${bookmarkCompromisedId}`],
+          }),
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error("");
+      }
+
+      dispatch(setBookmarkStatusData(true));
+      dispatch(setBookmarkBannerSuccess(true));
+    } catch (error) {
+      dispatch(setBookmarkStatusData(false));
+      dispatch(setBookmarkBannerSuccess(false));
+    } finally {
+      setTimeout(() => {
+        dispatch(setBookmarkBannerSuccess(null));
+      }, 9000);
+    }
   };
 
   const UpdateDomain = async () => {
@@ -286,6 +352,37 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          bookmarkCompromisedState ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            {" "}
+            Are you sure Bookmark this Data?{" "}
+          </h1>
+          <p className="mb-6 text-text-description ">
+            After Bookmark this data will not available in Data Compromised. you
+            will meet this data in Bookmark section.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleBookmarkCompromiseData}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleBookmarkCompromisedClose}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-40 flex items-center justify-center text-black ",

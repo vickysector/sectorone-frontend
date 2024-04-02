@@ -4,6 +4,7 @@ import ChooseUrlReducer from "./features/Home/ChooseUrlSlice";
 import BreachesSlices from "./features/Breaches/BreachesSlices";
 import LoadingSlices from "./features/Compromised/LoadingSlices";
 import DetailSlices from "./features/Compromised/DetailSlices";
+import BookmarkSlices from "./features/Compromised/BookmarkSlices";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     breaches: BreachesSlices,
     compromised: LoadingSlices,
     detailComrpomise: DetailSlices,
+    bookmarkCompromise: BookmarkSlices,
   },
 });
