@@ -607,6 +607,7 @@ export default function CompromisedDashboard() {
     setStartDate("");
     setEndDate("");
     setTotalRows("");
+    setSelectedOutlineButton(DETAIL_COMPROMISED_DEFAULT);
   };
 
   const handleButtonOutlineClick = (value) => {
