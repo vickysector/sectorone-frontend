@@ -37,6 +37,10 @@ import {
   convertDateFormat,
 } from "@/app/_lib/CalculatePassword";
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
+import {
+  setDataDetails,
+  setDetailState,
+} from "@/app/_lib/store/features/Compromised/DetailSlices";
 
 const { RangePicker } = DatePicker;
 
@@ -86,6 +90,11 @@ export default function CompromisedDashboard() {
     dispatch(setChangeUrl(true));
   };
 
+  const handleDetails = (item) => {
+    dispatch(setDetailState(true));
+    dispatch(setDataDetails(item));
+  };
+
   const handleRangePicker = (date, datestring) => {
     // console.log("date : ", date);
     // console.log("datestring: ", datestring);
@@ -112,7 +121,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div className="cursor-pointer">
+          <div className="cursor-pointer" onClick={() => handleDetails(item)}>
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
           <div className="ml-auto mr-auto cursor-pointer">
@@ -134,7 +143,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div className="cursor-pointer">
+          <div className="cursor-pointer" onClick={() => handleDetails(item)}>
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
           <div className="ml-auto mr-auto cursor-pointer">
@@ -156,7 +165,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div className="cursor-pointer">
+          <div className="cursor-pointer" onClick={() => handleDetails(item)}>
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
           <div className="ml-auto mr-auto cursor-pointer">
@@ -175,7 +184,7 @@ export default function CompromisedDashboard() {
       ip: item.ip,
       action: (
         <div className="flex">
-          <div className="cursor-pointer">
+          <div className="cursor-pointer" onClick={() => handleDetails(item)}>
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
           <div className="ml-auto mr-auto cursor-pointer">
