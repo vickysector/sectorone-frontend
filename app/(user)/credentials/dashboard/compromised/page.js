@@ -37,6 +37,7 @@ import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
 import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 import {
+  CalculatePasswordStrengthWithReturnPlainString,
   CalculatePasswordStrengthWithReturnString,
   convertDateFormat,
 } from "@/app/_lib/CalculatePassword";
@@ -68,6 +69,11 @@ export default function CompromisedDashboard() {
   const [totalThirdParty, setTotalThirdParty] = useState();
   const [totalDevice, setTotalDevice] = useState();
   const [totalRows, setTotalRows] = useState("");
+
+  const [employeeData, setEmployeeData] = useState(null);
+  const [usersData, setUsersData] = useState(null);
+  const [thirdPartyData, setThirdPartyData] = useState(null);
+  const [devicesData, setDevicesData] = useState(null);
 
   console.log("last id ", lastId);
   console.log("start date  ", startDate);
@@ -124,7 +130,24 @@ export default function CompromisedDashboard() {
   };
 
   const handleClickSearch = () => {
-    fetchEmployeeData(inputSearch);
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        fetchEmployeeData(inputSearch);
+
+        break;
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        fetchDevicesData(inputSearch);
+        break;
+      // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        fetchUsersData(inputSearch);
+        break;
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        fetchThirdPartyData(inputSearch);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleBookmarkConfirm = (dataID, domain) => {
@@ -285,10 +308,16 @@ export default function CompromisedDashboard() {
         setTotalEmployee(data.count_data);
         setTotalRows(data.count_data);
         const mappedEmployeedata = mapEmployeeData(data.data);
-        setDataSource(mappedEmployeedata);
+        // setDataSource(mappedEmployeedata);
+        setEmployeeData({
+          data: mappedEmployeedata,
+          count: data.count_data,
+          size: data.size,
+        });
       }
     } catch (error) {
-      setDataSource(null);
+      // setDataSource(null);
+      setEmployeeData(null);
     } finally {
       dispatch(setLoadingState(false));
     }
@@ -323,10 +352,16 @@ export default function CompromisedDashboard() {
         setTotalUsers(data.count_data);
         setTotalRows(data.count_data);
         const mappedUsersData = mapUsersData(data.data);
-        setDataSource(mappedUsersData);
+        // setDataSource(mappedUsersData);
+        setUsersData({
+          data: mappedUsersData,
+          count: data.count_data,
+          size: data.size,
+        });
       }
     } catch (error) {
-      setDataSource(null);
+      // setDataSource(null);
+      setUsersData(null);
     } finally {
       dispatch(setLoadingState(false));
     }
@@ -361,10 +396,16 @@ export default function CompromisedDashboard() {
         setTotalThirdParty(data.count_data);
         setTotalRows(data.count_data);
         const mappedThirdParty = mapThirdPartyData(data.data);
-        setDataSource(mappedThirdParty);
+        // setDataSource(mappedThirdParty);
+        setThirdPartyData({
+          data: mappedThirdParty,
+          count: data.count_data,
+          size: data.size,
+        });
       }
     } catch (error) {
-      setDataSource(null);
+      // setDataSource(null);
+      setThirdPartyData(null);
     } finally {
       dispatch(setLoadingState(false));
     }
@@ -399,10 +440,16 @@ export default function CompromisedDashboard() {
         setTotalDevice(data.count_data);
         setTotalRows(data.count_data);
         const mappedDevicesData = mapDevicesData(data.data);
-        setDataSource(mappedDevicesData);
+        // setDataSource(mappedDevicesData);
+        setDevicesData({
+          data: mappedDevicesData,
+          count: data.count_data,
+          size: data.size,
+        });
       }
     } catch (error) {
-      setDataSource(null);
+      // setDataSource(null);
+      setDevicesData(null);
     } finally {
       dispatch(setLoadingState(false));
     }
@@ -508,7 +555,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
               }
-              total={totalEmployee && totalEmployee}
+              total={employeeData && employeeData.count}
               value={"Employee"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE}
@@ -516,7 +563,7 @@ export default function CompromisedDashboard() {
 
             <CompromiseButton
               isActive={selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS}
-              total={totalUsers && totalUsers}
+              total={usersData && usersData.count}
               value={"User"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_USERS}
@@ -665,82 +712,48 @@ export default function CompromisedDashboard() {
                   <Spin size="large" />
                 </ConfigProvider>
               </div>
-            ) : dataSource === null ? (
-              <div className="text-center flex flex-col justify-center items-center">
-                <div>
-                  <Image
-                    src={"/images/no_result_found_compromised.svg"}
-                    alt="search icon"
-                    width={129}
-                    height={121}
-                  />
-                </div>
-                <div className="mt-5">
-                  <h1 className="text-heading-3">No results found</h1>
-                  <p className="text-text-description text-LG-normal mt-4">
-                    Try different keywords or remove search filters
-                  </p>
-                </div>
-              </div>
             ) : (
-              <div className="border-2 rounded-xl border-input-border max-w-full w-full ">
-                <table className="bg-white  w-full max-w-full rounded-xl">
-                  <thead className="text-black text-Base-strong bg-[#00000005] w-full">
-                    <tr className="border-b-[1px] border-[#D5D5D5] w-full">
-                      <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
-                        No
-                      </td>
-                      {selectedButton ===
-                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE ||
-                      selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS ||
-                      selectedButton ===
-                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY ? (
-                        <>
-                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                            Date compromised
-                          </td>
-                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                            URL
-                          </td>
-                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                            Login
-                          </td>
-                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                            Password
-                          </td>
-                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                            Password strength
-                          </td>
-                          <td className="py-[19px] px-[16px]">Action</td>
-                        </>
-                      ) : (
-                        <>
-                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
-                            Date compromised
-                          </td>
-                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
-                            Devices name
-                          </td>
-                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
-                            IP address
-                          </td>
-                          <td className="py-[19px] px-[16px]">Action</td>
-                        </>
-                      )}
-                    </tr>
-                  </thead>
-
-                  <tbody className="text-Base-normal text-text-description w-full">
-                    {dataSource &&
-                      dataSource.map((data, index) => (
-                        <tr
-                          className="border-b-[2px] border-[#D5D5D5] w-full"
-                          key={data.id}
-                        >
-                          <td className="py-[19px] px-[16px]"> {index + 1} </td>
-                          {selectedButton ===
-                            DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE && (
-                            <>
+              <>
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE &&
+                  employeeData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              URL
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Login
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password strength
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {employeeData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
                               </td>
@@ -763,25 +776,123 @@ export default function CompromisedDashboard() {
                                     "Medium" === "Strong" && "text-text-green"
                                   )}
                                 >
-                                  Medium
+                                  {CalculatePasswordStrengthWithReturnPlainString(
+                                    data.pass
+                                  )}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.action}
                               </td>
-                            </>
-                          )}
-                          {selectedButton ===
-                            DETAIL_COMPROMISED_COMPROMISE_USERS && (
-                            <>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {employeeData.size} to {employeeData.count}{" "}
+                          entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={employeeData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE &&
+                  employeeData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS &&
+                  usersData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              URL
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Login
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password strength
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {usersData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
                                 {data.url}
                               </td>
-                              <td className="py-[19px] px-[16px] text-wrap w-[100px]">
-                                {data.login}
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
+                                <p className="text-wrap whitespace-pre-line">
+                                  {data.login}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.pass}
@@ -794,25 +905,121 @@ export default function CompromisedDashboard() {
                                     "Medium" === "Strong" && "text-text-green"
                                   )}
                                 >
-                                  Medium
+                                  {CalculatePasswordStrengthWithReturnPlainString(
+                                    data.pass
+                                  )}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.action}
                               </td>
-                            </>
-                          )}
-                          {selectedButton ===
-                            DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY && (
-                            <>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {usersData.size} to {usersData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={usersData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS &&
+                  usersData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
+                  thirdPartyData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              URL
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Login
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password strength
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {thirdPartyData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
                                 {data.url}
                               </td>
-                              <td className="py-[19px] px-[16px] text-wrap w-[100px]">
-                                {data.login}
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
+                                <p className="text-wrap whitespace-pre-line">
+                                  {data.login}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.pass}
@@ -825,17 +1032,106 @@ export default function CompromisedDashboard() {
                                     "Medium" === "Strong" && "text-text-green"
                                   )}
                                 >
-                                  Medium
+                                  {CalculatePasswordStrengthWithReturnPlainString(
+                                    data.pass
+                                  )}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.action}
                               </td>
-                            </>
-                          )}
-                          {selectedButton ===
-                            DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
-                            <>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {thirdPartyData.size} to{" "}
+                          {thirdPartyData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={thirdPartyData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
+                  thirdPartyData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES &&
+                  devicesData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                              Devices name
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                              IP address
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {devicesData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
                               </td>
@@ -849,44 +1145,64 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 {data.action}
                               </td>
-                            </>
-                          )}
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-
-                <div className="flex items-center justify-between my-[19px] mx-[16px]">
-                  <p className="text-Base-normal text-[#676767] ">
-                    Showing 10 to {totalRows && totalRows} entries
-                  </p>
-                  <div>
-                    <ConfigProvider
-                      theme={{
-                        components: {
-                          Pagination: {
-                            itemActiveBg: "#FF6F1E",
-                            itemLinkBg: "#fff",
-                            itemInputBg: "#fff",
-                          },
-                        },
-                        token: {
-                          colorPrimary: "white",
-                        },
-                      }}
-                    >
-                      <Pagination
-                        type="primary"
-                        defaultCurrent={1}
-                        total={totalRows && totalRows}
-                        showSizeChanger={false}
-                        style={{ color: "#FF6F1E" }}
-                        hideOnSinglePage={true}
-                      />
-                    </ConfigProvider>
-                  </div>
-                </div>
-              </div>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {devicesData.size} to {devicesData.count}{" "}
+                          entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={devicesData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES &&
+                  devicesData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+              </>
             )}
           </section>
         </div>
