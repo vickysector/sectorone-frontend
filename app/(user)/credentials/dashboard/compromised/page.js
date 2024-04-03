@@ -283,6 +283,7 @@ export default function CompromisedDashboard() {
   };
 
   const handleClickSearch = () => {
+    setInitialCheckboxState(false);
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         fetchEmployeeData(inputSearch);
@@ -1000,6 +1001,7 @@ export default function CompromisedDashboard() {
     setEndDate("");
     setTotalRows("");
     setSelectedOutlineButton(DETAIL_COMPROMISED_DEFAULT);
+    setInitialCheckboxState(false);
   };
 
   const handleButtonOutlineClick = (value) => {
@@ -1008,6 +1010,7 @@ export default function CompromisedDashboard() {
     setStartDate("");
     setEndDate("");
     setTotalRows("");
+    setInitialCheckboxState(false);
   };
 
   useEffect(() => {
@@ -1038,6 +1041,7 @@ export default function CompromisedDashboard() {
 
   useEffect(() => {
     // fetchEmployeeData();
+    setInitialCheckboxState(false);
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         fetchEmployeeData(inputSearch);
@@ -1733,9 +1737,18 @@ export default function CompromisedDashboard() {
                                       )
                                     }
                                   >
-                                    <BookOutlined
-                                      style={{ fontSize: "18px" }}
-                                    />
+                                    {data.is_boomark ? (
+                                      <BookFilled
+                                        style={{
+                                          fontSize: "18px",
+                                          color: "#FFD591",
+                                        }}
+                                      />
+                                    ) : (
+                                      <BookOutlined
+                                        style={{ fontSize: "18px" }}
+                                      />
+                                    )}
                                   </div>
                                 </div>
                               </td>
@@ -2278,9 +2291,18 @@ export default function CompromisedDashboard() {
                                       )
                                     }
                                   >
-                                    <BookOutlined
-                                      style={{ fontSize: "18px" }}
-                                    />
+                                    {data.is_boomark ? (
+                                      <BookFilled
+                                        style={{
+                                          fontSize: "18px",
+                                          color: "#FFD591",
+                                        }}
+                                      />
+                                    ) : (
+                                      <BookOutlined
+                                        style={{ fontSize: "18px" }}
+                                      />
+                                    )}
                                   </div>
                                 </div>
                               </td>
@@ -2823,9 +2845,18 @@ export default function CompromisedDashboard() {
                                       )
                                     }
                                   >
-                                    <BookOutlined
-                                      style={{ fontSize: "18px" }}
-                                    />
+                                    {data.is_boomark ? (
+                                      <BookFilled
+                                        style={{
+                                          fontSize: "18px",
+                                          color: "#FFD591",
+                                        }}
+                                      />
+                                    ) : (
+                                      <BookOutlined
+                                        style={{ fontSize: "18px" }}
+                                      />
+                                    )}
                                   </div>
                                 </div>
                               </td>
