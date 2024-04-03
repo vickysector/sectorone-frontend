@@ -924,13 +924,17 @@ export default function CompromisedDashboard() {
               onClick={handleButtonOutlineClick}
               nameData={DETAIL_COMPROMISED_DEFAULT}
             />
-            <OutlineButton
-              isActive={selectedOutlineButton === DETAIL_COMPROMISED_TESTING}
-              total={GetOutlineTotalDataValidatedOutlineButton(selectedButton)}
-              value={"Validated "}
-              onClick={handleButtonOutlineClick}
-              nameData={DETAIL_COMPROMISED_TESTING}
-            />
+            {selectedButton !== DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
+              <OutlineButton
+                isActive={selectedOutlineButton === DETAIL_COMPROMISED_TESTING}
+                total={GetOutlineTotalDataValidatedOutlineButton(
+                  selectedButton
+                )}
+                value={"Validated "}
+                onClick={handleButtonOutlineClick}
+                nameData={DETAIL_COMPROMISED_TESTING}
+              />
+            )}
             <OutlineButton
               isActive={selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK}
               total={GetOutlineTotalDataBookmarkedOutlineButton(selectedButton)}
