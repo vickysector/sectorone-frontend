@@ -73,6 +73,7 @@ import {
   addIdtoIds,
   removeIdtoIds,
   setMarkedAsBookmark,
+  setMarkedAsValidated,
   setStatusMultipleBookmark,
 } from "@/app/_lib/store/features/Compromised/CheckboxSlices";
 
@@ -152,6 +153,21 @@ export default function CompromisedDashboard() {
   };
 
   // End of: Checkbox Bookmark Functionality
+
+  // Start of:  Checkbox Validated Functionality
+
+  const handleValidatedAllCheckbox = () => {
+    dispatch(setMarkedAsValidated(true));
+  };
+
+  const statusStateMultipleValidated = useSelector(
+    (state) => state.checkbox.success_validated
+  );
+  const bannerStateMultipleValidated = useSelector(
+    (state) => state.checkbox.banner_validated
+  );
+
+  // End of:  Checkbox Validated Functionality
 
   const loadingCompromisedData = useSelector(
     (state) => state.compromised.status
@@ -1074,6 +1090,7 @@ export default function CompromisedDashboard() {
     selectedOutlineButton,
     selectValidasi,
     statusStateMultipleBookmark,
+    statusStateMultipleValidated,
   ]);
 
   // End of: Fetch Data compromised
@@ -1209,7 +1226,10 @@ export default function CompromisedDashboard() {
                   )}
                 >
                   <div className="bg-white px-[16px] py-[9px] rounded-lg shadow-xl">
-                    <div className="flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px]  px-[8px]">
+                    <div
+                      className="flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px]  px-[8px]"
+                      onClick={handleValidatedAllCheckbox}
+                    >
                       <h1 className="mr-6 text-Base-normal">
                         Marked as validated
                       </h1>
@@ -1342,6 +1362,28 @@ export default function CompromisedDashboard() {
                 <p className="text-white text-Base-normal ml-[8px] ">
                   {" "}
                   Oops something wrong when Bookmark multiple data
+                </p>
+              </section>
+            )
+          ) : (
+            ""
+          )}
+
+          {bannerStateMultipleValidated !== null ? (
+            bannerStateMultipleValidated ? (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-success-chart rounded-lg shadow-lg">
+                <CheckCircleFilled style={{ color: "white" }} />
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Successfully Validated Data. Go to Validated Section to see
+                  more
+                </p>
+              </section>
+            ) : (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-error rounded-lg shadow-lg">
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Oops something wrong when Validated multiple data
                 </p>
               </section>
             )
