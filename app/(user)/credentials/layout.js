@@ -57,6 +57,9 @@ export default function DashboardLayout({ children }) {
   const loadingCompromisedData = useSelector(
     (state) => state.compromised.status
   );
+  const loadingActivityLogData = useSelector(
+    (state) => state.activityLogLoading.status
+  );
   const detailsCompromisedState = useSelector(
     (state) => state.detailComrpomise.status
   );
@@ -617,7 +620,8 @@ export default function DashboardLayout({ children }) {
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-40 flex items-center justify-center text-black ",
-          loadingCompromisedData ? "visible" : "hidden"
+          loadingCompromisedData ? "visible" : "hidden",
+          loadingActivityLogData ? "visible" : "hidden"
         )}
       >
         <div
