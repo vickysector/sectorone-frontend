@@ -14,6 +14,7 @@ import {
   BookOutlined,
   CheckCircleFilled,
   BookFilled,
+  RightOutlined,
 } from "@ant-design/icons";
 import { Pagination, ConfigProvider, DatePicker, Spin, Select } from "antd";
 import { useEffect, useState } from "react";
@@ -73,7 +74,7 @@ export default function CompromisedDashboard() {
     DETAIL_COMPROMISED_DEFAULT
   );
   const [dataSource, setDataSource] = useState();
-  const [lastId, setLastId] = useState("");
+  const [lastId, setLastId] = useState(1);
   const [inputSearch, setInputSearch] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -107,9 +108,15 @@ export default function CompromisedDashboard() {
   const [lastUpdate, setLastUpdate] = useState();
   const [domainUsers, setDomainUsers] = useState();
 
-  console.log("last id ", lastId);
-  console.log("start date  ", startDate);
-  console.log("end date ", endDate);
+  // Start of:  Checkbox Functionality
+
+  const [initialCheckboxState, setInitialCheckboxState] = useState(false);
+
+  const handleInitialCheckboxState = (e) => {
+    setInitialCheckboxState(e.target.checked);
+  };
+
+  // End of: Checkbox Functionality
 
   const loadingCompromisedData = useSelector(
     (state) => state.compromised.status
@@ -475,7 +482,7 @@ export default function CompromisedDashboard() {
 
   const GetOutlineTotalDataBookmarkedOutlineButton = (selectButton) => {
     if (selectButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE) {
-      return employeeBookmarkData && employeeBookmarkData.count;
+      return employeeBookmarkData && employeeBookmarkData.size;
     } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
       return usersBookmarkData && usersBookmarkData.count;
     } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
@@ -491,7 +498,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}compromised/employee?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}compromised/employee?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -537,7 +544,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}compromised/users?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}compromised/users?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -581,7 +588,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}compromised/thirdparty?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}compromised/thirdparty?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -625,7 +632,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}compromised/devices?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}compromised/devices?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -669,7 +676,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/employee?status=bookmark&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/employee?status=boomark&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -708,7 +715,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/employee?status=testing&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/employee?status=testing&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -747,7 +754,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/users?status=bookmark&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/users?status=bookmark&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -786,7 +793,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/users?status=testing&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/users?status=testing&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -825,7 +832,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/thirdparty?status=bookmark&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/thirdparty?status=bookmark&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -864,7 +871,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/thirdparty?status=testing&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/thirdparty?status=testing&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -903,7 +910,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/devices/boomark?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/devices/boomark?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -1159,7 +1166,26 @@ export default function CompromisedDashboard() {
             />
 
             <div className="mt-8 ">
-              <div className="flex items-center">
+              <div className="flex items-center relative">
+                <div
+                  className={clsx(
+                    "absolute bottom-[-90px] left-0 z-30",
+                    initialCheckboxState ? "visible" : "hidden"
+                  )}
+                >
+                  <div className="bg-white px-[16px] py-[9px] rounded-lg shadow-xl">
+                    <div className="flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px]  px-[8px]">
+                      <h1 className="mr-6 text-Base-normal">
+                        Marked as validated
+                      </h1>
+                      <RightOutlined />
+                    </div>
+                    <div className="flex items-center justify-between mt-2 cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px] px-[8px] ">
+                      <h1 className="mr-6 text-Base-normal">Bookmark item</h1>
+                      <RightOutlined />
+                    </div>
+                  </div>
+                </div>
                 <div>
                   <input
                     type="checkbox"
@@ -1167,6 +1193,8 @@ export default function CompromisedDashboard() {
                     id="agreements"
                     value="I agree to the Terms & Conditions and Privacy Policy"
                     className=" text-Base-normal"
+                    onChange={handleInitialCheckboxState}
+                    checked={initialCheckboxState}
                   />
                   <label
                     htmlFor="agreements"
