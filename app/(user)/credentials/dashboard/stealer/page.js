@@ -211,6 +211,7 @@ export default function StealerUserPage() {
   const [iconBreaches, setIconBreaches] = useState();
   const [lastUpdate, setLastUpdate] = useState();
   const [domainUsers, setDomainUsers] = useState();
+  const [stealersdata, setStealersData] = useState();
 
   const dispatch = useDispatch();
 
@@ -238,9 +239,6 @@ export default function StealerUserPage() {
 
       const data = await res.json();
 
-      setBreachesAll(data.data.all_breaches);
-      setEmployeeBreaches(data.data.employee_breaches);
-      setUserBreaches(data.data.user_breaches);
       setUrlBreaches(data.data.name_domain);
       setIconBreaches(data.data.icon_domain);
       setLastUpdate(data.data.last_update);
@@ -271,9 +269,36 @@ export default function StealerUserPage() {
     }
   };
 
+  const getBreachesDataStealer = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}breaches/stealer?year=2024`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      console.log("data : ", data);
+
+      setUrlBreaches(data.data.name_domain);
+      setIconBreaches(data.data.icon_domain);
+      setLastUpdate(data.data.last_update);
+      setStealersData(data.data.stealer);
+    } catch (error) {}
+  };
+
   useEffect(() => {
     getListDomainUsers();
     getBreachesData();
+    getBreachesDataStealer();
   }, []);
 
   return (
@@ -312,7 +337,7 @@ export default function StealerUserPage() {
       <section className="mt-8">
         <h1 className="text-heading-4 text-black ">Total Stealer</h1>
         <div className="p-8 bg-white border-input-border border-2 mt-4 rounded-[16px]">
-          <ConfigProvider
+          {/* <ConfigProvider
             theme={{
               token: {
                 colorBgContainer: "#F7F7F7",
@@ -350,9 +375,9 @@ export default function StealerUserPage() {
               ]}
               className="ml-8"
             />
-          </ConfigProvider>
+          </ConfigProvider> */}
           <div className="border-2 border-input-border rounded-[16px] mt-4 p-8 flex justify-center items-center w-full relative">
-            <ChartBarVerticalStealer />
+            <ChartBarVerticalStealer stealerData={stealersdata} />
           </div>
         </div>
       </section>

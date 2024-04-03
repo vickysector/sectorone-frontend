@@ -54,38 +54,52 @@ const options = {
   },
 };
 
-const labels = [
-  "Jan",
-  "Feb",
-  "March",
-  "Apr",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sept",
-  "Okt",
-  "Nov",
-  "Dec",
-];
+export default function ChartBarVerticalStealer(props) {
+  const { stealerData } = props;
 
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "Employees",
-      data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-      backgroundColor: "#FAAD14",
-      borderRadius: 5,
-      barPercentage: 0.6,
-    },
-  ],
-};
+  console.log("stealer data: ", stealerData);
 
-export default function ChartBarVerticalStealer() {
+  const labels = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Stealer",
+        data: labels.map((month) => {
+          return stealerData
+            ? stealerData[month] === null
+              ? 0
+              : stealerData[month]["-"]
+            : 0;
+        }),
+        backgroundColor: "#FAAD14",
+        borderRadius: 5,
+        barPercentage: 0.6,
+      },
+    ],
+  };
+
   return (
     <>
-      <Bar options={options} data={data} className="mt-12" />
+      <Bar
+        options={{ ...options, scales: { y: { min: 0 } } }}
+        data={data}
+        className="mt-12"
+      />
     </>
   );
 }
