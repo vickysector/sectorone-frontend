@@ -39,7 +39,7 @@ export default function ActivityLogUserPage() {
   };
 
   const handlePageChange = (page) => {
-    console.log(page);
+    // console.log(page);
     setPage(page);
   };
 
