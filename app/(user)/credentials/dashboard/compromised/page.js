@@ -177,6 +177,13 @@ export default function CompromisedDashboard() {
       // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
         fetchUsersData(inputSearch);
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          fetchUserBookmark(inputSearch);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          fetchUserTesting(inputSearch);
+        } else {
+          fetchUsersData(inputSearch);
+        }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
         fetchThirdPartyData(inputSearch);
@@ -359,6 +366,44 @@ export default function CompromisedDashboard() {
         setValidasiSuccess(null);
       }, 5000);
     }
+  };
+
+  const GetOutlineTotalDataCompromiseOutlineButton = (selectButton) => {
+    if (selectButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE) {
+      return employeeData && employeeData.count;
+    } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
+      return usersData && usersData.count;
+    } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
+      return thirdPartyData && thirdPartyData.count;
+    } else {
+      return devicesData && devicesData.count;
+    }
+  };
+
+  const GetOutlineTotalDataValidatedOutlineButton = (selectButton) => {
+    if (selectButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE) {
+      return employeeValidatedData && employeeValidatedData.count;
+    } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
+      return usersValidatedData && usersValidatedData.count;
+    }
+    // else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
+    //   return thirdPartyData && thirdPartyData.count
+    // } else {
+    //   return devicesData && devicesData.count
+    // }
+  };
+
+  const GetOutlineTotalDataBookmarkedOutlineButton = (selectButton) => {
+    if (selectButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE) {
+      return employeeBookmarkData && employeeBookmarkData.count;
+    } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
+      return usersBookmarkData && usersBookmarkData.count;
+    }
+    // else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
+    //   return thirdPartyData && thirdPartyData.count
+    // } else {
+    //   return devicesData && devicesData.count
+    // }
   };
 
   // Start of: Fetch Data compromised
@@ -619,6 +664,84 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchUserBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/users?status=bookmark&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setUsersBookmarkData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      setUsersBookmarkData(null);
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchUserTesting = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/users?status=testing&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setUsersValidatedData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      setUsersValidatedData(null);
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
   const handleButtonClick = (value) => {
     setSelectedButton(value.target.name);
     setInputSearch("");
@@ -648,6 +771,10 @@ export default function CompromisedDashboard() {
       fetchEmployeeData();
       fetchEmployeeBookmark();
       fetchEmployeeTesting();
+    } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
+      fetchUsersData();
+      fetchUserBookmark();
+      fetchUserTesting();
     }
   }, [selectedButton]);
 
@@ -670,6 +797,13 @@ export default function CompromisedDashboard() {
       // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
         fetchUsersData(inputSearch);
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          fetchUserBookmark(inputSearch);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          fetchUserTesting(inputSearch);
+        } else {
+          fetchUsersData(inputSearch);
+        }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
         fetchThirdPartyData(inputSearch);
@@ -785,21 +919,21 @@ export default function CompromisedDashboard() {
           <section className="p-8">
             <OutlineButton
               isActive={selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT}
-              total={employeeData && employeeData.count}
+              total={GetOutlineTotalDataCompromiseOutlineButton(selectedButton)}
               value={"Data compromise "}
               onClick={handleButtonOutlineClick}
               nameData={DETAIL_COMPROMISED_DEFAULT}
             />
             <OutlineButton
               isActive={selectedOutlineButton === DETAIL_COMPROMISED_TESTING}
-              total={employeeValidatedData && employeeValidatedData.count}
+              total={GetOutlineTotalDataValidatedOutlineButton(selectedButton)}
               value={"Validated "}
               onClick={handleButtonOutlineClick}
               nameData={DETAIL_COMPROMISED_TESTING}
             />
             <OutlineButton
               isActive={selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK}
-              total={employeeBookmarkData && employeeBookmarkData.count}
+              total={GetOutlineTotalDataBookmarkedOutlineButton(selectedButton)}
               value={"Bookmark "}
               onClick={handleButtonOutlineClick}
               nameData={DETAIL_COMPROMISED_BOOKMARK}
@@ -827,7 +961,7 @@ export default function CompromisedDashboard() {
                       " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
                     )}
                     placeholder={
-                      DETAIL_COMPROMISED_COMPROMISE_DEVICES
+                      selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES
                         ? "Search by Devices name/IP address"
                         : "Search by URL/Login"
                     }
@@ -1513,6 +1647,7 @@ export default function CompromisedDashboard() {
                   )}
 
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT &&
                   usersData && (
                     <div className="border-2 rounded-xl border-input-border">
                       <table className="bg-white  w-full rounded-xl">
@@ -1620,6 +1755,7 @@ export default function CompromisedDashboard() {
                     </div>
                   )}
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT &&
                   usersData === null && (
                     <div className="text-center flex flex-col justify-center items-center">
                       <div>
@@ -1639,6 +1775,421 @@ export default function CompromisedDashboard() {
                     </div>
                   )}
 
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_TESTING &&
+                  usersValidatedData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              URL
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Login
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password strength
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Status
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {usersValidatedData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {convertDateFormat(data.datetime_added)}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.url}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
+                                <p className="text-wrap whitespace-pre-line">
+                                  {data.login}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.password}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <p
+                                  className={clsx(
+                                    "Medium" === "Weak" && "text-pink",
+                                    "Medium" === "Medium" && "text-text-orange",
+                                    "Medium" === "Strong" && "text-text-green"
+                                  )}
+                                >
+                                  {CalculatePasswordStrengthWithReturnPlainString(
+                                    data.password
+                                  )}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <ConfigProvider
+                                  theme={{
+                                    token: {
+                                      colorBgContainer: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#F7F7F7"
+                                          : "white"
+                                      }`,
+                                      colorBorder: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#D5D5D5"
+                                          : "#52C41A"
+                                      }`,
+                                      colorText: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#000000E0"
+                                          : "#52C41A"
+                                      }`,
+                                      fontWeightStrong: true,
+                                    },
+                                    components: {
+                                      Select: {
+                                        optionActiveBg: "#F7F7F7",
+                                        optionSelectedBg: "#FFEBD4",
+                                      },
+                                    },
+                                  }}
+                                >
+                                  <Select
+                                    defaultValue={data.status_validasi}
+                                    value={selectValidasi}
+                                    style={{ width: 91 }}
+                                    onChange={(value) =>
+                                      handleSelectValidation(value, data.id)
+                                    }
+                                    options={[
+                                      {
+                                        value: "invalid",
+                                        label: "Invalid",
+                                      },
+
+                                      {
+                                        value: "valid",
+                                        label: "Valid",
+                                      },
+                                    ]}
+                                  />
+                                </ConfigProvider>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <div className="flex">
+                                  <div
+                                    className="cursor-pointer"
+                                    onClick={() => handleDetails(data)}
+                                  >
+                                    <EyeOutlined style={{ fontSize: "18px" }} />
+                                  </div>
+                                  <div
+                                    className="ml-auto mr-auto cursor-pointer"
+                                    onClick={() =>
+                                      handleBookmarkConfirm(
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_USERS
+                                      )
+                                    }
+                                  >
+                                    <BookOutlined
+                                      style={{ fontSize: "18px" }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {usersValidatedData.size} to{" "}
+                          {usersValidatedData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={usersValidatedData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_TESTING &&
+                  usersValidatedData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK &&
+                  usersBookmarkData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              URL
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Login
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password strength
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Status
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {usersBookmarkData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {convertDateFormat(data.datetime_added)}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.url}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
+                                <p className="text-wrap whitespace-pre-line">
+                                  {data.login}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.password}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <p
+                                  className={clsx(
+                                    "Medium" === "Weak" && "text-pink",
+                                    "Medium" === "Medium" && "text-text-orange",
+                                    "Medium" === "Strong" && "text-text-green"
+                                  )}
+                                >
+                                  {CalculatePasswordStrengthWithReturnPlainString(
+                                    data.password
+                                  )}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.status_validasi !== "-" && (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorBgContainer: `${
+                                          data.status_validasi === "invalid"
+                                            ? "#F7F7F7"
+                                            : "white"
+                                        }`,
+                                        colorBorder: `${
+                                          data.status_validasi === "invalid"
+                                            ? "#D5D5D5"
+                                            : "#52C41A"
+                                        }`,
+                                        colorText: `${
+                                          data.status_validasi === "invalid"
+                                            ? "#000000E0"
+                                            : "#52C41A"
+                                        }`,
+                                        fontWeightStrong: true,
+                                      },
+                                      components: {
+                                        Select: {
+                                          optionActiveBg: "#F7F7F7",
+                                          optionSelectedBg: "#FFEBD4",
+                                        },
+                                      },
+                                    }}
+                                  >
+                                    <Select
+                                      defaultValue={data.status_validasi}
+                                      value={selectValidasi}
+                                      style={{ width: 91 }}
+                                      onChange={(value) =>
+                                        handleSelectValidation(value, data.id)
+                                      }
+                                      options={[
+                                        {
+                                          value: "invalid",
+                                          label: "Invalid",
+                                        },
+
+                                        {
+                                          value: "valid",
+                                          label: "Valid",
+                                        },
+                                      ]}
+                                    />
+                                  </ConfigProvider>
+                                )}
+                                {data.status_validasi === "-" && (
+                                  <p> {data.status_validasi} </p>
+                                )}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <div className="flex">
+                                  <div
+                                    className="cursor-pointer"
+                                    onClick={() => handleDetails(data)}
+                                  >
+                                    <EyeOutlined style={{ fontSize: "18px" }} />
+                                  </div>
+                                  <div
+                                    className="ml-auto mr-auto cursor-pointer"
+                                    onClick={() =>
+                                      handleUnBookmarkConfirm(
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_USERS
+                                      )
+                                    }
+                                  >
+                                    <BookFilled
+                                      style={{
+                                        fontSize: "18px",
+                                        color: "#FFD591",
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {usersBookmarkData.size} to{" "}
+                          {usersBookmarkData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={usersBookmarkData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK &&
+                  usersBookmarkData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
                   thirdPartyData && (
                     <div className="border-2 rounded-xl border-input-border">
