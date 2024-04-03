@@ -30,6 +30,11 @@ import {
   setBookmarkConfirmState,
   setBookmarkStatusData,
 } from "@/app/_lib/store/features/Compromised/BookmarkSlices";
+import {
+  setUnBookmarkBannerSuccess,
+  setUnBookmarkConfirmState,
+  setUnBookmarkStatusData,
+} from "@/app/_lib/store/features/Compromised/UnBookmarkSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -71,6 +76,18 @@ export default function DashboardLayout({ children }) {
     (state) => state.bookmarkCompromise.domain
   );
 
+  const unbookmarkCompromisedState = useSelector(
+    (state) => state.unbookmarkCompromise.status
+  );
+
+  const unbookmarkCompromisedId = useSelector(
+    (state) => state.unbookmarkCompromise.id_data
+  );
+
+  const unbookmarkCompromiseDomain = useSelector(
+    (state) => state.unbookmarkCompromise.domain
+  );
+
   // Start of: Checking Users Credentials
 
   const CredentialsEmail = getCookie("email_credentials");
@@ -89,6 +106,10 @@ export default function DashboardLayout({ children }) {
 
   const handleBookmarkCompromisedClose = () => {
     dispatch(setBookmarkConfirmState(false));
+  };
+
+  const handleUnBookmarkCompromisedClose = () => {
+    dispatch(setUnBookmarkConfirmState(false));
   };
 
   // Start of: Update Domain
@@ -114,6 +135,11 @@ export default function DashboardLayout({ children }) {
   const handleBookmarkCompromiseData = () => {
     BookmarkCompromisedData();
     dispatch(setBookmarkConfirmState(false));
+  };
+
+  const handleUnBookmarkCompromiseData = () => {
+    UnBookmarkCompromisedData();
+    dispatch(setUnBookmarkConfirmState(false));
   };
 
   const handleDetailCompromisedState = () => {
@@ -165,6 +191,46 @@ export default function DashboardLayout({ children }) {
     } finally {
       setTimeout(() => {
         dispatch(setBookmarkBannerSuccess(null));
+      }, 9000);
+    }
+  };
+
+  const UnBookmarkCompromisedData = async () => {
+    try {
+      const res = await fetch(
+        `${APIDATAV1}status/domain/${unbookmarkCompromiseDomain}/boomark`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: [`${unbookmarkCompromisedId}`],
+          }),
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error("");
+      }
+
+      dispatch(setUnBookmarkStatusData(true));
+      dispatch(setUnBookmarkBannerSuccess(true));
+    } catch (error) {
+      dispatch(setUnBookmarkStatusData(false));
+      dispatch(setUnBookmarkBannerSuccess(false));
+    } finally {
+      setTimeout(() => {
+        dispatch(setUnBookmarkBannerSuccess(null));
       }, 9000);
     }
   };
@@ -352,6 +418,37 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          unbookmarkCompromisedState ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            {" "}
+            Are you sure UnBookmark this Data?{" "}
+          </h1>
+          <p className="mb-6 text-text-description ">
+            After Un Bookmark this data will not available in Data Bookmark. you
+            will meet this data in Data Compromised section.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleUnBookmarkCompromiseData}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleUnBookmarkCompromisedClose}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
