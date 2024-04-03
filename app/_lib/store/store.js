@@ -7,6 +7,7 @@ import DetailSlices from "./features/Compromised/DetailSlices";
 import BookmarkSlices from "./features/Compromised/BookmarkSlices";
 import UnBookmarkSlices from "./features/Compromised/UnBookmarkSlices";
 import LoadingLogSlices from "./features/LogActivity/LoadingLogSlices";
+import CheckboxSlices from "./features/Compromised/CheckboxSlices";
 
 export const store = configureStore({
   reducer: {
@@ -18,5 +19,6 @@ export const store = configureStore({
     bookmarkCompromise: BookmarkSlices,
     unbookmarkCompromise: UnBookmarkSlices,
     activityLogLoading: LoadingLogSlices,
+    checkbox: CheckboxSlices,
   },
 });

@@ -35,6 +35,12 @@ import {
   setUnBookmarkConfirmState,
   setUnBookmarkStatusData,
 } from "@/app/_lib/store/features/Compromised/UnBookmarkSlices";
+import {
+  clearIds,
+  setBannerMultipleBookmark,
+  setMarkedAsBookmark,
+  setSuccessMultipleBookmark,
+} from "@/app/_lib/store/features/Compromised/CheckboxSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -114,6 +120,70 @@ export default function DashboardLayout({ children }) {
   const handleUnBookmarkCompromisedClose = () => {
     dispatch(setUnBookmarkConfirmState(false));
   };
+
+  // Start of: Handle Checkboxes in Compromised pages
+
+  const allCheckboxesIdData = useSelector((state) => state.checkbox.ids);
+  const confirmCheckboxIdsData = useSelector(
+    (state) => state.checkbox.markedAsBookmark
+  );
+  const multipleBookmarkStatus = useSelector((state) => state.checkbox.status);
+
+  console.log("all data id checkbox from compromised: ", allCheckboxesIdData);
+
+  const handleCloseConfirmCheckboxIdsData = () => {
+    dispatch(setMarkedAsBookmark(false));
+  };
+
+  const handleMultipleBookmarkCheckbox = () => {
+    CheckboxMultipleBookmark();
+    dispatch(clearIds());
+    dispatch(setMarkedAsBookmark(false));
+  };
+
+  const CheckboxMultipleBookmark = async () => {
+    try {
+      const res = await fetch(
+        `${APIDATAV1}status/domain/${multipleBookmarkStatus}/boomark`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: allCheckboxesIdData,
+          }),
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (!data.success) {
+        throw new Error("");
+      }
+
+      dispatch(setSuccessMultipleBookmark(true));
+      dispatch(setBannerMultipleBookmark(true));
+      dispatch(clearIds());
+    } catch (error) {
+      dispatch(setBannerMultipleBookmark(false));
+      dispatch(clearIds());
+    } finally {
+      dispatch(clearIds());
+      setTimeout(() => {
+        dispatch(setBannerMultipleBookmark(null));
+      }, 9000);
+    }
+  };
+
+  // End of: Handle Checkboxes in Compromised pages
 
   // Start of: Update Domain
 
@@ -421,6 +491,37 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          confirmCheckboxIdsData ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            {" "}
+            Are you sure to Bookmark this {allCheckboxesIdData.length} data ?{" "}
+          </h1>
+          <p className="mb-6 text-text-description ">
+            After Bookmark this data will not available in Data Bookmark. you
+            will meet this data in Data Compromised section.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleMultipleBookmarkCheckbox}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleCloseConfirmCheckboxIdsData}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",

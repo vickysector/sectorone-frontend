@@ -16,7 +16,14 @@ import {
   BookFilled,
   RightOutlined,
 } from "@ant-design/icons";
-import { Pagination, ConfigProvider, DatePicker, Spin, Select } from "antd";
+import {
+  Pagination,
+  ConfigProvider,
+  DatePicker,
+  Spin,
+  Select,
+  Checkbox,
+} from "antd";
 import { useEffect, useState } from "react";
 import {
   setBreachesEmployee,
@@ -62,6 +69,12 @@ import {
   setUnBookmarkIdData,
 } from "@/app/_lib/store/features/Compromised/UnBookmarkSlices";
 import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
+import {
+  addIdtoIds,
+  removeIdtoIds,
+  setMarkedAsBookmark,
+  setStatusMultipleBookmark,
+} from "@/app/_lib/store/features/Compromised/CheckboxSlices";
 
 const { RangePicker } = DatePicker;
 
@@ -108,15 +121,37 @@ export default function CompromisedDashboard() {
   const [lastUpdate, setLastUpdate] = useState();
   const [domainUsers, setDomainUsers] = useState();
 
-  // Start of:  Checkbox Functionality
+  // Start of:  Checkbox Bookmark Functionality
 
   const [initialCheckboxState, setInitialCheckboxState] = useState(false);
+
+  const checkboxArray = useSelector((state) => state.checkbox.ids);
+  const statusStateMultipleBookmark = useSelector(
+    (state) => state.checkbox.success
+  );
+  const bannerStateMultipleBookmark = useSelector(
+    (state) => state.checkbox.banner
+  );
 
   const handleInitialCheckboxState = (e) => {
     setInitialCheckboxState(e.target.checked);
   };
 
-  // End of: Checkbox Functionality
+  const handleGatheringIds = (e, id, status) => {
+    dispatch(setStatusMultipleBookmark(status));
+
+    if (e.target.checked) {
+      dispatch(addIdtoIds(id));
+    } else {
+      dispatch(removeIdtoIds(id));
+    }
+  };
+
+  const handleBookmarkAllCheckboxes = () => {
+    dispatch(setMarkedAsBookmark(true));
+  };
+
+  // End of: Checkbox Bookmark Functionality
 
   const loadingCompromisedData = useSelector(
     (state) => state.compromised.status
@@ -207,7 +242,6 @@ export default function CompromisedDashboard() {
   };
 
   useEffect(() => {
-    console.log("call this function");
     getListDomainUsers();
     getBreachesData();
   }, []);
@@ -518,8 +552,6 @@ export default function CompromisedDashboard() {
       if (data.data === null) {
         throw new Error("");
       }
-
-      console.log("data employee: ", data);
 
       if (data.data) {
         setTotalEmployee(data.count_data);
@@ -1041,6 +1073,7 @@ export default function CompromisedDashboard() {
     unbookmarkSuccessState,
     selectedOutlineButton,
     selectValidasi,
+    statusStateMultipleBookmark,
   ]);
 
   // End of: Fetch Data compromised
@@ -1170,7 +1203,9 @@ export default function CompromisedDashboard() {
                 <div
                   className={clsx(
                     "absolute bottom-[-90px] left-0 z-30",
-                    initialCheckboxState ? "visible" : "hidden"
+                    initialCheckboxState && checkboxArray.length > 0
+                      ? "visible"
+                      : "hidden"
                   )}
                 >
                   <div className="bg-white px-[16px] py-[9px] rounded-lg shadow-xl">
@@ -1180,26 +1215,28 @@ export default function CompromisedDashboard() {
                       </h1>
                       <RightOutlined />
                     </div>
-                    <div className="flex items-center justify-between mt-2 cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px] px-[8px] ">
+                    <div
+                      className="flex items-center justify-between mt-2 cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px] px-[8px] "
+                      onClick={handleBookmarkAllCheckboxes}
+                    >
                       <h1 className="mr-6 text-Base-normal">Bookmark item</h1>
                       <RightOutlined />
                     </div>
                   </div>
                 </div>
                 <div>
-                  <input
-                    type="checkbox"
-                    name=""
-                    id="agreements"
-                    value="I agree to the Terms & Conditions and Privacy Policy"
-                    className=" text-Base-normal"
-                    onChange={handleInitialCheckboxState}
-                    checked={initialCheckboxState}
-                  />
-                  <label
-                    htmlFor="agreements"
-                    className="text-Base-normal ml-1.5 text-text-description"
-                  ></label>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: "#FF6F1E",
+                      },
+                    }}
+                  >
+                    <Checkbox
+                      onChange={handleInitialCheckboxState}
+                      checked={initialCheckboxState}
+                    ></Checkbox>
+                  </ConfigProvider>
                 </div>
                 <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
                   <input
@@ -1285,6 +1322,26 @@ export default function CompromisedDashboard() {
                 <p className="text-white text-Base-normal ml-[8px] ">
                   {" "}
                   Oops something wrong when Bookmark data
+                </p>
+              </section>
+            )
+          ) : (
+            ""
+          )}
+          {bannerStateMultipleBookmark !== null ? (
+            bannerStateMultipleBookmark ? (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-success-chart rounded-lg shadow-lg">
+                <CheckCircleFilled style={{ color: "white" }} />
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Successfully added multiple data to bookmarks
+                </p>
+              </section>
+            ) : (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-error rounded-lg shadow-lg">
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Oops something wrong when Bookmark multiple data
                 </p>
               </section>
             )
@@ -1384,8 +1441,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
