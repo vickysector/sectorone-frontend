@@ -71,6 +71,7 @@ import {
 import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
 import {
   addIdtoIds,
+  clearIds,
   removeIdtoIds,
   setMarkedAsBookmark,
   setMarkedAsValidated,
@@ -136,6 +137,9 @@ export default function CompromisedDashboard() {
 
   const handleInitialCheckboxState = (e) => {
     setInitialCheckboxState(e.target.checked);
+    if (!e.target.value) {
+      dispatch(clearIds());
+    }
   };
 
   const handleGatheringIds = (e, id, status) => {
@@ -284,6 +288,7 @@ export default function CompromisedDashboard() {
 
   const handleClickSearch = () => {
     setInitialCheckboxState(false);
+    dispatch(clearIds());
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         fetchEmployeeData(inputSearch);
@@ -458,16 +463,19 @@ export default function CompromisedDashboard() {
     }));
   };
 
-  const handleSelectValidation = (value, id) => {
+  const handleSelectValidation = (value, id, status) => {
     setSelectValidasi(value);
 
-    UpdateValidateTesting(id, value);
+    console.log("id ", id);
+    console.log("value ", value);
+
+    UpdateValidateTesting(id, value, status);
   };
 
-  const UpdateValidateTesting = async (id, validasi) => {
+  const UpdateValidateTesting = async (id, validasi, status) => {
     try {
       dispatch(setLoadingState(true));
-      const res = await fetch(`${APIDATAV1}status/domain/employee`, {
+      const res = await fetch(`${APIDATAV1}status/domain/${status}`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -781,6 +789,8 @@ export default function CompromisedDashboard() {
 
       const data = await res.json();
 
+      console.log("employee data testing: ", data);
+
       if (data.data === null) {
         throw new Error("");
       }
@@ -1002,6 +1012,7 @@ export default function CompromisedDashboard() {
     setTotalRows("");
     setSelectedOutlineButton(DETAIL_COMPROMISED_DEFAULT);
     setInitialCheckboxState(false);
+    dispatch(clearIds());
   };
 
   const handleButtonOutlineClick = (value) => {
@@ -1011,6 +1022,7 @@ export default function CompromisedDashboard() {
     setEndDate("");
     setTotalRows("");
     setInitialCheckboxState(false);
+    dispatch(clearIds());
   };
 
   useEffect(() => {
@@ -1042,6 +1054,7 @@ export default function CompromisedDashboard() {
   useEffect(() => {
     // fetchEmployeeData();
     setInitialCheckboxState(false);
+    dispatch(clearIds());
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         fetchEmployeeData(inputSearch);
@@ -1230,15 +1243,18 @@ export default function CompromisedDashboard() {
                   )}
                 >
                   <div className="bg-white px-[16px] py-[9px] rounded-lg shadow-xl">
-                    <div
-                      className="flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px]  px-[8px]"
-                      onClick={handleValidatedAllCheckbox}
-                    >
-                      <h1 className="mr-6 text-Base-normal">
-                        Marked as validated
-                      </h1>
-                      <RightOutlined />
-                    </div>
+                    {selectedButton !==
+                      DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
+                      <div
+                        className="flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px]  px-[8px]"
+                        onClick={handleValidatedAllCheckbox}
+                      >
+                        <h1 className="mr-6 text-Base-normal">
+                          Marked as validated
+                        </h1>
+                        <RightOutlined />
+                      </div>
+                    )}
                     <div
                       className="flex items-center justify-between mt-2 cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px] px-[8px] "
                       onClick={handleBookmarkAllCheckboxes}
@@ -1640,8 +1656,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {convertDateFormat(data.datetime_added)}
@@ -1700,11 +1735,19 @@ export default function CompromisedDashboard() {
                                   }}
                                 >
                                   <Select
-                                    defaultValue={data.status_validasi}
+                                    defaultValue={
+                                      data.status_validasi === "valid"
+                                        ? "valid"
+                                        : "invalid"
+                                    }
                                     value={selectValidasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
-                                      handleSelectValidation(value, data.id)
+                                      handleSelectValidation(
+                                        value,
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                      )
                                     }
                                     options={[
                                       {
@@ -1853,8 +1896,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {convertDateFormat(data.datetime_added)}
@@ -1918,7 +1980,11 @@ export default function CompromisedDashboard() {
                                       value={selectValidasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
-                                        handleSelectValidation(value, data.id)
+                                        handleSelectValidation(
+                                          value,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                        )
                                       }
                                       options={[
                                         {
@@ -2062,8 +2128,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_USERS
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
@@ -2194,8 +2279,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_USERS
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {convertDateFormat(data.datetime_added)}
@@ -2258,7 +2362,11 @@ export default function CompromisedDashboard() {
                                     value={selectValidasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
-                                      handleSelectValidation(value, data.id)
+                                      handleSelectValidation(
+                                        value,
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_USERS
+                                      )
                                     }
                                     options={[
                                       {
@@ -2407,8 +2515,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_USERS
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {convertDateFormat(data.datetime_added)}
@@ -2472,7 +2599,11 @@ export default function CompromisedDashboard() {
                                       value={selectValidasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
-                                        handleSelectValidation(value, data.id)
+                                        handleSelectValidation(
+                                          value,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_USERS
+                                        )
                                       }
                                       options={[
                                         {
@@ -2615,8 +2746,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
@@ -2748,8 +2898,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {convertDateFormat(data.datetime_added)}
@@ -2812,7 +2981,11 @@ export default function CompromisedDashboard() {
                                     value={selectValidasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
-                                      handleSelectValidation(value, data.id)
+                                      handleSelectValidation(
+                                        value,
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                      )
                                     }
                                     options={[
                                       {
@@ -2961,8 +3134,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {convertDateFormat(data.datetime_added)}
@@ -3026,7 +3218,11 @@ export default function CompromisedDashboard() {
                                       value={selectValidasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
-                                        handleSelectValidation(value, data.id)
+                                        handleSelectValidation(
+                                          value,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                        )
                                       }
                                       options={[
                                         {
@@ -3164,8 +3360,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_DEVICES
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
@@ -3271,8 +3486,27 @@ export default function CompromisedDashboard() {
                             >
                               {/* Render employee data row */}
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          DETAIL_COMPROMISED_COMPROMISE_DEVICES
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
 
                               <td className="py-[19px] px-[16px]">
