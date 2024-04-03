@@ -97,7 +97,6 @@ export default function CompromisedDashboard() {
   const [employeeValidatedData, setEmployeeValidatedData] = useState(null);
   const [usersValidatedData, setUsersValidatedData] = useState(null);
   const [thirdPartyValidatedData, setThirdPartyValidatedData] = useState(null);
-  const [devicesValidatedData, setDevicesValidatedData] = useState(null);
 
   console.log("last id ", lastId);
   console.log("start date  ", startDate);
@@ -173,6 +172,11 @@ export default function CompromisedDashboard() {
         break;
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
         fetchDevicesData(inputSearch);
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          fetchDevicesBookmark(inputSearch);
+        } else {
+          fetchDevicesData(inputSearch);
+        }
         break;
       // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
@@ -409,10 +413,9 @@ export default function CompromisedDashboard() {
       return usersBookmarkData && usersBookmarkData.count;
     } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
       return thirdPartyBookmarkData && thirdPartyBookmarkData.count;
+    } else {
+      return devicesBookmarkData && devicesBookmarkData.count;
     }
-    // else {
-    //   return devicesData && devicesData.count
-    // }
   };
 
   // Start of: Fetch Data compromised
@@ -829,6 +832,45 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchDevicesBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/devices/boomark?last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setDevicesBookmarkData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      setDevicesBookmarkData(null);
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
   const handleButtonClick = (value) => {
     setSelectedButton(value.target.name);
     setInputSearch("");
@@ -866,6 +908,9 @@ export default function CompromisedDashboard() {
       fetchThirdPartyData();
       fetchThirdPartyBookmark();
       fetchThirdPartyTesting();
+    } else {
+      fetchDevicesData();
+      fetchDevicesBookmark();
     }
   }, [selectedButton]);
 
@@ -884,6 +929,11 @@ export default function CompromisedDashboard() {
         break;
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
         fetchDevicesData(inputSearch);
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          fetchDevicesBookmark(inputSearch);
+        } else {
+          fetchDevicesData(inputSearch);
+        }
         break;
       // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
@@ -2839,6 +2889,7 @@ export default function CompromisedDashboard() {
                   )}
 
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT &&
                   devicesData && (
                     <div className="border-2 rounded-xl border-input-border">
                       <table className="bg-white  w-full rounded-xl">
@@ -2924,7 +2975,139 @@ export default function CompromisedDashboard() {
                     </div>
                   )}
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT &&
                   devicesData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK &&
+                  devicesBookmarkData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                              Devices name
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[360px]">
+                              IP address
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {devicesBookmarkData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
+
+                              <td className="py-[19px] px-[16px]">
+                                {convertDateFormat(data.datetime_added)}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.computer_name}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px]">
+                                {data.ip}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <div className="flex">
+                                  <div
+                                    className="cursor-pointer"
+                                    onClick={() => handleDetails(data)}
+                                  >
+                                    <EyeOutlined style={{ fontSize: "18px" }} />
+                                  </div>
+                                  <div
+                                    className="ml-auto mr-auto cursor-pointer"
+                                    onClick={() =>
+                                      handleUnBookmarkConfirm(
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_DEVICES
+                                      )
+                                    }
+                                  >
+                                    <BookFilled
+                                      style={{
+                                        fontSize: "18px",
+                                        color: "#FFD591",
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {devicesBookmarkData.size} to{" "}
+                          {devicesBookmarkData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={devicesBookmarkData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK &&
+                  devicesBookmarkData === null && (
                     <div className="text-center flex flex-col justify-center items-center">
                       <div>
                         <Image
