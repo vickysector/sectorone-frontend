@@ -89,7 +89,7 @@ export default function CompromisedDashboard() {
     DETAIL_COMPROMISED_DEFAULT
   );
   const [dataSource, setDataSource] = useState();
-  const [lastId, setLastId] = useState(1);
+
   const [inputSearch, setInputSearch] = useState("");
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
@@ -122,6 +122,65 @@ export default function CompromisedDashboard() {
   const [iconBreaches, setIconBreaches] = useState();
   const [lastUpdate, setLastUpdate] = useState();
   const [domainUsers, setDomainUsers] = useState();
+
+  // Start of: Handle Page
+  const [page, setPage] = useState(1);
+  const [pageEmployeeValidate, setPageEmployeeValidate] = useState(1);
+  const [pageEmployeeBookmark, setPageEmployeeBookmark] = useState(1);
+  const [pageUsers, setPageUsers] = useState(1);
+  const [pageUsersValidate, setPageUsersValidate] = useState(1);
+  const [pageUsersBookmark, setPageUserBookmark] = useState(1);
+  const [pageThirdParty, setPageThirdParty] = useState(1);
+  const [pageThirdPartyValidate, setPageThirdPartyValidate] = useState(1);
+  const [pageThirdPartyBookmark, setPageThirdPartyBookmark] = useState(1);
+  const [pageDevices, setPageDevices] = useState(1);
+  const [pageDevicesBookmark, setPageDevicesBookmark] = useState(1);
+
+  const handlePage = (page) => {
+    setPage(page);
+  };
+
+  const handlepageEmployeeValidate = (page) => {
+    setPageEmployeeValidate(page);
+  };
+
+  const handlepageEmployeeBookmark = (page) => {
+    setPageEmployeeBookmark(page);
+  };
+
+  const handlepageusers = (page) => {
+    setPageUsers(page);
+  };
+
+  const handlesetPageUsersValidate = (page) => {
+    setPageUsersValidate(page);
+  };
+
+  const handlesetPageUserBookmark = (page) => {
+    setPageUserBookmark(page);
+  };
+
+  const handlesetPageThirdParty = (page) => {
+    setPageThirdParty(page);
+  };
+
+  const handlesetPageThirdPartyValidate = (page) => {
+    setPageThirdPartyValidate(page);
+  };
+
+  const handlesetPageThirdPartyBookmark = (page) => {
+    setPageThirdPartyBookmark(page);
+  };
+
+  const handlesetPageDevices = (page) => {
+    setPageDevices(page);
+  };
+
+  const handlesetPageDevicesBookmark = (page) => {
+    setPageDevicesBookmark(page);
+  };
+
+  // End of: Handle Page
 
   // Start of:  Checkbox Bookmark Functionality
 
@@ -333,6 +392,8 @@ export default function CompromisedDashboard() {
         break;
     }
   };
+
+  const handleClickExport = () => {};
 
   const handleBookmarkConfirm = (dataID, domain) => {
     dispatch(setBookmarkConfirmState(true));
@@ -557,7 +618,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}compromised/employee?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}compromised/employee?page=${page}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -601,7 +662,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}compromised/users?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}compromised/users?page=${pageUsers}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -645,7 +706,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}compromised/thirdparty?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}compromised/thirdparty?page=${pageThirdParty}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -689,7 +750,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}compromised/devices?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}compromised/devices?page=${pageDevices}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -733,7 +794,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/employee?status=boomark&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/employee?status=boomark&page=${pageEmployeeBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -772,7 +833,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/employee?status=testing&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/employee?status=testing&page=${pageEmployeeValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -813,7 +874,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/users?status=bookmark&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/users?status=bookmark&page=${pageUsersBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -852,7 +913,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/users?status=testing&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/users?status=testing&page=${pageUsersValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -891,7 +952,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/thirdparty?status=bookmark&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/thirdparty?status=bookmark&page=${pageThirdPartyBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -930,7 +991,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/thirdparty?status=testing&page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/thirdparty?status=testing&page=${pageThirdPartyValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -969,7 +1030,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/devices/boomark?page=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/devices/boomark?page=${pageDevicesBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -1108,6 +1169,17 @@ export default function CompromisedDashboard() {
     selectValidasi,
     statusStateMultipleBookmark,
     statusStateMultipleValidated,
+    page,
+    pageUsers,
+    pageThirdParty,
+    pageDevices,
+    pageEmployeeBookmark,
+    pageEmployeeValidate,
+    pageUsersValidate,
+    pageUsersBookmark,
+    pageThirdPartyBookmark,
+    pageThirdPartyValidate,
+    pageDevicesBookmark,
   ]);
 
   // End of: Fetch Data compromised
@@ -1340,7 +1412,7 @@ export default function CompromisedDashboard() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton />
+                  <ExportButton onClick={handleClickExport} />
                 </div>
               </div>
             </div>
@@ -1587,6 +1659,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlePage}
+                              current={page}
                             />
                           </ConfigProvider>
                         </div>
@@ -1827,6 +1901,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlepageEmployeeValidate}
+                              current={pageEmployeeValidate}
                             />
                           </ConfigProvider>
                         </div>
@@ -2062,6 +2138,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlepageEmployeeBookmark}
+                              current={pageEmployeeBookmark}
                             />
                           </ConfigProvider>
                         </div>
@@ -2211,6 +2289,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlepageusers}
+                              current={pageUsers}
                             />
                           </ConfigProvider>
                         </div>
@@ -2446,6 +2526,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlesetPageUsersValidate}
+                              current={pageUsersValidate}
                             />
                           </ConfigProvider>
                         </div>
@@ -2681,6 +2763,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlesetPageUserBookmark}
+                              current={pageUsersBookmark}
                             />
                           </ConfigProvider>
                         </div>
@@ -2830,6 +2914,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlesetPageThirdParty}
+                              current={pageThirdParty}
                             />
                           </ConfigProvider>
                         </div>
@@ -3065,6 +3151,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlesetPageThirdPartyValidate}
+                              current={thirdPartyValidatedData}
                             />
                           </ConfigProvider>
                         </div>
@@ -3300,6 +3388,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlesetPageThirdPartyBookmark}
+                              current={pageThirdPartyBookmark}
                             />
                           </ConfigProvider>
                         </div>
@@ -3427,6 +3517,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlesetPageDevices}
+                              current={pageDevices}
                             />
                           </ConfigProvider>
                         </div>
@@ -3576,6 +3668,8 @@ export default function CompromisedDashboard() {
                               showSizeChanger={false}
                               style={{ color: "#FF6F1E" }}
                               hideOnSinglePage={true}
+                              onChange={handlesetPageDevicesBookmark}
+                              current={pageDevicesBookmark}
                             />
                           </ConfigProvider>
                         </div>
