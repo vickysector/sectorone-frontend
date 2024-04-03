@@ -60,6 +60,7 @@ import {
   setUnBookmarkDomainData,
   setUnBookmarkIdData,
 } from "@/app/_lib/store/features/Compromised/UnBookmarkSlices";
+import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
 
 const { RangePicker } = DatePicker;
 
@@ -98,6 +99,14 @@ export default function CompromisedDashboard() {
   const [usersValidatedData, setUsersValidatedData] = useState(null);
   const [thirdPartyValidatedData, setThirdPartyValidatedData] = useState(null);
 
+  const [breachesAll, setBreachesAll] = useState();
+  const [employeeBreaches, setEmployeeBreaches] = useState();
+  const [usersBreaches, setUserBreaches] = useState();
+  const [urlBreaches, setUrlBreaches] = useState();
+  const [iconBreaches, setIconBreaches] = useState();
+  const [lastUpdate, setLastUpdate] = useState();
+  const [domainUsers, setDomainUsers] = useState();
+
   console.log("last id ", lastId);
   console.log("start date  ", startDate);
   console.log("end date ", endDate);
@@ -108,13 +117,13 @@ export default function CompromisedDashboard() {
 
   const dispatch = useDispatch();
 
-  const domainUsers = useSelector((state) => state.chooseUrl.urlData);
+  // const domainUsers = useSelector((state) => state.chooseUrl.urlData);
 
-  const breachesAll = useSelector((state) => state.breaches.breachesAll);
+  // const breachesAll = useSelector((state) => state.breaches.breachesAll);
 
-  const employeeBreaches = useSelector(
-    (state) => state.breaches.breachesEmployee
-  );
+  // const employeeBreaches = useSelector(
+  //   (state) => state.breaches.breachesEmployee
+  // );
 
   const bookmarkSuccessState = useSelector(
     (state) => state.bookmarkCompromise.success
@@ -130,13 +139,71 @@ export default function CompromisedDashboard() {
     (state) => state.unbookmarkCompromise.banner
   );
 
-  const usersBreaches = useSelector((state) => state.breaches.breachesUsers);
+  // const usersBreaches = useSelector((state) => state.breaches.breachesUsers);
 
-  const urlBreaches = useSelector((state) => state.breaches.url);
+  // const urlBreaches = useSelector((state) => state.breaches.url);
 
-  const iconBreaches = useSelector((state) => state.breaches.icon);
+  // const iconBreaches = useSelector((state) => state.breaches.icon);
 
-  const lastUpdate = useSelector((state) => state.breaches.lastUpdate);
+  // const lastUpdate = useSelector((state) => state.breaches.lastUpdate);
+  const getBreachesData = async () => {
+    try {
+      const res = await fetch(
+        `${APIDATAV1}breaches?year=2024&type=overview&status=all`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      setBreachesAll(data.data.all_breaches);
+      setEmployeeBreaches(data.data.employee_breaches);
+      setUserBreaches(data.data.user_breaches);
+      setUrlBreaches(data.data.name_domain);
+      setIconBreaches(data.data.icon_domain);
+      setLastUpdate(data.data.last_update);
+    } catch (error) {}
+  };
+
+  const getListDomainUsers = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}list/domain`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      setDomainUsers(data.data);
+      dispatch(setUrlData(data.data));
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    console.log("call this function");
+    getListDomainUsers();
+    getBreachesData();
+  }, []);
 
   const handleChangeUrlOpen = (value) => {
     dispatch(setChangeUrl(true));
