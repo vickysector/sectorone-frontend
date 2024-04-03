@@ -187,6 +187,13 @@ export default function CompromisedDashboard() {
         break;
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
         fetchThirdPartyData(inputSearch);
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          fetchThirdPartyBookmark(inputSearch);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          fetchThirdPartyTesting(inputSearch);
+        } else {
+          fetchThirdPartyData(inputSearch);
+        }
         break;
       default:
         break;
@@ -385,6 +392,8 @@ export default function CompromisedDashboard() {
       return employeeValidatedData && employeeValidatedData.count;
     } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
       return usersValidatedData && usersValidatedData.count;
+    } else {
+      return thirdPartyValidatedData && thirdPartyValidatedData.count;
     }
     // else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
     //   return thirdPartyData && thirdPartyData.count
@@ -398,10 +407,10 @@ export default function CompromisedDashboard() {
       return employeeBookmarkData && employeeBookmarkData.count;
     } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
       return usersBookmarkData && usersBookmarkData.count;
+    } else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
+      return thirdPartyBookmarkData && thirdPartyBookmarkData.count;
     }
-    // else if (selectButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
-    //   return thirdPartyData && thirdPartyData.count
-    // } else {
+    // else {
     //   return devicesData && devicesData.count
     // }
   };
@@ -742,6 +751,84 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchThirdPartyBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/thirdparty?status=bookmark&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setThirdPartyBookmarkData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      setThirdPartyBookmarkData(null);
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchThirdPartyTesting = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/thirdparty?status=testing&last_id=${lastId}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        setThirdPartyValidatedData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      setThirdPartyValidatedData(null);
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
   const handleButtonClick = (value) => {
     setSelectedButton(value.target.name);
     setInputSearch("");
@@ -775,6 +862,10 @@ export default function CompromisedDashboard() {
       fetchUsersData();
       fetchUserBookmark();
       fetchUserTesting();
+    } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
+      fetchThirdPartyData();
+      fetchThirdPartyBookmark();
+      fetchThirdPartyTesting();
     }
   }, [selectedButton]);
 
@@ -807,6 +898,13 @@ export default function CompromisedDashboard() {
         break;
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
         fetchThirdPartyData(inputSearch);
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          fetchThirdPartyBookmark(inputSearch);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          fetchThirdPartyTesting(inputSearch);
+        } else {
+          fetchThirdPartyData(inputSearch);
+        }
         break;
       default:
         break;
@@ -2195,6 +2293,7 @@ export default function CompromisedDashboard() {
                     </div>
                   )}
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT &&
                   thirdPartyData && (
                     <div className="border-2 rounded-xl border-input-border">
                       <table className="bg-white  w-full rounded-xl">
@@ -2303,7 +2402,424 @@ export default function CompromisedDashboard() {
                     </div>
                   )}
                 {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT &&
                   thirdPartyData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_TESTING &&
+                  thirdPartyValidatedData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              URL
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Login
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password strength
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Status
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {thirdPartyValidatedData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {convertDateFormat(data.datetime_added)}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.url}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
+                                <p className="text-wrap whitespace-pre-line">
+                                  {data.login}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.password}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <p
+                                  className={clsx(
+                                    "Medium" === "Weak" && "text-pink",
+                                    "Medium" === "Medium" && "text-text-orange",
+                                    "Medium" === "Strong" && "text-text-green"
+                                  )}
+                                >
+                                  {CalculatePasswordStrengthWithReturnPlainString(
+                                    data.password
+                                  )}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <ConfigProvider
+                                  theme={{
+                                    token: {
+                                      colorBgContainer: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#F7F7F7"
+                                          : "white"
+                                      }`,
+                                      colorBorder: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#D5D5D5"
+                                          : "#52C41A"
+                                      }`,
+                                      colorText: `${
+                                        data.status_validasi === "invalid"
+                                          ? "#000000E0"
+                                          : "#52C41A"
+                                      }`,
+                                      fontWeightStrong: true,
+                                    },
+                                    components: {
+                                      Select: {
+                                        optionActiveBg: "#F7F7F7",
+                                        optionSelectedBg: "#FFEBD4",
+                                      },
+                                    },
+                                  }}
+                                >
+                                  <Select
+                                    defaultValue={data.status_validasi}
+                                    value={selectValidasi}
+                                    style={{ width: 91 }}
+                                    onChange={(value) =>
+                                      handleSelectValidation(value, data.id)
+                                    }
+                                    options={[
+                                      {
+                                        value: "invalid",
+                                        label: "Invalid",
+                                      },
+
+                                      {
+                                        value: "valid",
+                                        label: "Valid",
+                                      },
+                                    ]}
+                                  />
+                                </ConfigProvider>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <div className="flex">
+                                  <div
+                                    className="cursor-pointer"
+                                    onClick={() => handleDetails(data)}
+                                  >
+                                    <EyeOutlined style={{ fontSize: "18px" }} />
+                                  </div>
+                                  <div
+                                    className="ml-auto mr-auto cursor-pointer"
+                                    onClick={() =>
+                                      handleBookmarkConfirm(
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                      )
+                                    }
+                                  >
+                                    <BookOutlined
+                                      style={{ fontSize: "18px" }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {thirdPartyValidatedData.size} to{" "}
+                          {thirdPartyValidatedData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={thirdPartyValidatedData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_TESTING &&
+                  thirdPartyValidatedData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK &&
+                  thirdPartyBookmarkData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        {/* Render employee data table */}
+                        <thead>
+                          {/* Table header */}
+                          <tr className="border-b-[1px] border-[#D5D5D5] w-full">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date compromised
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              URL
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Login
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Password strength
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Status
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {thirdPartyBookmarkData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              {/* Render employee data row */}
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {convertDateFormat(data.datetime_added)}
+                              </td>
+                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
+                                {data.url}
+                              </td>
+                              <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
+                                <p className="text-wrap whitespace-pre-line">
+                                  {data.login}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.password}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <p
+                                  className={clsx(
+                                    "Medium" === "Weak" && "text-pink",
+                                    "Medium" === "Medium" && "text-text-orange",
+                                    "Medium" === "Strong" && "text-text-green"
+                                  )}
+                                >
+                                  {CalculatePasswordStrengthWithReturnPlainString(
+                                    data.password
+                                  )}
+                                </p>
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {data.status_validasi !== "-" && (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorBgContainer: `${
+                                          data.status_validasi === "invalid"
+                                            ? "#F7F7F7"
+                                            : "white"
+                                        }`,
+                                        colorBorder: `${
+                                          data.status_validasi === "invalid"
+                                            ? "#D5D5D5"
+                                            : "#52C41A"
+                                        }`,
+                                        colorText: `${
+                                          data.status_validasi === "invalid"
+                                            ? "#000000E0"
+                                            : "#52C41A"
+                                        }`,
+                                        fontWeightStrong: true,
+                                      },
+                                      components: {
+                                        Select: {
+                                          optionActiveBg: "#F7F7F7",
+                                          optionSelectedBg: "#FFEBD4",
+                                        },
+                                      },
+                                    }}
+                                  >
+                                    <Select
+                                      defaultValue={data.status_validasi}
+                                      value={selectValidasi}
+                                      style={{ width: 91 }}
+                                      onChange={(value) =>
+                                        handleSelectValidation(value, data.id)
+                                      }
+                                      options={[
+                                        {
+                                          value: "invalid",
+                                          label: "Invalid",
+                                        },
+
+                                        {
+                                          value: "valid",
+                                          label: "Valid",
+                                        },
+                                      ]}
+                                    />
+                                  </ConfigProvider>
+                                )}
+                                {data.status_validasi === "-" && (
+                                  <p> {data.status_validasi} </p>
+                                )}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <div className="flex">
+                                  <div
+                                    className="cursor-pointer"
+                                    onClick={() => handleDetails(data)}
+                                  >
+                                    <EyeOutlined style={{ fontSize: "18px" }} />
+                                  </div>
+                                  <div
+                                    className="ml-auto mr-auto cursor-pointer"
+                                    onClick={() =>
+                                      handleUnBookmarkConfirm(
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                      )
+                                    }
+                                  >
+                                    <BookFilled
+                                      style={{
+                                        fontSize: "18px",
+                                        color: "#FFD591",
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      {/* Render pagination */}
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {thirdPartyBookmarkData.size} to{" "}
+                          {thirdPartyBookmarkData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={thirdPartyBookmarkData.count}
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              hideOnSinglePage={true}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                {selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY &&
+                  selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK &&
+                  thirdPartyBookmarkData === null && (
                     <div className="text-center flex flex-col justify-center items-center">
                       <div>
                         <Image
