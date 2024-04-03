@@ -9,6 +9,14 @@ import { Select, ConfigProvider, Pagination, DatePicker } from "antd";
 import Image from "next/image";
 import clsx from "clsx";
 import { EyeOutlined, BookOutlined } from "@ant-design/icons";
+import { useSelector, useDispatch } from "react-redux";
+import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
+import { useEffect, useState } from "react";
+import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
+import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
+import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
+import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
 
 const { RangePicker } = DatePicker;
 
@@ -196,21 +204,107 @@ const dataSource = [
 ];
 
 export default function StealerUserPage() {
+  const [breachesAll, setBreachesAll] = useState();
+  const [employeeBreaches, setEmployeeBreaches] = useState();
+  const [usersBreaches, setUserBreaches] = useState();
+  const [urlBreaches, setUrlBreaches] = useState();
+  const [iconBreaches, setIconBreaches] = useState();
+  const [lastUpdate, setLastUpdate] = useState();
+  const [domainUsers, setDomainUsers] = useState();
+
+  const dispatch = useDispatch();
+
+  const handleChangeUrlOpen = (value) => {
+    dispatch(setChangeUrl(true));
+  };
+
+  const getBreachesData = async () => {
+    try {
+      const res = await fetch(
+        `${APIDATAV1}breaches?year=2024&type=overview&status=all`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      setBreachesAll(data.data.all_breaches);
+      setEmployeeBreaches(data.data.employee_breaches);
+      setUserBreaches(data.data.user_breaches);
+      setUrlBreaches(data.data.name_domain);
+      setIconBreaches(data.data.icon_domain);
+      setLastUpdate(data.data.last_update);
+    } catch (error) {}
+  };
+
+  const getListDomainUsers = async () => {
+    try {
+      const res = await fetch(`${APIDATAV1}list/domain`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      setDomainUsers(data.data);
+      dispatch(setUrlData(data.data));
+    } catch (error) {
+    } finally {
+    }
+  };
+
+  useEffect(() => {
+    getListDomainUsers();
+    getBreachesData();
+  }, []);
+
   return (
     <main>
       <section>
         <h1 className="text-heading-2 text-black mb-4">Stealer</h1>
         <div className="bg-white  p-12 rounded-xl">
           <div className="flex items-center">
-            <div className="h-[80px] w-[80px] bg-input-container "></div>
+            <div className="h-[80px] w-[80px] bg-input-container ">
+              <Image
+                width={80}
+                height={80}
+                src={iconBreaches && iconBreaches}
+                alt="Icon Logo Users"
+              />
+            </div>
             <div className="ml-4">
-              <h1 className="text-heading-3">URL name</h1>
+              <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
               <h2 className="text-LG-strong text-text-description mt-2">
-                Last update: 08 Jan 2023/02:00
+                {lastUpdate && lastUpdate}
               </h2>
             </div>
             <div className="flex flex-grow justify-end items-center">
-              <ChangeUrlButton>Change URL</ChangeUrlButton>
+              <ChangeUrlButton
+                onClick={handleChangeUrlOpen}
+                disabled={domainUsers && domainUsers.length > 1}
+              >
+                {domainUsers && domainUsers.length > 1
+                  ? "Change URL"
+                  : "No Data"}
+              </ChangeUrlButton>
             </div>
           </div>
         </div>
