@@ -5,7 +5,14 @@ import CompromiseButton from "@/app/_ui/components/buttons/CompromiseButton";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import OutlineButton from "@/app/_ui/components/buttons/OutlineButton";
 import ChartBarVerticalStealer from "@/app/_ui/components/charts/ChartBarVerticalStealer";
-import { Select, ConfigProvider, Pagination, DatePicker, Spin } from "antd";
+import {
+  Select,
+  ConfigProvider,
+  Pagination,
+  DatePicker,
+  Spin,
+  Checkbox,
+} from "antd";
 import Image from "next/image";
 import clsx from "clsx";
 import {
@@ -13,6 +20,7 @@ import {
   BookOutlined,
   BookFilled,
   CheckCircleFilled,
+  RightOutlined,
 } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
@@ -38,6 +46,13 @@ import {
   setUnBookmarkDomainData,
   setUnBookmarkIdData,
 } from "@/app/_lib/store/features/Compromised/UnBookmarkSlices";
+import {
+  addIdtoIds,
+  clearIds,
+  removeIdtoIds,
+  setMarkedAsBookmark,
+  setStatusMultipleBookmark,
+} from "@/app/_lib/store/features/Compromised/CheckboxSlices";
 
 const { RangePicker } = DatePicker;
 
@@ -59,6 +74,38 @@ export default function StealerUserPage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [inputSearch, setInputSearch] = useState();
+  const dispatch = useDispatch();
+
+  const [initialCheckboxState, setInitialCheckboxState] = useState(false);
+
+  const checkboxArray = useSelector((state) => state.checkbox.ids);
+  const statusStateMultipleBookmark = useSelector(
+    (state) => state.checkbox.success
+  );
+  const bannerStateMultipleBookmark = useSelector(
+    (state) => state.checkbox.banner
+  );
+
+  const handleInitialCheckboxState = (e) => {
+    setInitialCheckboxState(e.target.checked);
+    if (!e.target.value) {
+      dispatch(clearIds());
+    }
+  };
+
+  const handleBookmarkAllCheckboxes = () => {
+    dispatch(setMarkedAsBookmark(true));
+  };
+
+  const handleGatheringIds = (e, id, status) => {
+    dispatch(setStatusMultipleBookmark(status));
+
+    if (e.target.checked) {
+      dispatch(addIdtoIds(id));
+    } else {
+      dispatch(removeIdtoIds(id));
+    }
+  };
 
   const handleSetPageDefault = (value) => {
     setPage(value);
@@ -67,8 +114,6 @@ export default function StealerUserPage() {
   const handleSetBookmarkPage = (value) => {
     setBookmarkPage(value);
   };
-
-  const dispatch = useDispatch();
 
   const loadingStealerData = useSelector(
     (state) => state.stealerLoading.status
@@ -115,6 +160,8 @@ export default function StealerUserPage() {
     setInputSearch("");
     setStartDate("");
     setEndDate("");
+    setInitialCheckboxState(false);
+    dispatch(clearIds());
   };
 
   const handleDetails = (item) => {
@@ -135,6 +182,8 @@ export default function StealerUserPage() {
   };
 
   const handleClickSearch = () => {
+    setInitialCheckboxState(false);
+    dispatch(clearIds());
     switch (selectSection) {
       case "stealer":
         setPage(1);
@@ -315,6 +364,8 @@ export default function StealerUserPage() {
   }, []);
 
   useEffect(() => {
+    setInitialCheckboxState(false);
+    dispatch(clearIds());
     switch (selectSection) {
       case "stealer":
         fetchStealerData(inputSearch);
@@ -332,6 +383,7 @@ export default function StealerUserPage() {
     bookmarkPage,
     bookmarkSuccessState,
     unbookmarkSuccessState,
+    statusStateMultipleBookmark,
     selectSection,
   ]);
 
@@ -438,19 +490,38 @@ export default function StealerUserPage() {
             />
 
             <div className="mt-8 ">
-              <div className="flex items-center">
+              <div className="flex items-center relative">
+                <div
+                  className={clsx(
+                    "absolute bottom-[-70px] left-0 z-30",
+                    initialCheckboxState && checkboxArray.length > 0
+                      ? "visible"
+                      : "hidden"
+                  )}
+                >
+                  <div className="bg-white px-[16px] py-[9px] rounded-lg shadow-xl">
+                    <div
+                      className="flex items-center justify-between mt-2 cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px] px-[8px] "
+                      onClick={handleBookmarkAllCheckboxes}
+                    >
+                      <h1 className="mr-6 text-Base-normal">Bookmark item</h1>
+                      <RightOutlined />
+                    </div>
+                  </div>
+                </div>
                 <div>
-                  <input
-                    type="checkbox"
-                    name=""
-                    id="agreements"
-                    value="I agree to the Terms & Conditions and Privacy Policy"
-                    className=" text-Base-normal"
-                  />
-                  <label
-                    htmlFor="agreements"
-                    className="text-Base-normal ml-1.5 text-text-description"
-                  ></label>
+                  <ConfigProvider
+                    theme={{
+                      token: {
+                        colorPrimary: "#FF6F1E",
+                      },
+                    }}
+                  >
+                    <Checkbox
+                      onChange={handleInitialCheckboxState}
+                      checked={initialCheckboxState}
+                    ></Checkbox>
+                  </ConfigProvider>
                 </div>
                 <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
                   <input
@@ -513,7 +584,26 @@ export default function StealerUserPage() {
               </div>
             </div>
           </section>
-
+          {bannerStateMultipleBookmark !== null ? (
+            bannerStateMultipleBookmark ? (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-success-chart rounded-lg shadow-lg">
+                <CheckCircleFilled style={{ color: "white" }} />
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Successfully added multiple data to bookmarks
+                </p>
+              </section>
+            ) : (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-error rounded-lg shadow-lg">
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Oops something wrong when Bookmark multiple data
+                </p>
+              </section>
+            )
+          ) : (
+            ""
+          )}
           {bookmarBannerState !== null ? (
             bookmarBannerState ? (
               <section className="mx-8 py-[8px] px-[16px] flex items-center bg-success-chart rounded-lg shadow-lg">
@@ -600,8 +690,23 @@ export default function StealerUserPage() {
                             key={data.id}
                           >
                             <td className="py-[19px] px-[16px]">
-                              {" "}
-                              {index + 1}{" "}
+                              {initialCheckboxState ? (
+                                <ConfigProvider
+                                  theme={{
+                                    token: {
+                                      colorPrimary: "#FF6F1E",
+                                    },
+                                  }}
+                                >
+                                  <Checkbox
+                                    onChange={(e) =>
+                                      handleGatheringIds(e, data.id, "stealer")
+                                    }
+                                  ></Checkbox>
+                                </ConfigProvider>
+                              ) : (
+                                index + 1
+                              )}
                             </td>
                             <td className="py-[19px] px-[16px]">
                               {convertDateFormat(data.datetime_added)}
@@ -723,8 +828,27 @@ export default function StealerUserPage() {
                               key={data.id}
                             >
                               <td className="py-[19px] px-[16px]">
-                                {" "}
-                                {index + 1}{" "}
+                                {initialCheckboxState ? (
+                                  <ConfigProvider
+                                    theme={{
+                                      token: {
+                                        colorPrimary: "#FF6F1E",
+                                      },
+                                    }}
+                                  >
+                                    <Checkbox
+                                      onChange={(e) =>
+                                        handleGatheringIds(
+                                          e,
+                                          data.id,
+                                          "stealer"
+                                        )
+                                      }
+                                    ></Checkbox>
+                                  </ConfigProvider>
+                                ) : (
+                                  index + 1
+                                )}
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 {convertDateFormat(data.datetime_added)}
