@@ -4,12 +4,21 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Link from "next/link";
 import Image from "next/image";
 import clsx from "clsx";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Password from "@/app/_ui/components/inputs/Password";
+import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
+import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
+import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { useRouter, redirect } from "next/navigation";
 
 export default function FaAuthPage() {
   const [showOtp, setShowOtp] = useState(false);
   const [otp, setOtp] = useState("");
+  const [loadingSendOtp, setLoadingSendOtp] = useState(false);
+  const [errorOtp, setErrorOtp] = useState(false);
+  const [errorOtpMessage, setErrorOtpMessage] = useState("");
+
+  const router = useRouter();
 
   const toggleShowOtpVisibility = () => {
     setShowOtp((prevPasswordState) => !prevPasswordState);
@@ -20,8 +29,63 @@ export default function FaAuthPage() {
     setOtp(newPassword);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (otp) {
+      try {
+        setLoadingSendOtp(true);
+
+        const res = await fetch(`${APIKEY}verified/2fa`, {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code: otp,
+          }),
+        });
+
+        const data = await res.json();
+
+        if (data.data === null) {
+          throw new Error("Error");
+        }
+
+        deleteCookie("access_token");
+        setCookie("refresh_token", data.data.refresh_token);
+        setCookie("access_token", data.data.access_token);
+        setCookie("email_credentials", data.data.email);
+        router.push("/credentials/dashboard");
+      } catch (error) {
+        setErrorOtpMessage("Inccorrect OTP. Please try again");
+        setErrorOtp(true);
+      } finally {
+        setLoadingSendOtp(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!getCookie("access_token")) {
+      return redirect("/auth/login");
+    }
+    if (getCookie("refresh_token")) {
+      return redirect("/credentials/dashboard");
+    }
+  }, []);
+
+  // if (!getCookie("access_token")) {
+  //   return null;
+  // }
+
   return (
     <main className="h-auth-screen -500 flex relative">
+      <div className={clsx(loadingSendOtp ? "visible" : "hidden")}>
+        <LoadingSpin />
+      </div>
       <section className="flex-1 flex flex-col items-center justify-center h-full w-full ">
         <div className="w-[65%]">
           <h1 className="text-heading-1 w-[80%]">Enter verification code</h1>
@@ -31,18 +95,34 @@ export default function FaAuthPage() {
           </p>
 
           <form action="">
-            <div className="bg-input-container relative mb-8">
-              <Password
-                showPassword={showOtp}
-                value={otp}
-                toggleShowIcon={toggleShowOtpVisibility}
-                onChange={handleOtpChange}
-                hasTooltip={false}
-                placeholder={"Input OTP"}
-              />
+            <div className="mb-8">
+              <div className="bg-input-container relative ">
+                <Password
+                  showPassword={showOtp}
+                  value={otp}
+                  toggleShowIcon={toggleShowOtpVisibility}
+                  onChange={handleOtpChange}
+                  hasTooltip={false}
+                  placeholder={"Input OTP"}
+                  max={6}
+                  errorState={errorOtp}
+                />
+              </div>
+              <p
+                className={clsx(
+                  "text-Base-normal text-error mt-2 ",
+                  errorOtp ? "visible" : "hidden"
+                )}
+              >
+                {errorOtpMessage}
+              </p>
             </div>
 
-            <AuthButton value={"Verify"} />
+            <AuthButton
+              value={"Verify"}
+              agreements={otp}
+              onClick={handleSubmit}
+            />
           </form>
           <div className="flex items-center mt-4 justify-between">
             <a href="#" className="block text-text-description text-LG-normal">

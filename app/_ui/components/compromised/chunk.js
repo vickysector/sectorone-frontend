@@ -10,6 +10,8 @@ export default function Chunk({ children, level }) {
   const [show, setShow] = useState(false);
   const [copied, setCopied] = useState(false);
 
+  // console.log("level", level);
+
   const copyToClipboard = (text) => {
     copy(text);
     setCopied(true);
@@ -64,7 +66,7 @@ export default function Chunk({ children, level }) {
         <span
           className={clsx(
             "w-[16px] h-[16px]  block rounded-[50%]",
-            `bg-${level}`
+            `bg-[${level}]`
           )}
         ></span>{" "}
         <p className="ml-3 text-LG-normal text-black w-[470px] text-left more">

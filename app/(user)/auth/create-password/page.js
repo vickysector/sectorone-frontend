@@ -4,7 +4,7 @@ import Image from "next/image";
 import { EyeOutlined, EyeInvisibleOutlined } from "@ant-design/icons";
 import "@/app/_ui/Tooltip.css";
 import "@/app/_ui/CheckboxCustom.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import clsx from "clsx";
 import {
   CalculatePasswordStrength,
@@ -14,6 +14,9 @@ import { CheckPasswordRequirements } from "@/app/_lib/PasswordRequirements";
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import { ProgressBar } from "@/app/_ui/components/utils/ProgressBar";
+import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
+import { useSearchParams, redirect, useRouter } from "next/navigation";
+import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
 
 export default function CreatePasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -23,6 +26,24 @@ export default function CreatePasswordPage() {
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState(false);
   const [agreements, setAgreements] = useState(false);
+
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  // ---------- Start of: Page Access Validation -----------------
+  const searchParams = useSearchParams();
+
+  const code = searchParams.has("code");
+  const codeValid = searchParams.get("code")?.length === 4;
+  const tokenId = searchParams.has("id");
+  const tokenIdValid = searchParams.get("id")?.length > 4;
+
+  const theCode = searchParams.get("code");
+  const theTokenId = searchParams.get("id");
+
+  // ---------- End of:  Page Access Validation ------------
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -72,8 +93,62 @@ export default function CreatePasswordPage() {
     setAgreements((prevState) => !prevState);
   };
 
+  const canSave =
+    agreements && password && retypePassword && !passwordMatchError;
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (canSave) {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `${APIKEY}auth/new/password?code=${theCode}&id=${theTokenId}`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              password,
+              confirm_password: retypePassword,
+            }),
+            headers: {
+              Authorization: "app_secret!!!",
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+
+        const data = await res.json();
+
+        if (!data.success) {
+          throw new Error("");
+        }
+
+        router.push("/confirmations/success-created-password");
+      } catch (error) {
+        setError(true);
+        router.push("/error/not-authorize");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!code || !codeValid || !tokenId || !tokenIdValid) {
+      return redirect("/auth/login");
+    }
+  }, []);
+
+  if (!code || !codeValid || !tokenId || !tokenIdValid) {
+    return null;
+  }
+
   return (
     <main className="h-auth-screen -500 flex relative">
+      <div className={clsx(loading ? "visible" : "hidden")}>
+        <LoadingSpin />
+      </div>
       <section className="flex-1 flex flex-col items-center justify-center h-full w-full ">
         <div className="">
           <h1 className="text-heading-1">Create password</h1>
@@ -139,7 +214,11 @@ export default function CreatePasswordPage() {
               </label>
             </div>
 
-            <AuthButton agreements={agreements} value={"Create Password"} />
+            <AuthButton
+              onClick={handleSubmit}
+              agreements={canSave}
+              value={"Create Password"}
+            />
           </form>
         </div>
         <div className="absolute bottom-[10%] left-[9.5%]">

@@ -9,8 +9,11 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import { ProgressBar } from "@/app/_ui/components/utils/ProgressBar";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import clsx from "clsx";
+import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
+import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
+import { useSearchParams, redirect, useRouter } from "next/navigation";
 
 export default function NewPasswordPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -20,6 +23,24 @@ export default function NewPasswordPage() {
   const [retypePassword, setRetypePassword] = useState("");
   const [passwordMatchError, setPasswordMatchError] = useState(false);
   const [agreements, setAgreements] = useState(false);
+
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const router = useRouter();
+
+  // ---------- Start of: Page Access Validation -----------------
+  const searchParams = useSearchParams();
+
+  const code = searchParams.has("code");
+  const codeValid = searchParams.get("code")?.length === 4;
+  const tokenId = searchParams.has("id");
+  const tokenIdValid = searchParams.get("id")?.length > 4;
+
+  const theCode = searchParams.get("code");
+  const theTokenId = searchParams.get("id");
+
+  // ---------- End of:  Page Access Validation ------------
 
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
@@ -71,18 +92,61 @@ export default function NewPasswordPage() {
     // setAgreements(!retypePassword);
   };
 
-  // TODO
-  // const handleAgreements = (e) => {
-  //   // setAgreements((prevState) => !prevState);
-  //   setAgreements(
-  //     !passwordMatchError && password.length > 8 && retypePassword.length > 8
-  //   );
-  // };
+  const canSave = password && retypePassword && !passwordMatchError;
 
-  // console.log("agreements", agreements);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (canSave) {
+      try {
+        setLoading(true);
+        const res = await fetch(
+          `${APIKEY}auth/new/password?code=${theCode}&id=${theTokenId}`,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              password,
+              confirm_password: retypePassword,
+            }),
+            headers: {
+              Authorization: "app_secret!!!",
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          }
+        );
+
+        const data = await res.json();
+
+        if (!data.success) {
+          throw new Error("");
+        }
+
+        router.push("/confirmations/success-reset-password");
+      } catch (error) {
+        setError(true);
+        router.push("/error/not-authorize");
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!code || !codeValid || !tokenId || !tokenIdValid) {
+      return redirect("/auth/login");
+    }
+  }, []);
+
+  if (!code || !codeValid || !tokenId || !tokenIdValid) {
+    return null;
+  }
 
   return (
     <main className="h-screen bg-input-container flex items-center justify-center">
+      <div className={clsx(loading ? "visible" : "hidden")}>
+        <LoadingSpin />
+      </div>
       <div className="bg-white w-[50%] py-[40px] px-[110px]">
         <div className="text-center flex items-center justify-center flex-col w-[80%] mx-auto">
           <Image
@@ -142,7 +206,11 @@ export default function NewPasswordPage() {
             </p>
           </div>
           <div className="w-full m-8">
-            <AuthButton value={"Reset password"} agreements={agreements} />
+            <AuthButton
+              value={"Reset password"}
+              agreements={canSave}
+              onClick={handleSubmit}
+            />
           </div>
         </div>
       </div>

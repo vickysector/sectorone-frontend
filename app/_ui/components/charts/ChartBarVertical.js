@@ -9,6 +9,10 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import {
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_EMPLOYEE,
+  TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_USER,
+} from "@/app/_lib/variables/Variables";
 
 ChartJS.register(
   CategoryScale,
@@ -19,75 +23,91 @@ ChartJS.register(
   Legend
 );
 
-const options = {
-  plugins: {
-    legend: {
-      display: false,
+export default function ChartBarVertical(props) {
+  const { employeeData, usersData, minValue = 0, status } = props;
 
-      position: "top",
-      align: "start",
-      labels: {
-        usePointStyle: true,
-        boxHeight: 11,
-        boxWidth: 25,
-        font: {
-          color: "#000000",
-          size: "16px",
-          lineHeight: "24px",
-          weight: "500",
+  const options = {
+    plugins: {
+      legend: {
+        display: false,
+
+        position: "top",
+        align: "start",
+        labels: {
+          usePointStyle: true,
+          boxHeight: 11,
+          boxWidth: 25,
+          font: {
+            color: "#000000",
+            size: "16px",
+            lineHeight: "24px",
+            weight: "500",
+          },
         },
       },
-    },
-    layout: {
-      padding: {
-        top: 20, // Adjust the top padding as needed
-        bottom: 10, // Adjust the bottom padding as needed
+      layout: {
+        padding: {
+          top: 20, // Adjust the top padding as needed
+          bottom: 10, // Adjust the bottom padding as needed
+        },
+      },
+      afterFit: function (chart, opt) {
+        chart.plugins.register({
+          afterFit: function () {
+            this.height = this.height + 150;
+          },
+        });
       },
     },
-    afterFit: function (chart, opt) {
-      chart.plugins.register({
-        afterFit: function () {
-          this.height = this.height + 150;
-        },
-      });
-    },
-  },
-};
+  };
 
-const labels = [
-  "Jan",
-  "Feb",
-  "March",
-  "Apr",
-  "May",
-  "June",
-  "July",
-  "Aug",
-  "Sept",
-  "Okt",
-  "Nov",
-  "Dec",
-];
+  const labels = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
 
-const data = {
-  labels,
-  datasets: [
-    {
-      label: "Employees",
-      data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-      backgroundColor: "#FAAD14",
-      borderRadius: 5,
-    },
-    {
-      label: "Users",
-      data: labels.map(() => faker.number.int({ min: 0, max: 1000 })),
-      backgroundColor: "#1677FF",
-      borderRadius: 5,
-    },
-  ],
-};
+  const data = {
+    labels,
+    datasets: [
+      {
+        label: "Employees",
+        data: labels.map((month) => {
+          return employeeData
+            ? employeeData[month] === undefined
+              ? 0
+              : employeeData[month]
+            : 0;
+        }),
+        backgroundColor: "#FAAD14",
+        borderRadius: 5,
+        hidden: status === TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_USER,
+      },
+      {
+        label: "Users",
+        data: labels.map((month) =>
+          usersData
+            ? usersData[month] !== undefined
+              ? usersData[month]
+              : 0
+            : 0
+        ),
+        backgroundColor: "#1677FF",
+        borderRadius: 5,
+        hidden: status === TOTAL_COMPROMISED_OVERVIEW_SELECT_STATUS_EMPLOYEE,
+      },
+    ],
+  };
 
-export default function ChartBarVertical() {
   return (
     <>
       <div className="absolute top-[32px] left-[32px] flex items-center">
@@ -100,7 +120,11 @@ export default function ChartBarVertical() {
         <span className="w-[16px] h-[16px] bg-blue-chart block rounded-[50%]"></span>{" "}
         <p className="ml-3 text-LG-normal text-black">Users</p>{" "}
       </div>
-      <Bar options={options} data={data} className="mt-12" />
+      <Bar
+        options={{ ...options, scales: { y: { min: minValue } } }}
+        data={data}
+        className="mt-12"
+      />
     </>
   );
 }

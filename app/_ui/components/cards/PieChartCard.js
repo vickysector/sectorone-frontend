@@ -7,53 +7,73 @@ import { Doughnut } from "react-chartjs-2";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-const data = {
-  datasets: [
-    {
-      label: "# of Votes",
-      data: [12, 19, 3, 5, 2, 3, 11, 8, 6, 18],
-      backgroundColor: [
-        "#1677FF",
-        "#FFD591",
-        "#69B1FF",
-        "#95DE64",
-        "#13C2C2",
-        "#A0D911",
-        "#597EF7",
-        "#52C41A",
-        "#FAAD14",
-        "#FADb14",
-      ],
-      borderColor: [
-        "white",
-        "white",
-        "white",
-        "white",
-        "white",
-        "white",
-        "white",
-        "white",
-        "white",
-        "white",
-      ],
-      borderWidth: 1,
-    },
-  ],
-};
+export default function PieChartCard({ compromisedData, datasets }) {
+  const counts = datasets && datasets.map((data) => data.count);
+  const labels = datasets && datasets.map((data) => data.email_username);
 
-export default function PieChartCard({ compromisedData }) {
+  let backgrounds = [
+    "#1677FF",
+    "#FFD591",
+    "#69B1FF",
+    "#95DE64",
+    "#13C2C2",
+    "#A0D911",
+    "#597EF7",
+    "#52C41A",
+    "#FAAD14",
+    "#FADb14",
+  ];
+
+  const data = {
+    datasets: [
+      {
+        label: "",
+        data: counts,
+        backgroundColor: [
+          "#1677FF",
+          "#FFD591",
+          "#69B1FF",
+          "#95DE64",
+          "#13C2C2",
+          "#A0D911",
+          "#597EF7",
+          "#52C41A",
+          "#FAAD14",
+          "#FADb14",
+        ],
+        borderColor: [
+          "white",
+          "white",
+          "white",
+          "white",
+          "white",
+          "white",
+          "white",
+          "white",
+          "white",
+          "white",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
   return (
     <>
       <div className="bg-white border-input-border border-2 rounded-lg p-8 items-center flex flex-col text-center">
         <div className=" h-[300px]">
-          <Doughnut data={data} />
+          {datasets ? <Doughnut data={data} /> : <p>Diagram Not Available</p>}
         </div>
-        <div className="mt-8 self-start">
-          {compromisedData.map((data, index) => (
-            <Chunk key={data.key} level={data.color}>
-              {data.data}
-            </Chunk>
-          ))}
+        <div className="mt-8 self-start ">
+          {labels ? (
+            labels.map((data, index) => (
+              <Chunk key={data} level={backgrounds[index]}>
+                {data}
+              </Chunk>
+            ))
+          ) : (
+            <p className="text-center">No Data Available</p>
+          )}
         </div>
       </div>
     </>
