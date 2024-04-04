@@ -1,7 +1,20 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
+import localFont from "next/font/local";
 
-const inter = Inter({ subsets: ["latin"] });
+const myFont = localFont({
+  src: [
+    {
+      path: "./../public/fonts/SFPRODISPLAYREGULAR.otf",
+      weight: "400",
+      style: "normal",
+    },
+    {
+      path: "./../public/fonts/SFPRODISPLAYSEMIBOLD.ttf",
+      weight: "600",
+      style: "semi-bold",
+    },
+  ],
+});
 
 export const metadata = {
   title: "Create Next App",
@@ -10,8 +23,8 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>{children}</body>
+    <html lang="en" className={myFont.className}>
+      <body>{children}</body>
     </html>
   );
 }
