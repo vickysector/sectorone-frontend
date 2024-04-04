@@ -5,7 +5,14 @@ import CompromiseButton from "@/app/_ui/components/buttons/CompromiseButton";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import OutlineButton from "@/app/_ui/components/buttons/OutlineButton";
 import ChartBarVerticalStealer from "@/app/_ui/components/charts/ChartBarVerticalStealer";
-import { Select, ConfigProvider, Pagination, DatePicker } from "antd";
+import {
+  Select,
+  ConfigProvider,
+  Pagination,
+  DatePicker,
+  Spin,
+  BookFilled,
+} from "antd";
 import Image from "next/image";
 import clsx from "clsx";
 import { EyeOutlined, BookOutlined } from "@ant-design/icons";
@@ -17,6 +24,8 @@ import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
 import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
 import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
+import { setLoadingStealerState } from "@/app/_lib/store/features/Stealer/LoadingStelaerSlices";
+import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 
 const { RangePicker } = DatePicker;
 
@@ -212,11 +221,58 @@ export default function StealerUserPage() {
   const [lastUpdate, setLastUpdate] = useState();
   const [domainUsers, setDomainUsers] = useState();
   const [stealersdata, setStealersData] = useState();
+  const [mapStealerData, setMapStealerData] = useState(null);
+  const [mapStealerBookmarkData, setMapStealerbookmarkData] = useState(null);
+  const [selectSection, setSelectSection] = useState("stealer");
+
+  const [page, setPage] = useState(1);
+  const [bookmarkPage, setBookmarkPage] = useState(1);
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [inputSearch, setInputSearch] = useState();
+
+  const handleSetPageDefault = (value) => {
+    setPage(value);
+  };
+
+  const handleSetBookmarkPage = (value) => {
+    setBookmarkPage(value);
+  };
 
   const dispatch = useDispatch();
 
+  const loadingStealerData = useSelector(
+    (state) => state.stealerLoading.status
+  );
+
   const handleChangeUrlOpen = (value) => {
     dispatch(setChangeUrl(true));
+  };
+
+  const handleSearchKeyword = (e) => {
+    setInputSearch(e.target.value);
+  };
+
+  const handleRangePicker = (date, datestring) => {
+    setStartDate(datestring[0]);
+    setEndDate(datestring[1]);
+  };
+
+  const handleSelectSection = (value) => {
+    setSelectSection(value.target.name);
+  };
+
+  const handleClickSearch = () => {
+    switch (selectSection) {
+      case "stealer":
+        fetchStealerData(inputSearch);
+        break;
+      case "bookmark-stealer":
+        fetchStealerBookmarkData(inputSearch);
+        break;
+      default:
+        break;
+    }
   };
 
   const getBreachesData = async () => {
@@ -295,11 +351,106 @@ export default function StealerUserPage() {
     } catch (error) {}
   };
 
+  const fetchStealerData = async (keyword = "") => {
+    try {
+      dispatch(setLoadingStealerState(true));
+      const res = await fetch(
+        `${APIDATAV1}stealer?page=${page}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        // setDataSource(mappedEmployeedata);
+        setMapStealerData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      setDataSource("error bro: ", error);
+      setMapStealerData(null);
+    } finally {
+      dispatch(setLoadingStealerState(false));
+    }
+  };
+
+  const fetchStealerBookmarkData = async (keyword = "") => {
+    try {
+      dispatch(setLoadingStealerState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/stealer/boomark?page=${bookmarkPage}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        DeleteCookies();
+        RedirectToLogin();
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw new Error("");
+      }
+
+      if (data.data) {
+        // setDataSource(mappedEmployeedata);
+        setMapStealerbookmarkData({
+          data: data.data,
+          count: data.count_data,
+          size: data.size,
+        });
+      }
+    } catch (error) {
+      // setDataSource(null);
+      setMapStealerbookmarkData(null);
+    } finally {
+      dispatch(setLoadingStealerState(false));
+    }
+  };
+
   useEffect(() => {
     getListDomainUsers();
     getBreachesData();
     getBreachesDataStealer();
   }, []);
+
+  useEffect(() => {
+    switch (selectSection) {
+      case "stealer":
+        fetchStealerData(inputSearch);
+        break;
+      case "bookmark-stealer":
+        fetchStealerBookmarkData(inputSearch);
+        break;
+      default:
+        break;
+    }
+  }, [page, startDate, endDate, bookmarkPage]);
 
   return (
     <main>
@@ -384,16 +535,24 @@ export default function StealerUserPage() {
 
       <section className="mt-10">
         <h1 className="text-heading-4 text-black">
-          Total device compromised: 100
+          Total device compromised: {mapStealerData && mapStealerData.count}
         </h1>
         <div className="mt-4 bg-white border-2 border-input-border rounded-lg">
           <section className="p-8">
             <OutlineButton
-              isActive={true}
-              total={100}
+              isActive={selectSection === "stealer"}
+              total={mapStealerData && mapStealerData.count}
               value={"Data compromise "}
+              nameData={"stealer"}
+              onClick={handleSelectSection}
             />
-            <OutlineButton isActive={false} total={100} value={"Bookmark "} />
+            <OutlineButton
+              isActive={selectSection === "bookmark-stealer"}
+              total={mapStealerBookmarkData && mapStealerBookmarkData.count}
+              value={"Bookmark "}
+              nameData={"bookmark-stealer"}
+              onClick={handleSelectSection}
+            />
 
             <div className="mt-8 ">
               <div className="flex items-center">
@@ -417,6 +576,13 @@ export default function StealerUserPage() {
                       " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
                     )}
                     placeholder={"Search by Malware/Devices name"}
+                    onChange={handleSearchKeyword}
+                    value={inputSearch}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        handleClickSearch();
+                      }
+                    }}
                   />
                   <div className="px-3 cursor-pointer">
                     <Image
@@ -452,7 +618,7 @@ export default function StealerUserPage() {
                   >
                     <RangePicker
                       renderExtraFooter={() => "extra footer"}
-                      // onChange={handleRangePicker}
+                      onChange={handleRangePicker}
                       className="ml-8"
                       size="large"
                     />
@@ -465,77 +631,282 @@ export default function StealerUserPage() {
             </div>
           </section>
           <section className="p-8">
-            <div className="border-2 rounded-xl border-input-border">
-              <table className="bg-white  w-full rounded-xl">
-                <thead className="text-black text-Base-strong bg-[#00000005]">
-                  <tr className="border-b-[1px] border-[#D5D5D5]">
-                    <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
-                      No
-                    </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                      Date added
-                    </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                      Malware
-                    </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                      Devices name
-                    </td>
-                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[400px]">
-                      Path malware
-                    </td>
-                    <td className="py-[19px] px-[16px]">Action</td>
-                  </tr>
-                </thead>
-                <tbody className="text-Base-normal text-text-description">
-                  {dataSource.map((data, index) => (
-                    <tr
-                      className="border-b-[2px] border-[#D5D5D5]"
-                      key={data.id}
-                    >
-                      <td className="py-[19px] px-[16px]"> {index + 1} </td>
-                      <td className="py-[19px] px-[16px]"> {data.date} </td>
-                      <td className="py-[19px] px-[16px]"> {data.malware} </td>
-                      <td className="py-[19px] px-[16px]"> {data.devices} </td>
-                      <td className="py-[19px] px-[16px] max-w-[400px]">
-                        {" "}
-                        {data.path}{" "}
-                      </td>
-                      <td className="py-[19px] px-[16px]"> {data.action} </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div className="flex items-center justify-between my-[19px] mx-[16px]">
-                <p className="text-Base-normal text-[#676767] ">
-                  Showing 10 to 100 entries
-                </p>
-                <div>
-                  <ConfigProvider
-                    theme={{
-                      components: {
-                        Pagination: {
-                          itemActiveBg: "#FF6F1E",
-                          itemLinkBg: "#fff",
-                          itemInputBg: "#fff",
-                        },
-                      },
-                      token: {
-                        colorPrimary: "white",
-                      },
-                    }}
-                  >
-                    <Pagination
-                      type="primary"
-                      defaultCurrent={1}
-                      total={50}
-                      showSizeChanger={false}
-                      style={{ color: "#FF6F1E" }}
-                    />
-                  </ConfigProvider>
-                </div>
+            {loadingStealerData ? (
+              <div className="text-center">
+                <ConfigProvider
+                  theme={{
+                    token: {
+                      colorPrimary: "#FF6F1E",
+                    },
+                  }}
+                >
+                  <Spin size="large" />
+                </ConfigProvider>
               </div>
-            </div>
+            ) : (
+              <>
+                {selectSection === "stealer" && mapStealerData && (
+                  <div className="border-2 rounded-xl border-input-border">
+                    <table className="bg-white  w-full rounded-xl">
+                      <thead className="text-black text-Base-strong bg-[#00000005]">
+                        <tr className="border-b-[1px] border-[#D5D5D5]">
+                          <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                            No
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                            Date added
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                            Malware
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                            Devices name
+                          </td>
+                          <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[400px]">
+                            Path malware
+                          </td>
+                          <td className="py-[19px] px-[16px]">Action</td>
+                        </tr>
+                      </thead>
+                      <tbody className="text-Base-normal text-text-description">
+                        {mapStealerData.data.map((data, index) => (
+                          <tr
+                            className="border-b-[2px] border-[#D5D5D5]"
+                            key={data.id}
+                          >
+                            <td className="py-[19px] px-[16px]">
+                              {" "}
+                              {index + 1}{" "}
+                            </td>
+                            <td className="py-[19px] px-[16px]">
+                              {convertDateFormat(data.datetime_added)}
+                            </td>
+                            <td className="py-[19px] px-[16px]">
+                              {" "}
+                              {data.malware_name}{" "}
+                            </td>
+                            <td className="py-[19px] px-[16px]">
+                              {" "}
+                              {data.computer_name}{" "}
+                            </td>
+                            <td className="py-[19px] px-[16px] max-w-[400px]">
+                              {" "}
+                              {data.path}{" "}
+                            </td>
+                            <td className="py-[19px] px-[16px]">
+                              <div className="flex">
+                                <div
+                                  className="cursor-pointer"
+                                  onClick={() => handleDetails(data)}
+                                >
+                                  <EyeOutlined style={{ fontSize: "18px" }} />
+                                </div>
+                                <div
+                                  className="ml-auto mr-auto cursor-pointer"
+                                  onClick={() =>
+                                    handleUnBookmarkConfirm(
+                                      data.id,
+                                      DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                    )
+                                  }
+                                >
+                                  <BookOutlined style={{ fontSize: "18px" }} />
+                                </div>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                      <p className="text-Base-normal text-[#676767] ">
+                        Showing {mapStealerData.size} to {mapStealerData.count}{" "}
+                        entries
+                      </p>
+                      <div>
+                        <ConfigProvider
+                          theme={{
+                            components: {
+                              Pagination: {
+                                itemActiveBg: "#FF6F1E",
+                                itemLinkBg: "#fff",
+                                itemInputBg: "#fff",
+                              },
+                            },
+                            token: {
+                              colorPrimary: "white",
+                            },
+                          }}
+                        >
+                          <Pagination
+                            type="primary"
+                            defaultCurrent={1}
+                            total={mapStealerData && mapStealerData.count}
+                            showSizeChanger={false}
+                            style={{ color: "#FF6F1E" }}
+                            current={page}
+                            onChange={handleSetPageDefault}
+                          />
+                        </ConfigProvider>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                {selectSection === "stealer" && mapStealerData === null && (
+                  <div className="text-center flex flex-col justify-center items-center">
+                    <div>
+                      <Image
+                        src={"/images/no_result_found_compromised.svg"}
+                        alt="search icon"
+                        width={129}
+                        height={121}
+                      />
+                    </div>
+                    <div className="mt-5">
+                      <h1 className="text-heading-3">No results found</h1>
+                      <p className="text-text-description text-LG-normal mt-4">
+                        Try different keywords or remove search filters
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {selectSection === "bookmark-stealer" &&
+                  mapStealerBookmarkData && (
+                    <div className="border-2 rounded-xl border-input-border">
+                      <table className="bg-white  w-full rounded-xl">
+                        <thead className="text-black text-Base-strong bg-[#00000005]">
+                          <tr className="border-b-[1px] border-[#D5D5D5]">
+                            <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                              No
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Date added
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Malware
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                              Devices name
+                            </td>
+                            <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed w-[400px]">
+                              Path malware
+                            </td>
+                            <td className="py-[19px] px-[16px]">Action</td>
+                          </tr>
+                        </thead>
+                        <tbody className="text-Base-normal text-text-description">
+                          {mapStealerBookmarkData.data.map((data, index) => (
+                            <tr
+                              className="border-b-[2px] border-[#D5D5D5]"
+                              key={data.id}
+                            >
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {index + 1}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {convertDateFormat(data.datetime_added)}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {data.malware_name}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                {" "}
+                                {data.computer_name}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px] max-w-[400px]">
+                                {" "}
+                                {data.path}{" "}
+                              </td>
+                              <td className="py-[19px] px-[16px]">
+                                <div className="flex">
+                                  <div
+                                    className="cursor-pointer"
+                                    onClick={() => handleDetails(data)}
+                                  >
+                                    <EyeOutlined style={{ fontSize: "18px" }} />
+                                  </div>
+                                  <div
+                                    className="ml-auto mr-auto cursor-pointer"
+                                    onClick={() =>
+                                      handleUnBookmarkConfirm(
+                                        data.id,
+                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                      )
+                                    }
+                                  >
+                                    <BookFilled
+                                      style={{
+                                        fontSize: "18px",
+                                        color: "#FFD591",
+                                      }}
+                                    />
+                                  </div>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                      <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                        <p className="text-Base-normal text-[#676767] ">
+                          Showing {mapStealerBookmarkData.size} to{" "}
+                          {mapStealerBookmarkData.count} entries
+                        </p>
+                        <div>
+                          <ConfigProvider
+                            theme={{
+                              components: {
+                                Pagination: {
+                                  itemActiveBg: "#FF6F1E",
+                                  itemLinkBg: "#fff",
+                                  itemInputBg: "#fff",
+                                },
+                              },
+                              token: {
+                                colorPrimary: "white",
+                              },
+                            }}
+                          >
+                            <Pagination
+                              type="primary"
+                              defaultCurrent={1}
+                              total={
+                                mapStealerBookmarkData &&
+                                mapStealerBookmarkData.count
+                              }
+                              showSizeChanger={false}
+                              style={{ color: "#FF6F1E" }}
+                              current={bookmarkPage}
+                              onChange={handleSetBookmarkPage}
+                            />
+                          </ConfigProvider>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                {selectSection === "bookmark-stealer" &&
+                  mapStealerBookmarkData === null && (
+                    <div className="text-center flex flex-col justify-center items-center">
+                      <div>
+                        <Image
+                          src={"/images/no_result_found_compromised.svg"}
+                          alt="search icon"
+                          width={129}
+                          height={121}
+                        />
+                      </div>
+                      <div className="mt-5">
+                        <h1 className="text-heading-3">No results found</h1>
+                        <p className="text-text-description text-LG-normal mt-4">
+                          Try different keywords or remove search filters
+                        </p>
+                      </div>
+                    </div>
+                  )}
+              </>
+            )}
           </section>
         </div>
       </section>
