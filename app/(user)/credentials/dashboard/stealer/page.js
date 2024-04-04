@@ -71,6 +71,7 @@ export default function StealerUserPage() {
 
   const [page, setPage] = useState(1);
   const [bookmarkPage, setBookmarkPage] = useState(1);
+  const [exportToCVPage, setExportToCvPage] = useState(1);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [inputSearch, setInputSearch] = useState();
@@ -109,10 +110,16 @@ export default function StealerUserPage() {
 
   const handleSetPageDefault = (value) => {
     setPage(value);
+    setExportToCvPage(value);
   };
 
   const handleSetBookmarkPage = (value) => {
     setBookmarkPage(value);
+    setExportToCvPage(page);
+  };
+
+  const handleExportToCV = (value) => {
+    fetchExportToCsv();
   };
 
   const loadingStealerData = useSelector(
@@ -138,6 +145,7 @@ export default function StealerUserPage() {
 
   const handleSearchKeyword = (e) => {
     setInputSearch(e.target.value);
+    setExportToCvPage(1);
   };
 
   const handleRangePicker = (date, datestring) => {
@@ -146,9 +154,11 @@ export default function StealerUserPage() {
     switch (selectSection) {
       case "stealer":
         setPage(1);
+        setExportToCvPage(1);
         break;
       case "bookmark-stealer":
         setBookmarkPage(1);
+        setExportToCvPage(1);
         break;
       default:
         break;
@@ -351,6 +361,30 @@ export default function StealerUserPage() {
       // setDataSource(null);
       console.log("error bookmark bro", error);
       setMapStealerbookmarkData(null);
+    } finally {
+      dispatch(setLoadingStealerState(false));
+    }
+  };
+
+  const fetchExportToCsv = async () => {
+    try {
+      dispatch(setLoadingStealerState(true));
+
+      const res = await fetch(
+        `${APIDATAV1}export/csv/stealer?page=${exportToCVPage}&start_date=${startDate}&end_date=${endDate}&search=${
+          inputSearch ? inputSearch : ""
+        }`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+      console.log("res export csv: ", res);
+    } catch (error) {
+      console.log("Error export to CSV");
     } finally {
       dispatch(setLoadingStealerState(false));
     }
@@ -579,7 +613,7 @@ export default function StealerUserPage() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton />
+                  <ExportButton onClick={handleExportToCV} />
                 </div>
               </div>
             </div>
