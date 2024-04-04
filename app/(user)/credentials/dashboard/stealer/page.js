@@ -5,17 +5,15 @@ import CompromiseButton from "@/app/_ui/components/buttons/CompromiseButton";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import OutlineButton from "@/app/_ui/components/buttons/OutlineButton";
 import ChartBarVerticalStealer from "@/app/_ui/components/charts/ChartBarVerticalStealer";
-import {
-  Select,
-  ConfigProvider,
-  Pagination,
-  DatePicker,
-  Spin,
-  BookFilled,
-} from "antd";
+import { Select, ConfigProvider, Pagination, DatePicker, Spin } from "antd";
 import Image from "next/image";
 import clsx from "clsx";
-import { EyeOutlined, BookOutlined } from "@ant-design/icons";
+import {
+  EyeOutlined,
+  BookOutlined,
+  BookFilled,
+  CheckCircleFilled,
+} from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
@@ -26,191 +24,22 @@ import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 import { setUrlData } from "@/app/_lib/store/features/Home/ChooseUrlSlice";
 import { setLoadingStealerState } from "@/app/_lib/store/features/Stealer/LoadingStelaerSlices";
 import { convertDateFormat } from "@/app/_lib/CalculatePassword";
+import {
+  setDataDetails,
+  setDetailState,
+} from "@/app/_lib/store/features/Compromised/DetailSlices";
+import {
+  setBookmarkConfirmState,
+  setBookmarkDomainData,
+  setBookmarkIdData,
+} from "@/app/_lib/store/features/Compromised/BookmarkSlices";
+import {
+  setUnBookmarkConfirmState,
+  setUnBookmarkDomainData,
+  setUnBookmarkIdData,
+} from "@/app/_lib/store/features/Compromised/UnBookmarkSlices";
 
 const { RangePicker } = DatePicker;
-
-const dataSource = [
-  {
-    id: 1,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 2,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 3,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 4,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 5,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 6,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 7,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 8,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 9,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 10,
-    date: "27/12/2023 02:23",
-    malware: "Redline",
-    devices: "DEKSTOP-JA6HR45",
-    path: `C:\\Users\\yasin\\Documents\\MinorPolicy\\RBKsn8K9
-    ZUwyhuRoWbSX77gL.exe`,
-    action: (
-      <div className="flex">
-        <div>
-          <EyeOutlined style={{ fontSize: "18px" }} />
-        </div>
-        <div className="ml-auto mr-auto">
-          <BookOutlined style={{ fontSize: "18px" }} />
-        </div>
-      </div>
-    ),
-  },
-];
 
 export default function StealerUserPage() {
   const [breachesAll, setBreachesAll] = useState();
@@ -244,6 +73,19 @@ export default function StealerUserPage() {
   const loadingStealerData = useSelector(
     (state) => state.stealerLoading.status
   );
+  const bookmarkSuccessState = useSelector(
+    (state) => state.bookmarkCompromise.success
+  );
+  const unbookmarkSuccessState = useSelector(
+    (state) => state.unbookmarkCompromise.success
+  );
+
+  const bookmarBannerState = useSelector(
+    (state) => state.bookmarkCompromise.banner
+  );
+  const unbookmarBannerState = useSelector(
+    (state) => state.unbookmarkCompromise.banner
+  );
 
   const handleChangeUrlOpen = (value) => {
     dispatch(setChangeUrl(true));
@@ -256,18 +98,50 @@ export default function StealerUserPage() {
   const handleRangePicker = (date, datestring) => {
     setStartDate(datestring[0]);
     setEndDate(datestring[1]);
+    switch (selectSection) {
+      case "stealer":
+        setPage(1);
+        break;
+      case "bookmark-stealer":
+        setBookmarkPage(1);
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSelectSection = (value) => {
     setSelectSection(value.target.name);
+    setInputSearch("");
+    setStartDate("");
+    setEndDate("");
+  };
+
+  const handleDetails = (item) => {
+    dispatch(setDetailState(true));
+    dispatch(setDataDetails(item));
+  };
+
+  const handleBookmarkConfirm = (dataID, domain) => {
+    dispatch(setBookmarkConfirmState(true));
+    dispatch(setBookmarkIdData(dataID));
+    dispatch(setBookmarkDomainData(domain));
+  };
+
+  const handleUnBookmarkConfirm = (dataID, domain) => {
+    dispatch(setUnBookmarkConfirmState(true));
+    dispatch(setUnBookmarkIdData(dataID));
+    dispatch(setUnBookmarkDomainData(domain));
   };
 
   const handleClickSearch = () => {
     switch (selectSection) {
       case "stealer":
+        setPage(1);
         fetchStealerData(inputSearch);
         break;
       case "bookmark-stealer":
+        setBookmarkPage(1);
         fetchStealerBookmarkData(inputSearch);
         break;
       default:
@@ -385,7 +259,6 @@ export default function StealerUserPage() {
         });
       }
     } catch (error) {
-      setDataSource("error bro: ", error);
       setMapStealerData(null);
     } finally {
       dispatch(setLoadingStealerState(false));
@@ -427,6 +300,7 @@ export default function StealerUserPage() {
       }
     } catch (error) {
       // setDataSource(null);
+      console.log("error bookmark bro", error);
       setMapStealerbookmarkData(null);
     } finally {
       dispatch(setLoadingStealerState(false));
@@ -437,6 +311,7 @@ export default function StealerUserPage() {
     getListDomainUsers();
     getBreachesData();
     getBreachesDataStealer();
+    fetchStealerBookmarkData();
   }, []);
 
   useEffect(() => {
@@ -450,7 +325,15 @@ export default function StealerUserPage() {
       default:
         break;
     }
-  }, [page, startDate, endDate, bookmarkPage]);
+  }, [
+    page,
+    startDate,
+    endDate,
+    bookmarkPage,
+    bookmarkSuccessState,
+    unbookmarkSuccessState,
+    selectSection,
+  ]);
 
   return (
     <main>
@@ -630,6 +513,48 @@ export default function StealerUserPage() {
               </div>
             </div>
           </section>
+
+          {bookmarBannerState !== null ? (
+            bookmarBannerState ? (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-success-chart rounded-lg shadow-lg">
+                <CheckCircleFilled style={{ color: "white" }} />
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Successfully added to bookmarks
+                </p>
+              </section>
+            ) : (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-error rounded-lg shadow-lg">
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Oops something wrong when Bookmark data
+                </p>
+              </section>
+            )
+          ) : (
+            ""
+          )}
+          {unbookmarBannerState !== null ? (
+            unbookmarBannerState ? (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-success-chart rounded-lg shadow-lg">
+                <CheckCircleFilled style={{ color: "white" }} />
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Successfully remove from bookmarks
+                </p>
+              </section>
+            ) : (
+              <section className="mx-8 py-[8px] px-[16px] flex items-center bg-error rounded-lg shadow-lg">
+                <p className="text-white text-Base-normal ml-[8px] ">
+                  {" "}
+                  Oops something wrong when remove Bookmark data
+                </p>
+              </section>
+            )
+          ) : (
+            ""
+          )}
+
           <section className="p-8">
             {loadingStealerData ? (
               <div className="text-center">
@@ -704,10 +629,7 @@ export default function StealerUserPage() {
                                 <div
                                   className="ml-auto mr-auto cursor-pointer"
                                   onClick={() =>
-                                    handleUnBookmarkConfirm(
-                                      data.id,
-                                      DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
-                                    )
+                                    handleBookmarkConfirm(data.id, "stealer")
                                   }
                                 >
                                   <BookOutlined style={{ fontSize: "18px" }} />
@@ -832,7 +754,7 @@ export default function StealerUserPage() {
                                     onClick={() =>
                                       handleUnBookmarkConfirm(
                                         data.id,
-                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                        "stealer"
                                       )
                                     }
                                   >
