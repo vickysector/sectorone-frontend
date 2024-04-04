@@ -339,6 +339,53 @@ export default function CompromisedDashboard() {
     // console.log("datestring: ", datestring);
     setStartDate(datestring[0]);
     setEndDate(datestring[1]);
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        setPage(1);
+
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          setPageEmployeeBookmark(1);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          setPageEmployeeValidate(1);
+        } else {
+          setPage(1);
+        }
+        break;
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        setPageDevices(1);
+
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          setPageDevicesBookmark(1);
+        } else {
+          setPageDevices(1);
+        }
+        break;
+      // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        setPageUsers(1);
+
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          setPageUserBookmark(1);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          setPageUsersValidate(1);
+        } else {
+          setPageUsers(1);
+        }
+        break;
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        setPageThirdParty(1);
+
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          setPageThirdPartyBookmark(1);
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          setPageThirdPartyValidate(1);
+        } else {
+          setPageThirdParty(1);
+        }
+        break;
+      default:
+        break;
+    }
   };
 
   const handleSearchKeyword = (e) => {
@@ -350,41 +397,56 @@ export default function CompromisedDashboard() {
     dispatch(clearIds());
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        setPage(1);
         fetchEmployeeData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          setPageEmployeeBookmark(1);
           fetchEmployeeBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          setPageEmployeeValidate(1);
           fetchEmployeeTesting(inputSearch);
         } else {
+          setPage(1);
           fetchEmployeeData(inputSearch);
         }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        setPageDevices(1);
         fetchDevicesData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          setPageDevicesBookmark(1);
           fetchDevicesBookmark(inputSearch);
         } else {
+          setPageDevices(1);
           fetchDevicesData(inputSearch);
         }
         break;
       // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        setPageUsers(1);
         fetchUsersData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          setPageUserBookmark(1);
           fetchUserBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          setPageUsersValidate(1);
           fetchUserTesting(inputSearch);
         } else {
+          setPageUsers(1);
           fetchUsersData(inputSearch);
         }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        setPageThirdParty(1);
         fetchThirdPartyData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          setPageThirdPartyBookmark(1);
           fetchThirdPartyBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          setPageThirdPartyValidate(1);
           fetchThirdPartyTesting(inputSearch);
         } else {
+          setPageThirdParty(1);
           fetchThirdPartyData(inputSearch);
         }
         break;

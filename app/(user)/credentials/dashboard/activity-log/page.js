@@ -34,7 +34,7 @@ export default function ActivityLogUserPage() {
   };
 
   const handleHitSearch = () => {
-    console.log("test");
+    setPage(1);
     fetchLogActivity(keywordSearch);
   };
 
