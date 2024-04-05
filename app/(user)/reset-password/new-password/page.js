@@ -9,7 +9,7 @@ import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import Password from "@/app/_ui/components/inputs/Password";
 import { ProgressBar } from "@/app/_ui/components/utils/ProgressBar";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import clsx from "clsx";
 import { LoadingSpin } from "@/app/_ui/components/utils/LoadingSpin";
 import { APIKEY } from "@/app/_lib/helpers/APIKEYS";
@@ -143,77 +143,79 @@ export default function NewPasswordPage() {
   }
 
   return (
-    <main className="h-screen bg-input-container flex items-center justify-center">
-      <div className={clsx(loading ? "visible" : "hidden")}>
-        <LoadingSpin />
-      </div>
-      <div className="bg-white w-[50%] py-[40px] px-[110px]">
-        <div className="text-center flex items-center justify-center flex-col w-[80%] mx-auto">
-          <Image
-            src={"/images/sector_logo.png"}
-            alt="Logo Sector"
-            width={92}
-            height={38}
-          />
-
-          <Image
-            src={"/images/sector_image_auth_lock.svg"}
-            alt="Logo Sector"
-            width={200}
-            height={200}
-          />
-
-          <h1 className="text-heading-2 text-black mb-4">Create password</h1>
-          <p className="text-text-description text-LG-normal mb-8">
-            Your new password must be different from previous  used passwords.
-          </p>
-          <div className="bg-input-container relative w-full text-left">
-            <Password
-              showPassword={showPassword}
-              value={password}
-              toggleShowIcon={toggleShowPasswordVisibility}
-              isPasswordFocused={isPasswordFocused}
-              passwordRequirement={passwordRequirement}
-              onBlur={handlePasswordBlur}
-              onFocus={handlePasswordFocus}
-              onChange={handlePasswordChange}
-              hasTooltip={true}
-              passwordMatchError={false}
-              placeholder={"New password"}
+    <Suspense>
+      <main className="h-screen bg-input-container flex items-center justify-center">
+        <div className={clsx(loading ? "visible" : "hidden")}>
+          <LoadingSpin />
+        </div>
+        <div className="bg-white w-[50%] py-[40px] px-[110px]">
+          <div className="text-center flex items-center justify-center flex-col w-[80%] mx-auto">
+            <Image
+              src={"/images/sector_logo.png"}
+              alt="Logo Sector"
+              width={92}
+              height={38}
             />
-          </div>
-          <ProgressBar data={strengths} />
-          <div className=" mt-4 text-left relative w-full ">
-            <Password
-              showPassword={showRetypePassword}
-              value={retypePassword}
-              toggleShowIcon={toggleShowRetypePasswordVisibility}
-              onChange={handleRetypePasswordChange}
-              hasTooltip={false}
-              passwordMatchError={passwordMatchError}
-              placeholder={"Re-confirm password"}
+
+            <Image
+              src={"/images/sector_image_auth_lock.svg"}
+              alt="Logo Sector"
+              width={200}
+              height={200}
             />
-          </div>
-          <div className="w-full mt-2 text-left">
-            <p
-              className={clsx(
-                "text-Base-normal text-error",
-                passwordMatchError ? "block" : "hidden",
-                retypePassword.length === 0 ? "hidden" : "block"
-              )}
-            >
-              Pasword do not match. Please try again.
+
+            <h1 className="text-heading-2 text-black mb-4">Create password</h1>
+            <p className="text-text-description text-LG-normal mb-8">
+              Your new password must be different from previous used passwords.
             </p>
-          </div>
-          <div className="w-full m-8">
-            <AuthButton
-              value={"Reset password"}
-              agreements={canSave}
-              onClick={handleSubmit}
-            />
+            <div className="bg-input-container relative w-full text-left">
+              <Password
+                showPassword={showPassword}
+                value={password}
+                toggleShowIcon={toggleShowPasswordVisibility}
+                isPasswordFocused={isPasswordFocused}
+                passwordRequirement={passwordRequirement}
+                onBlur={handlePasswordBlur}
+                onFocus={handlePasswordFocus}
+                onChange={handlePasswordChange}
+                hasTooltip={true}
+                passwordMatchError={false}
+                placeholder={"New password"}
+              />
+            </div>
+            <ProgressBar data={strengths} />
+            <div className=" mt-4 text-left relative w-full ">
+              <Password
+                showPassword={showRetypePassword}
+                value={retypePassword}
+                toggleShowIcon={toggleShowRetypePasswordVisibility}
+                onChange={handleRetypePasswordChange}
+                hasTooltip={false}
+                passwordMatchError={passwordMatchError}
+                placeholder={"Re-confirm password"}
+              />
+            </div>
+            <div className="w-full mt-2 text-left">
+              <p
+                className={clsx(
+                  "text-Base-normal text-error",
+                  passwordMatchError ? "block" : "hidden",
+                  retypePassword.length === 0 ? "hidden" : "block"
+                )}
+              >
+                Pasword do not match. Please try again.
+              </p>
+            </div>
+            <div className="w-full m-8">
+              <AuthButton
+                value={"Reset password"}
+                agreements={canSave}
+                onClick={handleSubmit}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </main>
+      </main>
+    </Suspense>
   );
 }
