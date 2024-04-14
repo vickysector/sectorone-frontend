@@ -589,9 +589,6 @@ export default function CompromisedDashboard() {
   const handleSelectValidation = (value, id, status) => {
     setSelectValidasi(value);
 
-    console.log("id ", id);
-    console.log("value ", value);
-
     UpdateValidateTesting(id, value, status);
   };
 
@@ -931,6 +928,11 @@ export default function CompromisedDashboard() {
       dispatch(setLoadingState(false));
     }
   };
+
+  console.log(
+    "employee valid status: ",
+    employeeValidatedData && employeeValidatedData.data
+  );
 
   const fetchUserBookmark = async (keyword = "") => {
     try {
@@ -1871,12 +1873,8 @@ export default function CompromisedDashboard() {
                                   }}
                                 >
                                   <Select
-                                    defaultValue={
-                                      data.status_validasi === "valid"
-                                        ? "valid"
-                                        : "invalid"
-                                    }
-                                    value={selectValidasi}
+                                    defaultValue={data.status_validasi}
+                                    value={data.status_validasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
                                       handleSelectValidation(
