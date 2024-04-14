@@ -46,6 +46,9 @@ export default function ActivityLogUserPage() {
   const fetchLogActivity = async (keyword = "") => {
     try {
       dispatch(setLoadingLogState(true));
+      if (keyword) {
+        setPage(1);
+      }
       const res = await fetch(
         `${APIDATAV1}setting/activity?page=${page}&limit=10&search=${keyword}`,
         {

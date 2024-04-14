@@ -676,6 +676,11 @@ export default function CompromisedDashboard() {
   const fetchEmployeeData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPage(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}compromised/employee?page=${page}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -720,6 +725,11 @@ export default function CompromisedDashboard() {
   const fetchUsersData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUsers(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}compromised/users?page=${pageUsers}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -764,6 +774,11 @@ export default function CompromisedDashboard() {
   const fetchThirdPartyData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdParty(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}compromised/thirdparty?page=${pageThirdParty}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -808,6 +823,11 @@ export default function CompromisedDashboard() {
   const fetchDevicesData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageDevices(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}compromised/devices?page=${pageDevices}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -852,6 +872,11 @@ export default function CompromisedDashboard() {
   const fetchEmployeeBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageEmployeeBookmark(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/employee?status=bookmark&page=${pageEmployeeBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -891,6 +916,11 @@ export default function CompromisedDashboard() {
   const fetchEmployeeTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageEmployeeValidate(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/employee?status=testing&page=${pageEmployeeValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -932,6 +962,11 @@ export default function CompromisedDashboard() {
   const fetchUserBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUserBookmark(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/users?status=bookmark&page=${pageUsersBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -971,6 +1006,11 @@ export default function CompromisedDashboard() {
   const fetchUserTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUsersValidate(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/users?status=testing&page=${pageUsersValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -1010,6 +1050,11 @@ export default function CompromisedDashboard() {
   const fetchThirdPartyBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdPartyBookmark(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/thirdparty?status=bookmark&page=${pageThirdPartyBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -1049,6 +1094,11 @@ export default function CompromisedDashboard() {
   const fetchThirdPartyTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdPartyValidate(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/thirdparty?status=testing&page=${pageThirdPartyValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -1088,6 +1138,11 @@ export default function CompromisedDashboard() {
   const fetchDevicesBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageDevicesBookmark(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/devices/boomark?page=${pageDevicesBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {

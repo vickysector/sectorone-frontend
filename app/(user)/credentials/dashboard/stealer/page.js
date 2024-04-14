@@ -287,6 +287,11 @@ export default function StealerUserPage() {
   const fetchStealerData = async (keyword = "") => {
     try {
       dispatch(setLoadingStealerState(true));
+
+      if (keyword || startDate || endDate) {
+        setPage(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}stealer?page=${page}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -327,6 +332,11 @@ export default function StealerUserPage() {
   const fetchStealerBookmarkData = async (keyword = "") => {
     try {
       dispatch(setLoadingStealerState(true));
+
+      if (keyword || startDate || endDate) {
+        setBookmarkPage(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/stealer/boomark?page=${bookmarkPage}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
