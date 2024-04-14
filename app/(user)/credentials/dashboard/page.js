@@ -41,6 +41,14 @@ import {
   setLastUpdateUsers,
   setUrl,
 } from "@/app/_lib/store/features/Breaches/BreachesSlices";
+import {
+  setLoadingBreachesOverview,
+  setLoadingListDomainUsers,
+  setLoadingTopCompromiseAntivirus,
+  setLoadingTopCompromiseMalware,
+  setLoadingTopCompromiseUrl,
+  setLoadingTopCompromiseUser,
+} from "@/app/_lib/store/features/Home/LoadingOverviewSlices";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(
@@ -102,6 +110,8 @@ export default function UserDashboardPage() {
 
   const getBreachesData = async () => {
     try {
+      dispatch(setLoadingBreachesOverview(true));
+
       const res = await fetch(
         `${APIDATAV1}breaches?year=${yearSelect}&type=overview&status=all`,
         {
@@ -134,7 +144,10 @@ export default function UserDashboardPage() {
       dispatch(setLastUpdateUsers(data.data.last_update));
       setUsersData(data.data.user);
       setEmployeeData(data.data.employee);
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      dispatch(setLoadingBreachesOverview(false));
+    }
   };
 
   useEffect(() => {
@@ -146,6 +159,8 @@ export default function UserDashboardPage() {
 
   const getListDomainUsers = async () => {
     try {
+      dispatch(setLoadingListDomainUsers(true));
+
       const res = await fetch(`${APIDATAV1}list/domain`, {
         method: "GET",
         credentials: "include",
@@ -165,6 +180,7 @@ export default function UserDashboardPage() {
       dispatch(setUrlData(data.data));
     } catch (error) {
     } finally {
+      dispatch(setLoadingListDomainUsers(false));
     }
   };
 
@@ -178,6 +194,8 @@ export default function UserDashboardPage() {
 
   const getTopCompromisedUser = async () => {
     try {
+      dispatch(setLoadingTopCompromiseUser(true));
+
       const res = await fetch(`${APIDATAV1}overview/top/user`, {
         method: "GET",
         credentials: "include",
@@ -196,11 +214,14 @@ export default function UserDashboardPage() {
       setUserTopCompromised(data.data.top_user);
     } catch (error) {
     } finally {
+      dispatch(setLoadingTopCompromiseUser(false));
     }
   };
 
   const getTopCompromisedUrl = async () => {
     try {
+      dispatch(setLoadingTopCompromiseUrl(true));
+
       const res = await fetch(`${APIDATAV1}overview/top/url`, {
         method: "GET",
         credentials: "include",
@@ -219,6 +240,7 @@ export default function UserDashboardPage() {
       setUrlTopCompromised(data.data.top_url);
     } catch (error) {
     } finally {
+      dispatch(setLoadingTopCompromiseUrl(false));
     }
   };
 
@@ -233,6 +255,8 @@ export default function UserDashboardPage() {
 
   const getTopComrpomisedAntivirus = async () => {
     try {
+      dispatch(setLoadingTopCompromiseAntivirus(true));
+
       const res = await fetch(`${APIDATAV1}overview/top/antivirus`, {
         method: "GET",
         credentials: "include",
@@ -251,11 +275,14 @@ export default function UserDashboardPage() {
       setAntivirusTopCompromised(data.data.top_url);
     } catch (error) {
     } finally {
+      dispatch(setLoadingTopCompromiseAntivirus(false));
     }
   };
 
   const getTopComrpomisedMalware = async () => {
     try {
+      dispatch(setLoadingTopCompromiseMalware(true));
+
       const res = await fetch(`${APIDATAV1}overview/top/malware`, {
         method: "GET",
         credentials: "include",
@@ -274,6 +301,7 @@ export default function UserDashboardPage() {
       setMalwareTopCompromised(data.data.top_malware);
     } catch (error) {
     } finally {
+      dispatch(setLoadingTopCompromiseMalware(false));
     }
   };
 
