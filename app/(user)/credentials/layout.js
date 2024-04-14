@@ -104,6 +104,35 @@ export default function DashboardLayout({ children }) {
     (state) => state.unbookmarkCompromise.domain
   );
 
+  const loadingBreachesOverview = useSelector(
+    (state) => state.overviewLoading.breachesState.status
+  );
+
+  const loadingListDomainUsersOverview = useSelector(
+    (state) => state.overviewLoading.listDomainUsersState.status
+  );
+
+  const loadingTopCompromisedUserOverview = useSelector(
+    (state) => state.overviewLoading.topCompromiseUserState.status
+  );
+
+  const loadingTopCompromiseUrlOverview = useSelector(
+    (state) => state.overviewLoading.topCompromiseUrlState.status
+  );
+
+  const loadingTopCompromiseAntivirusOverview = useSelector(
+    (state) => state.overviewLoading.topCompromiseAntivirusState.status
+  );
+
+  const loadingTopCompromiseMalwareOverview = useSelector(
+    (state) => state.overviewLoading.topCompromiseMalwareState.status
+  );
+
+  // console.log(
+  //   "loading top compromise malware: ",
+  //   loadingTopCompromiseMalwareOverview
+  // );
+
   // Start of: Checking Users Credentials
 
   const CredentialsEmail = getCookie("email_credentials");
@@ -822,6 +851,16 @@ export default function DashboardLayout({ children }) {
       <LoadingStateCard loading={loadingStealerData} />
       <LoadingStateCard loading={loadingActivityLogData} />
       <LoadingStateCard loading={loadingCompromisedData} />
+
+      {/* Start = Overview */}
+      <LoadingStateCard loading={loadingBreachesOverview} />
+      <LoadingStateCard loading={loadingListDomainUsersOverview} />
+      <LoadingStateCard loading={loadingTopCompromisedUserOverview} />
+      <LoadingStateCard loading={loadingTopCompromiseUrlOverview} />
+      <LoadingStateCard loading={loadingTopCompromiseAntivirusOverview} />
+      <LoadingStateCard loading={loadingTopCompromiseMalwareOverview} />
+
+      {/* End = Overview */}
 
       {/* End of: Loading State Cards */}
 
