@@ -9,7 +9,10 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function PieChartCard({ compromisedData, datasets }) {
   const counts = datasets && datasets.map((data) => data.count);
-  const labels = datasets && datasets.map((data) => data.email_username);
+  const labels =
+    datasets && datasets.map((data) => data.email_username)
+      ? datasets && datasets.map((data) => data.email_username)
+      : datasets && datasets.map((data) => data.url);
 
   let backgrounds = [
     "#1677FF",
