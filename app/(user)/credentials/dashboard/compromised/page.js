@@ -853,7 +853,7 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
       const res = await fetch(
-        `${APIDATAV1}status/domain/employee?status=boomark&page=${pageEmployeeBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/employee?status=bookmark&page=${pageEmployeeBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
