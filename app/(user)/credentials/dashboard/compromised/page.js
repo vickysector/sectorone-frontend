@@ -929,11 +929,6 @@ export default function CompromisedDashboard() {
     }
   };
 
-  console.log(
-    "employee valid status: ",
-    employeeValidatedData && employeeValidatedData.data
-  );
-
   const fetchUserBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
@@ -2113,7 +2108,7 @@ export default function CompromisedDashboard() {
                                   >
                                     <Select
                                       defaultValue={data.status_validasi}
-                                      value={selectValidasi}
+                                      value={data.status_validasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
                                         handleSelectValidation(
@@ -2499,7 +2494,7 @@ export default function CompromisedDashboard() {
                                 >
                                   <Select
                                     defaultValue={data.status_validasi}
-                                    value={selectValidasi}
+                                    value={data.status_validasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
                                       handleSelectValidation(
@@ -2738,7 +2733,7 @@ export default function CompromisedDashboard() {
                                   >
                                     <Select
                                       defaultValue={data.status_validasi}
-                                      value={selectValidasi}
+                                      value={data.status_validasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
                                         handleSelectValidation(
@@ -3124,7 +3119,7 @@ export default function CompromisedDashboard() {
                                 >
                                   <Select
                                     defaultValue={data.status_validasi}
-                                    value={selectValidasi}
+                                    value={data.status_validasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
                                       handleSelectValidation(
@@ -3363,7 +3358,7 @@ export default function CompromisedDashboard() {
                                   >
                                     <Select
                                       defaultValue={data.status_validasi}
-                                      value={selectValidasi}
+                                      value={data.status_validasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
                                         handleSelectValidation(
