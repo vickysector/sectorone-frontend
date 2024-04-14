@@ -1020,7 +1020,7 @@ export default function DashboardLayout({ children }) {
       <div className={clsx(logoutLoading ? "visible" : "hidden")}>
         <LoadingSpin />
       </div>
-      <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white">
+      <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white border-b-2 border-b-input-border">
         <Image
           src={"/images/sector_logo.png"}
           alt="Logo Sector"
@@ -1080,7 +1080,7 @@ export default function DashboardLayout({ children }) {
         </div>
         <aside
           className={clsx(
-            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border ",
+            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border border-t-2 border-t-input-border ",
             hide ? "w-[102px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
           )}
         >
