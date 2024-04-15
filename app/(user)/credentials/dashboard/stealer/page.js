@@ -411,7 +411,15 @@ export default function StealerUserPage() {
 
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = `Data-Compromised-Stealer-default-page-${exportToCVPage}.csv`; // Set the desired file name
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Stealer-default-page-${exportToCVPage}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Stealer-keyword-${keyword}-page-${exportToCVPage}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Stealer-Date Range-${startDate} - ${endDate}-page-${exportToCVPage}.csv`;
+      }
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -446,7 +454,16 @@ export default function StealerUserPage() {
 
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = `Data-Compromised-Stealer-bookmark-page-${exportToCsvBookmarkPage}.csv`; // Set the desired file name
+      // link.download = `Data-Compromised-Stealer-bookmark-page-${exportToCsvBookmarkPage}.csv`; // Set the desired file name
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Stealer-bookmark-page-${exportToCsvBookmarkPage}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Stealer-keyword-${keyword}-bookmark-page-${exportToCsvBookmarkPage}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Stealer-Date Range-${startDate} - ${endDate}-bookmark page-${exportToCsvBookmarkPage}.csv`;
+      }
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
