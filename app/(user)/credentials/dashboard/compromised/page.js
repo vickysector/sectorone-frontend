@@ -182,6 +182,14 @@ export default function CompromisedDashboard() {
 
   // End of: Handle Page
 
+  // Start of: Handle export to CSV
+
+  const handleExportToCSV = () => {
+    fetchExportToCsvEmployeeDefault(inputSearch);
+  };
+
+  // End of: Handle export to CSV
+
   // Start of:  Checkbox Bookmark Functionality
 
   const [initialCheckboxState, setInitialCheckboxState] = useState(false);
@@ -1179,6 +1187,53 @@ export default function CompromisedDashboard() {
     }
   };
 
+  // Start of: Export to CSV
+
+  const fetchExportToCsvEmployeeDefault = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPage(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/employee?page=${page}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Employee-default-page-${page}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Employee-keyword-${keyword}-page-${page}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-page-${page}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  // End of: Export to CSV
+
   const handleButtonClick = (value) => {
     setSelectedButton(value.target.name);
     setInputSearch("");
@@ -1526,7 +1581,7 @@ export default function CompromisedDashboard() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton onClick={handleClickExport} />
+                  <ExportButton onClick={handleExportToCSV} />
                 </div>
               </div>
             </div>
