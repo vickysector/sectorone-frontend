@@ -9,10 +9,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default function PieChartCard({ compromisedData, datasets }) {
   const counts = datasets && datasets.map((data) => data.count);
-  const labels =
-    datasets && datasets.map((data) => data.email_username)
-      ? datasets && datasets.map((data) => data.email_username)
-      : datasets && datasets.map((data) => data.url);
+  const labels = datasets && datasets.map((data) => data);
 
   let backgrounds = [
     "#1677FF",
@@ -70,8 +67,11 @@ export default function PieChartCard({ compromisedData, datasets }) {
         <div className="mt-8 self-start ">
           {labels ? (
             labels.map((data, index) => (
-              <Chunk key={data} level={backgrounds[index]}>
-                {data}
+              <Chunk
+                key={data.email_username ? data.email_username : data.url}
+                level={backgrounds[index]}
+              >
+                {data.email_username ? data.email_username : data.url}
               </Chunk>
             ))
           ) : (
