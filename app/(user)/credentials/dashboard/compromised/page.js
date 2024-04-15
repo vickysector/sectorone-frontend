@@ -214,6 +214,18 @@ export default function CompromisedDashboard() {
     fetchExportToCsvUserBookmark(inputSearch);
   };
 
+  const callExportToCsvThirdpartyDefault = () => {
+    fetchExportToCsvThirdPartyDefault(inputSearch);
+  };
+
+  const callExportToCsvThirdpartyTested = () => {
+    fetchExportToCsvThirdPartyTested(inputSearch);
+  };
+
+  const callExportToCsvThirdpartyBookmark = () => {
+    fetchExportToCsvThirdPartyBookmark(inputSearch);
+  };
+
   const handleExportToCSV = () => {
     dispatch(setConfirmExportToCsvCompromise(true));
 
@@ -255,19 +267,26 @@ export default function CompromisedDashboard() {
         } else {
           dispatch(setCallExportCSVFunctions(callExportToCSVUsersDefault));
           dispatch(setSectionExportToCSVCompromise("Users"));
-          dispatch(setSubSectionExportToCSVCompromise("Compormised"));
+          dispatch(setSubSectionExportToCSVCompromise("Compromised"));
         }
         break;
-      // case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
-      //   fetchThirdPartyData(inputSearch);
-      //   if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-      //     fetchThirdPartyBookmark(inputSearch);
-      //   } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-      //     fetchThirdPartyTesting(inputSearch);
-      //   } else {
-      //     fetchThirdPartyData(inputSearch);
-      //   }
-      //   break;
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          dispatch(
+            setCallExportCSVFunctions(callExportToCsvThirdpartyBookmark)
+          );
+          dispatch(setSectionExportToCSVCompromise("Third-Party"));
+          dispatch(setSubSectionExportToCSVCompromise("Bookmarked"));
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          dispatch(setCallExportCSVFunctions(callExportToCsvThirdpartyTested));
+          dispatch(setSectionExportToCSVCompromise("Third-Party"));
+          dispatch(setSubSectionExportToCSVCompromise("Validated"));
+        } else {
+          dispatch(setCallExportCSVFunctions(callExportToCsvThirdpartyDefault));
+          dispatch(setSectionExportToCSVCompromise("Third-Party"));
+          dispatch(setSubSectionExportToCSVCompromise("Compromised"));
+        }
+        break;
       default:
         break;
     }
@@ -1521,6 +1540,135 @@ export default function CompromisedDashboard() {
       }
       if (startDate || endDate) {
         link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-bookmark-page-${pageUsersBookmark}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvThirdPartyDefault = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdParty(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/thirdparty?page=${pageThirdParty}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-ThirdParty-default-page-${pageThirdParty}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-page-${pageThirdParty}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-page-${pageThirdParty}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvThirdPartyTested = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdPartyValidate(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/thirdparty?page=${pageThirdPartyValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=testing`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-ThirdParty-validate-page-${pageThirdPartyValidate}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-validate-page-${pageThirdPartyValidate}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-validate-page-${pageThirdPartyValidate}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvThirdPartyBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdPartyBookmark(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/thirdparty?page=${pageThirdPartyBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=bookmark`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-ThirdParty-bookmark-page-${pageThirdPartyBookmark}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-bookmark-page-${pageThirdPartyBookmark}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-bookmark-page-${pageThirdPartyBookmark}.csv`;
       }
       document.body.appendChild(link);
       link.click();
