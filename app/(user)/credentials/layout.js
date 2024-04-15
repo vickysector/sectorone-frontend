@@ -46,6 +46,7 @@ import {
 } from "@/app/_lib/store/features/Compromised/CheckboxSlices";
 import LoadingStateCard from "@/app/_ui/components/utils/LoadingStateCard";
 import { setConfirmExportToCsv } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
+import { setConfirmExportToCsvCompromise } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -157,6 +158,35 @@ export default function DashboardLayout({ children }) {
   const handleUnBookmarkCompromisedClose = () => {
     dispatch(setUnBookmarkConfirmState(false));
   };
+
+  // Start of: Handle Compromised Export to CSV
+
+  const confirmCompromiseExportToCSV = useSelector(
+    (state) => state.exportToCsvCompromise.confirm
+  );
+
+  const sectionCompromiseExportToCSV = useSelector(
+    (state) => state.exportToCsvCompromise.section
+  );
+
+  const subSectionCompromiseExportToCSV = useSelector(
+    (state) => state.exportToCsvCompromise.subSection
+  );
+
+  const callExportToCSVCompromise = useSelector(
+    (state) => state.exportToCsvCompromise.callExportToCSVCompromise
+  );
+
+  const handleCloseCompromiseExportToCSV = () => {
+    dispatch(setConfirmExportToCsvCompromise(false));
+  };
+
+  const handleConfirmYesCompromiseExportToCSV = () => {
+    callExportToCSVCompromise();
+    dispatch(setConfirmExportToCsvCompromise(false));
+  };
+
+  // End of: Handle Compromised Export to CSV
 
   // Start of: Handle Stealer Export to CSV
 
@@ -628,6 +658,39 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          confirmCompromiseExportToCSV ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            {" "}
+            Are you sure you want to export this {
+              sectionCompromiseExportToCSV
+            }{" "}
+            {subSectionCompromiseExportToCSV} data?
+          </h1>
+          <p className="mb-6 text-text-description ">
+            Exported file only contain data that you seen in page.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleConfirmYesCompromiseExportToCSV}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleCloseCompromiseExportToCSV}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",

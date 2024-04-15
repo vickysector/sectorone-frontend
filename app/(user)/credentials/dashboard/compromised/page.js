@@ -77,6 +77,12 @@ import {
   setMarkedAsValidated,
   setStatusMultipleBookmark,
 } from "@/app/_lib/store/features/Compromised/CheckboxSlices";
+import {
+  setCallExportCSVFunctions,
+  setConfirmExportToCsvCompromise,
+  setSectionExportToCSVCompromise,
+  setSubSectionExportToCSVCompromise,
+} from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
 
 const { RangePicker } = DatePicker;
 
@@ -197,14 +203,23 @@ export default function CompromisedDashboard() {
   };
 
   const handleExportToCSV = () => {
+    dispatch(setConfirmExportToCsvCompromise(true));
+
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          callExportToCSVEmployeeBookmark();
+          dispatch(setCallExportCSVFunctions(callExportToCSVEmployeeBookmark));
+          dispatch(setSectionExportToCSVCompromise("Employee"));
+          dispatch(setSubSectionExportToCSVCompromise("Bookmarked"));
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-          callExportToCSVEmployeeTested();
+          // callExportToCSVEmployeeTested();
+          dispatch(setCallExportCSVFunctions(callExportToCSVEmployeeTested));
+          dispatch(setSectionExportToCSVCompromise("Employee"));
+          dispatch(setSubSectionExportToCSVCompromise("Validated"));
         } else {
-          callExportToCSVEmployeeDefault();
+          dispatch(setCallExportCSVFunctions(callExportToCSVEmployeeDefault));
+          dispatch(setSectionExportToCSVCompromise("Employee"));
+          dispatch(setSubSectionExportToCSVCompromise("Compromised"));
         }
         break;
       // case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
