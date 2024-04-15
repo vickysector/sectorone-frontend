@@ -119,7 +119,7 @@ export default function StealerUserPage() {
   };
 
   const handleExportToCV = (value) => {
-    fetchExportToCsv();
+    fetchExportToCsv(inputSearch);
   };
 
   const loadingStealerData = useSelector(
@@ -376,14 +376,16 @@ export default function StealerUserPage() {
     }
   };
 
-  const fetchExportToCsv = async () => {
+  const fetchExportToCsv = async (keyword = "") => {
     try {
       dispatch(setLoadingStealerState(true));
 
+      if (keyword || startDate || endDate) {
+        setExportToCvPage(1);
+      }
+
       const res = await fetch(
-        `${APIDATAV1}export/csv/stealer?page=${exportToCVPage}&start_date=${startDate}&end_date=${endDate}&search=${
-          inputSearch ? inputSearch : ""
-        }`,
+        `${APIDATAV1}export/csv/stealer?page=${exportToCVPage}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "POST",
           credentials: "include",
@@ -392,7 +394,16 @@ export default function StealerUserPage() {
           },
         }
       );
-      console.log("res export csv: ", res);
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = "data.csv"; // Set the desired file name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
