@@ -45,6 +45,7 @@ import {
   setSuccessMultipleValidated,
 } from "@/app/_lib/store/features/Compromised/CheckboxSlices";
 import LoadingStateCard from "@/app/_ui/components/utils/LoadingStateCard";
+import { setConfirmExportToCsv } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -156,6 +157,45 @@ export default function DashboardLayout({ children }) {
   const handleUnBookmarkCompromisedClose = () => {
     dispatch(setUnBookmarkConfirmState(false));
   };
+
+  // Start of: Handle Stealer Export to CSV
+
+  const confirmStealerExportToCSV = useSelector(
+    (state) => state.exportToCsv.confirm
+  );
+
+  const selectSectionStealer = useSelector(
+    (state) => state.exportToCsv.selectSection
+  );
+
+  const exportToCSVDefaultStealer = useSelector(
+    (state) => state.exportToCsv.exportToCsvDefault
+  );
+
+  const exportToCSVBookmarkStealer = useSelector(
+    (state) => state.exportToCsv.exportToCsvBookmark
+  );
+
+  const handleCloseStealerExportToCsv = () => {
+    dispatch(setConfirmExportToCsv(false));
+  };
+
+  const handleConfirmYesStealerExportToCsv = () => {
+    switch (selectSectionStealer) {
+      case "stealer":
+        exportToCSVDefaultStealer();
+        dispatch(setConfirmExportToCsv(false));
+        break;
+      case "bookmark-stealer":
+        exportToCSVBookmarkStealer();
+        dispatch(setConfirmExportToCsv(false));
+        break;
+      default:
+        break;
+    }
+  };
+
+  // End of: Handle Stelaer Export to CSV
 
   // Start of: Handle Checkboxes Bookmark in Compromised pages
 
@@ -588,6 +628,36 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          confirmStealerExportToCSV ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            {" "}
+            Are you sure you want to export this data?
+          </h1>
+          <p className="mb-6 text-text-description ">
+            Exported file only contain data that you seen in page.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleConfirmYesStealerExportToCsv}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleCloseStealerExportToCsv}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",

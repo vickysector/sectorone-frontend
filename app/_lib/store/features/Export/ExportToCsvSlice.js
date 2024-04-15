@@ -9,6 +9,9 @@ const ExportToCSVSlice = createSlice({
       total: 0,
       section: "",
     },
+    exportToCsvDefault: null,
+    exportToCsvBookmark: null,
+    selectSection: "",
   },
   reducers: {
     setConfirmExportToCsv(state, action) {
@@ -23,6 +26,15 @@ const ExportToCSVSlice = createSlice({
     clearDataExportToCsv(state, action) {
       state.data = {};
     },
+    setExportToCsvDefault(state, action) {
+      state.exportToCsvDefault = action.payload;
+    },
+    setExportToCsvBookmark(state, action) {
+      state.exportToCsvBookmark = action.payload;
+    },
+    setSelectSectionStealer(state, action) {
+      state.selectSection = action.payload;
+    },
   },
 });
 
@@ -31,6 +43,9 @@ export const {
   setStatusExportToCsv,
   setDataExportToCsv,
   clearDataExportToCsv,
+  setExportToCsvDefault,
+  setExportToCsvBookmark,
+  setSelectSectionStealer,
 } = ExportToCSVSlice.actions;
 
 export default ExportToCSVSlice.reducer;

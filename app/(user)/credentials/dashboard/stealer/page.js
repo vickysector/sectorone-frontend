@@ -53,6 +53,12 @@ import {
   setMarkedAsBookmark,
   setStatusMultipleBookmark,
 } from "@/app/_lib/store/features/Compromised/CheckboxSlices";
+import {
+  setConfirmExportToCsv,
+  setExportToCsvBookmark,
+  setExportToCsvDefault,
+  setSelectSectionStealer,
+} from "@/app/_lib/store/features/Export/ExportToCsvSlice";
 
 const { RangePicker } = DatePicker;
 
@@ -120,16 +126,29 @@ export default function StealerUserPage() {
   };
 
   const handleExportToCV = (value) => {
-    switch (selectSection) {
-      case "stealer":
-        fetchExportToCsv(inputSearch);
-        break;
-      case "bookmark-stealer":
-        fetchExportToCsvBookmark(inputSearch);
-        break;
-      default:
-        break;
-    }
+    dispatch(setConfirmExportToCsv(true));
+    dispatch(setSelectSectionStealer(selectSection));
+    dispatch(setExportToCsvDefault(callExportToCSVStealerDefault));
+    dispatch(setExportToCsvBookmark(callExportToCSVStealerBookmark));
+
+    // switch (selectSection) {
+    //   case "stealer":
+    //     fetchExportToCsv(inputSearch);
+    //     break;
+    //   case "bookmark-stealer":
+    //     fetchExportToCsvBookmark(inputSearch);
+    //     break;
+    //   default:
+    //     break;
+    // }
+  };
+
+  const callExportToCSVStealerDefault = () => {
+    fetchExportToCsv(inputSearch);
+  };
+
+  const callExportToCSVStealerBookmark = () => {
+    fetchExportToCsvBookmark(inputSearch);
   };
 
   const loadingStealerData = useSelector(
