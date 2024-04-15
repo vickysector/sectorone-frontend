@@ -226,6 +226,14 @@ export default function CompromisedDashboard() {
     fetchExportToCsvThirdPartyBookmark(inputSearch);
   };
 
+  const callExportToCsvDeviceDefault = () => {
+    fetchExportToCsvDevicesDefault(inputSearch);
+  };
+
+  const callExportToCsvDeviceBookmark = () => {
+    fetchExportToCsvDevicesBookmark(inputSearch);
+  };
+
   const handleExportToCSV = () => {
     dispatch(setConfirmExportToCsvCompromise(true));
 
@@ -246,14 +254,17 @@ export default function CompromisedDashboard() {
           dispatch(setSubSectionExportToCSVCompromise("Compromised"));
         }
         break;
-      // case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
-      //   fetchDevicesData(inputSearch);
-      //   if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-      //     fetchDevicesBookmark(inputSearch);
-      //   } else {
-      //     fetchDevicesData(inputSearch);
-      //   }
-      //   break;
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          dispatch(setCallExportCSVFunctions(callExportToCsvDeviceBookmark));
+          dispatch(setSectionExportToCSVCompromise("Devices"));
+          dispatch(setSubSectionExportToCSVCompromise("Bookmarked"));
+        } else {
+          dispatch(setCallExportCSVFunctions(callExportToCsvDeviceDefault));
+          dispatch(setSectionExportToCSVCompromise("Devices"));
+          dispatch(setSubSectionExportToCSVCompromise("Compromised"));
+        }
+        break;
       // // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
@@ -1669,6 +1680,92 @@ export default function CompromisedDashboard() {
       }
       if (startDate || endDate) {
         link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-bookmark-page-${pageThirdPartyBookmark}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvDevicesDefault = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageDevices(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/device?page=${pageDevices}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Devices-default-page-${pageDevices}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Devices-keyword-${keyword}-page-${pageDevices}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Devices-Date Range-${startDate} - ${endDate}-page-${pageDevices}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvDevicesBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageDevicesBookmark(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/device?page=${pageDevicesBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=bookmark`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Devices-Bookmark-page-${pageDevicesBookmark}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Devices-keyword-${keyword}-Bookmark-page-${pageDevicesBookmark}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Devices-Date Range-${startDate} - ${endDate}-Bookmark-page-${pageDevicesBookmark}.csv`;
       }
       document.body.appendChild(link);
       link.click();
