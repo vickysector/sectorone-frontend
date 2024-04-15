@@ -72,6 +72,7 @@ export default function StealerUserPage() {
   const [page, setPage] = useState(1);
   const [bookmarkPage, setBookmarkPage] = useState(1);
   const [exportToCVPage, setExportToCvPage] = useState(1);
+  const [exportToCsvBookmarkPage, setExportToCsvBookmarkPage] = useState(1);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [inputSearch, setInputSearch] = useState();
@@ -115,11 +116,20 @@ export default function StealerUserPage() {
 
   const handleSetBookmarkPage = (value) => {
     setBookmarkPage(value);
-    setExportToCvPage(page);
+    setExportToCsvBookmarkPage(value);
   };
 
   const handleExportToCV = (value) => {
-    fetchExportToCsv(inputSearch);
+    switch (selectSection) {
+      case "stealer":
+        fetchExportToCsv(inputSearch);
+        break;
+      case "bookmark-stealer":
+        fetchExportToCsvBookmark(inputSearch);
+        break;
+      default:
+        break;
+    }
   };
 
   const loadingStealerData = useSelector(
@@ -146,6 +156,7 @@ export default function StealerUserPage() {
   const handleSearchKeyword = (e) => {
     setInputSearch(e.target.value);
     setExportToCvPage(1);
+    setExportToCsvBookmarkPage(1);
   };
 
   const handleRangePicker = (date, datestring) => {
@@ -158,7 +169,7 @@ export default function StealerUserPage() {
         break;
       case "bookmark-stealer":
         setBookmarkPage(1);
-        setExportToCvPage(1);
+        setExportToCsvBookmarkPage(1);
         break;
       default:
         break;
@@ -400,7 +411,42 @@ export default function StealerUserPage() {
 
       const link = document.createElement("a");
       link.href = downloadUrl;
-      link.download = "data.csv"; // Set the desired file name
+      link.download = `Data-Compromised-Stealer-default-page-${exportToCVPage}.csv`; // Set the desired file name
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingStealerState(false));
+    }
+  };
+
+  const fetchExportToCsvBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingStealerState(true));
+
+      if (keyword || startDate || endDate) {
+        setExportToCsvBookmarkPage(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}export/csv/stealer?page=${exportToCsvBookmarkPage}&status=bookmark&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      link.download = `Data-Compromised-Stealer-bookmark-page-${exportToCsvBookmarkPage}.csv`; // Set the desired file name
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
