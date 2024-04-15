@@ -202,6 +202,18 @@ export default function CompromisedDashboard() {
     fetchExportToCsvEmployeeBookmark(inputSearch);
   };
 
+  const callExportToCSVUsersDefault = () => {
+    fetchExportToCsvUserDefault(inputSearch);
+  };
+
+  const callExportToCSVUsersTested = () => {
+    fetchExportToCsvUserTested(inputSearch);
+  };
+
+  const callExportTocSVUserBookmark = () => {
+    fetchExportToCsvUserBookmark(inputSearch);
+  };
+
   const handleExportToCSV = () => {
     dispatch(setConfirmExportToCsvCompromise(true));
 
@@ -231,16 +243,21 @@ export default function CompromisedDashboard() {
       //   }
       //   break;
       // // Add more cases for other buttons if needed
-      // case DETAIL_COMPROMISED_COMPROMISE_USERS:
-      //   fetchUsersData(inputSearch);
-      //   if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-      //     fetchUserBookmark(inputSearch);
-      //   } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-      //     fetchUserTesting(inputSearch);
-      //   } else {
-      //     fetchUsersData(inputSearch);
-      //   }
-      //   break;
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          dispatch(setCallExportCSVFunctions(callExportTocSVUserBookmark));
+          dispatch(setSectionExportToCSVCompromise("Users"));
+          dispatch(setSubSectionExportToCSVCompromise("Bookmarked"));
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          dispatch(setCallExportCSVFunctions(callExportToCSVUsersTested));
+          dispatch(setSectionExportToCSVCompromise("Users"));
+          dispatch(setSubSectionExportToCSVCompromise("Validated"));
+        } else {
+          dispatch(setCallExportCSVFunctions(callExportToCSVUsersDefault));
+          dispatch(setSectionExportToCSVCompromise("Users"));
+          dispatch(setSubSectionExportToCSVCompromise("Compormised"));
+        }
+        break;
       // case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
       //   fetchThirdPartyData(inputSearch);
       //   if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
@@ -1375,6 +1392,135 @@ export default function CompromisedDashboard() {
       }
       if (startDate || endDate) {
         link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-bookmark-page-${pageEmployeeBookmark}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvUserDefault = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUsers(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/user?page=${pageUsers}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Users-default-page-${pageUsers}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Users-keyword-${keyword}-page-${pageUsers}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-page-${pageUsers}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvUserTested = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUsersValidate(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/user?page=${pageUsersValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=testing`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Users-validate-page-${pageUsersValidate}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Users-keyword-${keyword}-validate-page-${pageUsersValidate}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-validate-page-${pageUsersValidate}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvUserBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUserBookmark(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/user?page=${pageUsersBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=bookmark`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Users-bookmark-page-${pageUsersBookmark}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Users-keyword-${keyword}-bookmark-page-${pageUsersBookmark}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-bookmark-page-${pageUsersBookmark}.csv`;
       }
       document.body.appendChild(link);
       link.click();
