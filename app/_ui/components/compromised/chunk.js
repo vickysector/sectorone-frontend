@@ -68,6 +68,7 @@ export default function Chunk({ children, level }) {
             "w-[16px] h-[16px]  block rounded-[50%]",
             `bg-[${level}]`
           )}
+          style={{ backgroundColor: `${level}` }}
         ></span>{" "}
         <p className="ml-3 text-LG-normal text-black w-[470px] text-left more">
           {children}

@@ -44,6 +44,9 @@ import {
   setSuccessMultipleBookmark,
   setSuccessMultipleValidated,
 } from "@/app/_lib/store/features/Compromised/CheckboxSlices";
+import LoadingStateCard from "@/app/_ui/components/utils/LoadingStateCard";
+import { setConfirmExportToCsv } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
+import { setConfirmExportToCsvCompromise } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -103,6 +106,35 @@ export default function DashboardLayout({ children }) {
     (state) => state.unbookmarkCompromise.domain
   );
 
+  const loadingBreachesOverview = useSelector(
+    (state) => state.overviewLoading.breachesState.status
+  );
+
+  const loadingListDomainUsersOverview = useSelector(
+    (state) => state.overviewLoading.listDomainUsersState.status
+  );
+
+  const loadingTopCompromisedUserOverview = useSelector(
+    (state) => state.overviewLoading.topCompromiseUserState.status
+  );
+
+  const loadingTopCompromiseUrlOverview = useSelector(
+    (state) => state.overviewLoading.topCompromiseUrlState.status
+  );
+
+  const loadingTopCompromiseAntivirusOverview = useSelector(
+    (state) => state.overviewLoading.topCompromiseAntivirusState.status
+  );
+
+  const loadingTopCompromiseMalwareOverview = useSelector(
+    (state) => state.overviewLoading.topCompromiseMalwareState.status
+  );
+
+  // console.log(
+  //   "loading top compromise malware: ",
+  //   loadingTopCompromiseMalwareOverview
+  // );
+
   // Start of: Checking Users Credentials
 
   const CredentialsEmail = getCookie("email_credentials");
@@ -126,6 +158,74 @@ export default function DashboardLayout({ children }) {
   const handleUnBookmarkCompromisedClose = () => {
     dispatch(setUnBookmarkConfirmState(false));
   };
+
+  // Start of: Handle Compromised Export to CSV
+
+  const confirmCompromiseExportToCSV = useSelector(
+    (state) => state.exportToCsvCompromise.confirm
+  );
+
+  const sectionCompromiseExportToCSV = useSelector(
+    (state) => state.exportToCsvCompromise.section
+  );
+
+  const subSectionCompromiseExportToCSV = useSelector(
+    (state) => state.exportToCsvCompromise.subSection
+  );
+
+  const callExportToCSVCompromise = useSelector(
+    (state) => state.exportToCsvCompromise.callExportToCSVCompromise
+  );
+
+  const handleCloseCompromiseExportToCSV = () => {
+    dispatch(setConfirmExportToCsvCompromise(false));
+  };
+
+  const handleConfirmYesCompromiseExportToCSV = () => {
+    callExportToCSVCompromise();
+    dispatch(setConfirmExportToCsvCompromise(false));
+  };
+
+  // End of: Handle Compromised Export to CSV
+
+  // Start of: Handle Stealer Export to CSV
+
+  const confirmStealerExportToCSV = useSelector(
+    (state) => state.exportToCsv.confirm
+  );
+
+  const selectSectionStealer = useSelector(
+    (state) => state.exportToCsv.selectSection
+  );
+
+  const exportToCSVDefaultStealer = useSelector(
+    (state) => state.exportToCsv.exportToCsvDefault
+  );
+
+  const exportToCSVBookmarkStealer = useSelector(
+    (state) => state.exportToCsv.exportToCsvBookmark
+  );
+
+  const handleCloseStealerExportToCsv = () => {
+    dispatch(setConfirmExportToCsv(false));
+  };
+
+  const handleConfirmYesStealerExportToCsv = () => {
+    switch (selectSectionStealer) {
+      case "stealer":
+        exportToCSVDefaultStealer();
+        dispatch(setConfirmExportToCsv(false));
+        break;
+      case "bookmark-stealer":
+        exportToCSVBookmarkStealer();
+        dispatch(setConfirmExportToCsv(false));
+        break;
+      default:
+        break;
+    }
+  };
+
+  // End of: Handle Stelaer Export to CSV
 
   // Start of: Handle Checkboxes Bookmark in Compromised pages
 
@@ -561,6 +661,69 @@ export default function DashboardLayout({ children }) {
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          confirmCompromiseExportToCSV ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            {" "}
+            Are you sure you want to export this {
+              sectionCompromiseExportToCSV
+            }{" "}
+            {subSectionCompromiseExportToCSV} data?
+          </h1>
+          <p className="mb-6 text-text-description ">
+            Exported file only contain data that you seen in page.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleConfirmYesCompromiseExportToCSV}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleCloseCompromiseExportToCSV}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          confirmStealerExportToCSV ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            {" "}
+            Are you sure you want to export this data?
+          </h1>
+          <p className="mb-6 text-text-description ">
+            Exported file only contain data that you seen in page.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleConfirmYesStealerExportToCsv}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleCloseStealerExportToCsv}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
           confirmCheckboxIdsDataValidated ? "visible" : "hidden"
         )}
       >
@@ -816,81 +979,24 @@ export default function DashboardLayout({ children }) {
           </div>
         </div>
       </div>
-      <div
-        className={clsx(
-          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-40 flex items-center justify-center text-black ",
-          loadingStealerData ? "visible" : "hidden"
-        )}
-      >
-        <div
-          className={clsx(
-            "rounded-xl bg-white p-[24px] w-[35%] text-center flex justify-center items-center flex-col"
-          )}
-        >
-          <div>
-            <Image
-              src={"/images/image_loadingState.svg"}
-              alt="search icon"
-              width={300}
-              height={300}
-            />
-          </div>
-          <h1 className="text-LG-strong mt-4">Scanning data</h1>
-          <p className="text-text-description text-Base-normal mt-4">
-            This will take a moment...
-          </p>
-        </div>
-      </div>
-      <div
-        className={clsx(
-          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-40 flex items-center justify-center text-black ",
-          loadingActivityLogData ? "visible" : "hidden"
-        )}
-      >
-        <div
-          className={clsx(
-            "rounded-xl bg-white p-[24px] w-[35%] text-center flex justify-center items-center flex-col"
-          )}
-        >
-          <div>
-            <Image
-              src={"/images/image_loadingState.svg"}
-              alt="search icon"
-              width={300}
-              height={300}
-            />
-          </div>
-          <h1 className="text-LG-strong mt-4">Scanning data</h1>
-          <p className="text-text-description text-Base-normal mt-4">
-            This will take a moment...
-          </p>
-        </div>
-      </div>
-      <div
-        className={clsx(
-          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-40 flex items-center justify-center text-black ",
-          loadingCompromisedData ? "visible" : "hidden"
-        )}
-      >
-        <div
-          className={clsx(
-            "rounded-xl bg-white p-[24px] w-[35%] text-center flex justify-center items-center flex-col"
-          )}
-        >
-          <div>
-            <Image
-              src={"/images/image_loadingState.svg"}
-              alt="search icon"
-              width={300}
-              height={300}
-            />
-          </div>
-          <h1 className="text-LG-strong mt-4">Scanning data</h1>
-          <p className="text-text-description text-Base-normal mt-4">
-            This will take a moment...
-          </p>
-        </div>
-      </div>
+      {/* Start of: Loading State Cards */}
+
+      <LoadingStateCard loading={loadingStealerData} />
+      <LoadingStateCard loading={loadingActivityLogData} />
+      <LoadingStateCard loading={loadingCompromisedData} />
+
+      {/* Start = Overview */}
+      <LoadingStateCard loading={loadingBreachesOverview} />
+      <LoadingStateCard loading={loadingListDomainUsersOverview} />
+      <LoadingStateCard loading={loadingTopCompromisedUserOverview} />
+      <LoadingStateCard loading={loadingTopCompromiseUrlOverview} />
+      <LoadingStateCard loading={loadingTopCompromiseAntivirusOverview} />
+      <LoadingStateCard loading={loadingTopCompromiseMalwareOverview} />
+
+      {/* End = Overview */}
+
+      {/* End of: Loading State Cards */}
+
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center text-black ",
@@ -1020,7 +1126,7 @@ export default function DashboardLayout({ children }) {
       <div className={clsx(logoutLoading ? "visible" : "hidden")}>
         <LoadingSpin />
       </div>
-      <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white">
+      <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white border-b-2 border-b-input-border">
         <Image
           src={"/images/sector_logo.png"}
           alt="Logo Sector"
@@ -1080,7 +1186,7 @@ export default function DashboardLayout({ children }) {
         </div>
         <aside
           className={clsx(
-            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border ",
+            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border border-t-2 border-t-input-border ",
             hide ? "w-[102px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
           )}
         >
