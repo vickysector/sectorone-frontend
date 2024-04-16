@@ -77,6 +77,12 @@ import {
   setMarkedAsValidated,
   setStatusMultipleBookmark,
 } from "@/app/_lib/store/features/Compromised/CheckboxSlices";
+import {
+  setCallExportCSVFunctions,
+  setConfirmExportToCsvCompromise,
+  setSectionExportToCSVCompromise,
+  setSubSectionExportToCSVCompromise,
+} from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
 
 const { RangePicker } = DatePicker;
 
@@ -181,6 +187,123 @@ export default function CompromisedDashboard() {
   };
 
   // End of: Handle Page
+
+  // Start of: Handle export to CSV
+
+  const callExportToCSVEmployeeDefault = () => {
+    fetchExportToCsvEmployeeDefault(inputSearch);
+  };
+
+  const callExportToCSVEmployeeTested = () => {
+    fetchExportToCsvEmployeeTested(inputSearch);
+  };
+
+  const callExportToCSVEmployeeBookmark = () => {
+    fetchExportToCsvEmployeeBookmark(inputSearch);
+  };
+
+  const callExportToCSVUsersDefault = () => {
+    fetchExportToCsvUserDefault(inputSearch);
+  };
+
+  const callExportToCSVUsersTested = () => {
+    fetchExportToCsvUserTested(inputSearch);
+  };
+
+  const callExportTocSVUserBookmark = () => {
+    fetchExportToCsvUserBookmark(inputSearch);
+  };
+
+  const callExportToCsvThirdpartyDefault = () => {
+    fetchExportToCsvThirdPartyDefault(inputSearch);
+  };
+
+  const callExportToCsvThirdpartyTested = () => {
+    fetchExportToCsvThirdPartyTested(inputSearch);
+  };
+
+  const callExportToCsvThirdpartyBookmark = () => {
+    fetchExportToCsvThirdPartyBookmark(inputSearch);
+  };
+
+  const callExportToCsvDeviceDefault = () => {
+    fetchExportToCsvDevicesDefault(inputSearch);
+  };
+
+  const callExportToCsvDeviceBookmark = () => {
+    fetchExportToCsvDevicesBookmark(inputSearch);
+  };
+
+  const handleExportToCSV = () => {
+    dispatch(setConfirmExportToCsvCompromise(true));
+
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          dispatch(setCallExportCSVFunctions(callExportToCSVEmployeeBookmark));
+          dispatch(setSectionExportToCSVCompromise("Employee"));
+          dispatch(setSubSectionExportToCSVCompromise("Bookmarked"));
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          // callExportToCSVEmployeeTested();
+          dispatch(setCallExportCSVFunctions(callExportToCSVEmployeeTested));
+          dispatch(setSectionExportToCSVCompromise("Employee"));
+          dispatch(setSubSectionExportToCSVCompromise("Validated"));
+        } else {
+          dispatch(setCallExportCSVFunctions(callExportToCSVEmployeeDefault));
+          dispatch(setSectionExportToCSVCompromise("Employee"));
+          dispatch(setSubSectionExportToCSVCompromise("Compromised"));
+        }
+        break;
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          dispatch(setCallExportCSVFunctions(callExportToCsvDeviceBookmark));
+          dispatch(setSectionExportToCSVCompromise("Devices"));
+          dispatch(setSubSectionExportToCSVCompromise("Bookmarked"));
+        } else {
+          dispatch(setCallExportCSVFunctions(callExportToCsvDeviceDefault));
+          dispatch(setSectionExportToCSVCompromise("Devices"));
+          dispatch(setSubSectionExportToCSVCompromise("Compromised"));
+        }
+        break;
+      // // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          dispatch(setCallExportCSVFunctions(callExportTocSVUserBookmark));
+          dispatch(setSectionExportToCSVCompromise("Users"));
+          dispatch(setSubSectionExportToCSVCompromise("Bookmarked"));
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          dispatch(setCallExportCSVFunctions(callExportToCSVUsersTested));
+          dispatch(setSectionExportToCSVCompromise("Users"));
+          dispatch(setSubSectionExportToCSVCompromise("Validated"));
+        } else {
+          dispatch(setCallExportCSVFunctions(callExportToCSVUsersDefault));
+          dispatch(setSectionExportToCSVCompromise("Users"));
+          dispatch(setSubSectionExportToCSVCompromise("Compromised"));
+        }
+        break;
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          dispatch(
+            setCallExportCSVFunctions(callExportToCsvThirdpartyBookmark)
+          );
+          dispatch(setSectionExportToCSVCompromise("Third-Party"));
+          dispatch(setSubSectionExportToCSVCompromise("Bookmarked"));
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          dispatch(setCallExportCSVFunctions(callExportToCsvThirdpartyTested));
+          dispatch(setSectionExportToCSVCompromise("Third-Party"));
+          dispatch(setSubSectionExportToCSVCompromise("Validated"));
+        } else {
+          dispatch(setCallExportCSVFunctions(callExportToCsvThirdpartyDefault));
+          dispatch(setSectionExportToCSVCompromise("Third-Party"));
+          dispatch(setSubSectionExportToCSVCompromise("Compromised"));
+        }
+        break;
+      default:
+        break;
+    }
+  };
+
+  // End of: Handle export to CSV
 
   // Start of:  Checkbox Bookmark Functionality
 
@@ -589,9 +712,6 @@ export default function CompromisedDashboard() {
   const handleSelectValidation = (value, id, status) => {
     setSelectValidasi(value);
 
-    console.log("id ", id);
-    console.log("value ", value);
-
     UpdateValidateTesting(id, value, status);
   };
 
@@ -679,6 +799,11 @@ export default function CompromisedDashboard() {
   const fetchEmployeeData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPage(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}compromised/employee?page=${page}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -723,6 +848,11 @@ export default function CompromisedDashboard() {
   const fetchUsersData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUsers(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}compromised/users?page=${pageUsers}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -767,6 +897,11 @@ export default function CompromisedDashboard() {
   const fetchThirdPartyData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdParty(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}compromised/thirdparty?page=${pageThirdParty}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -811,6 +946,11 @@ export default function CompromisedDashboard() {
   const fetchDevicesData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageDevices(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}compromised/devices?page=${pageDevices}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -855,8 +995,13 @@ export default function CompromisedDashboard() {
   const fetchEmployeeBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageEmployeeBookmark(1);
+      }
+
       const res = await fetch(
-        `${APIDATAV1}status/domain/employee?status=boomark&page=${pageEmployeeBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        `${APIDATAV1}status/domain/employee?status=bookmark&page=${pageEmployeeBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
           method: "GET",
           credentials: "include",
@@ -894,6 +1039,11 @@ export default function CompromisedDashboard() {
   const fetchEmployeeTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageEmployeeValidate(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/employee?status=testing&page=${pageEmployeeValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -935,6 +1085,11 @@ export default function CompromisedDashboard() {
   const fetchUserBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUserBookmark(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/users?status=bookmark&page=${pageUsersBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -974,6 +1129,11 @@ export default function CompromisedDashboard() {
   const fetchUserTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUsersValidate(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/users?status=testing&page=${pageUsersValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -1013,6 +1173,11 @@ export default function CompromisedDashboard() {
   const fetchThirdPartyBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdPartyBookmark(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/thirdparty?status=bookmark&page=${pageThirdPartyBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -1052,6 +1217,11 @@ export default function CompromisedDashboard() {
   const fetchThirdPartyTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdPartyValidate(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/thirdparty?status=testing&page=${pageThirdPartyValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -1091,6 +1261,11 @@ export default function CompromisedDashboard() {
   const fetchDevicesBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageDevicesBookmark(1);
+      }
+
       const res = await fetch(
         `${APIDATAV1}status/domain/devices/boomark?page=${pageDevicesBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
         {
@@ -1126,6 +1301,483 @@ export default function CompromisedDashboard() {
       dispatch(setLoadingState(false));
     }
   };
+
+  // Start of: Export to CSV
+
+  const fetchExportToCsvEmployeeDefault = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPage(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/employee?page=${page}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Employee-default-page-${page}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Employee-keyword-${keyword}-page-${page}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-page-${page}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvEmployeeTested = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageEmployeeValidate(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/employee?page=${pageEmployeeValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=testing`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Employee-validated-page-${pageEmployeeValidate}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Employee-keyword-${keyword}-validated-page-${pageEmployeeValidate}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-validated-page-${pageEmployeeValidate}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvEmployeeBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageEmployeeBookmark(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/employee?page=${pageEmployeeBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=bookmark`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Employee-bookmark-page-${pageEmployeeBookmark}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Employee-keyword-${keyword}-bookmark-page-${pageEmployeeBookmark}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-bookmark-page-${pageEmployeeBookmark}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvUserDefault = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUsers(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/user?page=${pageUsers}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Users-default-page-${pageUsers}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Users-keyword-${keyword}-page-${pageUsers}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-page-${pageUsers}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvUserTested = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUsersValidate(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/user?page=${pageUsersValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=testing`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Users-validate-page-${pageUsersValidate}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Users-keyword-${keyword}-validate-page-${pageUsersValidate}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-validate-page-${pageUsersValidate}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvUserBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageUserBookmark(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/user?page=${pageUsersBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=bookmark`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Users-bookmark-page-${pageUsersBookmark}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Users-keyword-${keyword}-bookmark-page-${pageUsersBookmark}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-bookmark-page-${pageUsersBookmark}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvThirdPartyDefault = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdParty(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/thirdparty?page=${pageThirdParty}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-ThirdParty-default-page-${pageThirdParty}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-page-${pageThirdParty}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-page-${pageThirdParty}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvThirdPartyTested = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdPartyValidate(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/thirdparty?page=${pageThirdPartyValidate}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=testing`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-ThirdParty-validate-page-${pageThirdPartyValidate}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-validate-page-${pageThirdPartyValidate}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-validate-page-${pageThirdPartyValidate}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvThirdPartyBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageThirdPartyBookmark(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/thirdparty?page=${pageThirdPartyBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=bookmark`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-ThirdParty-bookmark-page-${pageThirdPartyBookmark}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-bookmark-page-${pageThirdPartyBookmark}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-bookmark-page-${pageThirdPartyBookmark}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvDevicesDefault = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageDevices(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/device?page=${pageDevices}&start_date=${startDate}&end_date=${endDate}&search=${keyword}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Devices-default-page-${pageDevices}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Devices-keyword-${keyword}-page-${pageDevices}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Devices-Date Range-${startDate} - ${endDate}-page-${pageDevices}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchExportToCsvDevicesBookmark = async (keyword = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      if (keyword || startDate || endDate) {
+        setPageDevicesBookmark(1);
+      }
+
+      const res = await fetch(
+        `${APIDATAV1}compromised/export/csv/device?page=${pageDevicesBookmark}&start_date=${startDate}&end_date=${endDate}&search=${keyword}&status=bookmark`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      const blob = await res.blob();
+      const downloadUrl = window.URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = downloadUrl;
+      if (!keyword || !startDate || !endDate) {
+        link.download = `Data-Compromised-Devices-Bookmark-page-${pageDevicesBookmark}.csv`; // Set the desired file name
+      }
+      if (keyword) {
+        link.download = `Data-Compromised-Devices-keyword-${keyword}-Bookmark-page-${pageDevicesBookmark}.csv`;
+      }
+      if (startDate || endDate) {
+        link.download = `Data-Compromised-Devices-Date Range-${startDate} - ${endDate}-Bookmark-page-${pageDevicesBookmark}.csv`;
+      }
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.log("Error export to CSV");
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  // End of: Export to CSV
 
   const handleButtonClick = (value) => {
     setSelectedButton(value.target.name);
@@ -1474,7 +2126,7 @@ export default function CompromisedDashboard() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton onClick={handleClickExport} />
+                  <ExportButton onClick={handleExportToCSV} />
                 </div>
               </div>
             </div>
@@ -1871,12 +2523,8 @@ export default function CompromisedDashboard() {
                                   }}
                                 >
                                   <Select
-                                    defaultValue={
-                                      data.status_validasi === "valid"
-                                        ? "valid"
-                                        : "invalid"
-                                    }
-                                    value={selectValidasi}
+                                    defaultValue={data.status_validasi}
+                                    value={data.status_validasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
                                       handleSelectValidation(
@@ -2115,7 +2763,7 @@ export default function CompromisedDashboard() {
                                   >
                                     <Select
                                       defaultValue={data.status_validasi}
-                                      value={selectValidasi}
+                                      value={data.status_validasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
                                         handleSelectValidation(
@@ -2501,7 +3149,7 @@ export default function CompromisedDashboard() {
                                 >
                                   <Select
                                     defaultValue={data.status_validasi}
-                                    value={selectValidasi}
+                                    value={data.status_validasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
                                       handleSelectValidation(
@@ -2740,7 +3388,7 @@ export default function CompromisedDashboard() {
                                   >
                                     <Select
                                       defaultValue={data.status_validasi}
-                                      value={selectValidasi}
+                                      value={data.status_validasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
                                         handleSelectValidation(
@@ -3126,7 +3774,7 @@ export default function CompromisedDashboard() {
                                 >
                                   <Select
                                     defaultValue={data.status_validasi}
-                                    value={selectValidasi}
+                                    value={data.status_validasi}
                                     style={{ width: 91 }}
                                     onChange={(value) =>
                                       handleSelectValidation(
@@ -3365,7 +4013,7 @@ export default function CompromisedDashboard() {
                                   >
                                     <Select
                                       defaultValue={data.status_validasi}
-                                      value={selectValidasi}
+                                      value={data.status_validasi}
                                       style={{ width: 91 }}
                                       onChange={(value) =>
                                         handleSelectValidation(

@@ -9,6 +9,9 @@ import UnBookmarkSlices from "./features/Compromised/UnBookmarkSlices";
 import LoadingLogSlices from "./features/LogActivity/LoadingLogSlices";
 import CheckboxSlices from "./features/Compromised/CheckboxSlices";
 import LoadingStelaerSlices from "./features/Stealer/LoadingStelaerSlices";
+import LoadingOverviewSlices from "./features/Home/LoadingOverviewSlices";
+import ExportToCsvSlice from "./features/Export/ExportToCsvSlice";
+import ExportToCsvCompromiseSlice from "./features/Export/ExportToCsvCompromiseSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +25,8 @@ export const store = configureStore({
     activityLogLoading: LoadingLogSlices,
     checkbox: CheckboxSlices,
     stealerLoading: LoadingStelaerSlices,
+    overviewLoading: LoadingOverviewSlices,
+    exportToCsv: ExportToCsvSlice,
+    exportToCsvCompromise: ExportToCsvCompromiseSlice,
   },
 });
