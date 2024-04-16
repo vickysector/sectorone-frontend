@@ -1,5 +1,4 @@
 import { PrimaryButton } from "@/app/_ui/components/buttons/PrimaryButton";
-import { useRouter, redirect } from "next/navigation";
 
 export default function NotAuthorizePage() {
   return (
