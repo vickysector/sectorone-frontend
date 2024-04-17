@@ -195,6 +195,17 @@ export default function StealerUserPage() {
     }
   };
 
+  const handleDisabledButton = () => {
+    switch (selectSection) {
+      case "stealer":
+        return mapStealerData && mapStealerData.count === null;
+      case "bookmark-stealer":
+        return mapStealerBookmarkData && mapStealerBookmarkData.count === null;
+      default:
+        break;
+    }
+  };
+
   const handleSelectSection = (value) => {
     setSelectSection(value.target.name);
     setInputSearch("");
@@ -715,7 +726,10 @@ export default function StealerUserPage() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton onClick={handleExportToCV} />
+                  <ExportButton
+                    onClick={handleExportToCV}
+                    disabled={handleDisabledButton()}
+                  />
                 </div>
               </div>
             </div>
