@@ -2118,7 +2118,6 @@ export default function CompromisedDashboard() {
                     }}
                   >
                     <RangePicker
-                      renderExtraFooter={() => "extra footer"}
                       onChange={handleRangePicker}
                       className="ml-8"
                       size="large"

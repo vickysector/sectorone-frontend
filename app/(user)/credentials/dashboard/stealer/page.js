@@ -708,7 +708,6 @@ export default function StealerUserPage() {
                     }}
                   >
                     <RangePicker
-                      renderExtraFooter={() => "extra footer"}
                       onChange={handleRangePicker}
                       className="ml-8"
                       size="large"
