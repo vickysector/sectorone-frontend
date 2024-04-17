@@ -1168,7 +1168,7 @@ export default function DashboardLayout({ children }) {
                   height={24}
                 />
               </div>
-              <p className="text-error ml-[8px]">Log out of account</p>
+              <p className="text-primary-base ml-[8px]">Log out of account</p>
             </div>
           </div>
         </div>
