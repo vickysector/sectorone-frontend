@@ -2327,9 +2327,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -2482,9 +2494,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -2720,9 +2744,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -2954,9 +2990,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3107,9 +3155,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3345,9 +3405,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3578,9 +3650,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3732,9 +3816,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3970,9 +4066,21 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
