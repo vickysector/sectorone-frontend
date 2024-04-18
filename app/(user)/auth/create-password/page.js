@@ -94,7 +94,11 @@ export default function CreatePasswordPage() {
   };
 
   const canSave =
-    agreements && password && retypePassword && !passwordMatchError;
+    agreements &&
+    password &&
+    retypePassword &&
+    !passwordMatchError &&
+    passwordRequirement;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
