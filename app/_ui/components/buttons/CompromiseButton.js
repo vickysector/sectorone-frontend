@@ -18,7 +18,7 @@ export default function CompromiseButton({
       onClick={onClick}
       name={nameData}
     >
-      {value} ({total})
+      {value}
     </button>
   );
 }

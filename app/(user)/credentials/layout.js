@@ -249,6 +249,8 @@ export default function DashboardLayout({ children }) {
 
   const CheckboxMultipleBookmark = async () => {
     try {
+      dispatch(setSuccessMultipleBookmark(null));
+
       const res = await fetch(
         `${APIDATAV1}status/domain/${multipleBookmarkStatus}/boomark`,
         {
@@ -309,6 +311,7 @@ export default function DashboardLayout({ children }) {
 
   const CheckboxMultipleValidated = async () => {
     try {
+      dispatch(setSuccessMultipleValidated(null));
       const res = await fetch(
         `${APIDATAV1}status/domain/${multipleBookmarkStatus}`,
         {
@@ -397,6 +400,7 @@ export default function DashboardLayout({ children }) {
 
   const BookmarkCompromisedData = async () => {
     try {
+      dispatch(setBookmarkStatusData(null));
       const res = await fetch(
         `${APIDATAV1}status/domain/${bookmarkCompromiseDomain}/boomark`,
         {
@@ -437,6 +441,7 @@ export default function DashboardLayout({ children }) {
 
   const UnBookmarkCompromisedData = async () => {
     try {
+      dispatch(setUnBookmarkStatusData(null));
       const res = await fetch(
         `${APIDATAV1}status/domain/${unbookmarkCompromiseDomain}/boomark`,
         {
@@ -1168,7 +1173,7 @@ export default function DashboardLayout({ children }) {
                   height={24}
                 />
               </div>
-              <p className="text-error ml-[8px]">Log out of account</p>
+              <p className="text-primary-base ml-[8px]">Log out of account</p>
             </div>
           </div>
         </div>

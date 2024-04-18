@@ -49,8 +49,8 @@ export default function Password({
             Password requirements
           </h1>
           <p className="text-Base-normal text-black">
-            Password must have 8 character or longer. At least one number or
-            symbol (like !@#$%^)
+            Password must have 8 character or longer, At least one number, one
+            symbol (like !@#$%^) and one Capital Letter
           </p>
         </span>
       )}
