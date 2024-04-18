@@ -2362,16 +2362,38 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
                               </td>
-                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                              <td
+                                className="py-[19px] px-[16px] w-[100px] text-wrap"
+                                style={{ width: "100px" }}
+                              >
+                                <p
+                                  style={{
+                                    maxWidth: "280px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "230px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.pass}
+                                <p
+                                  style={{
+                                    maxWidth: "150px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.pass}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
@@ -2530,15 +2552,34 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
@@ -2780,15 +2821,34 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
@@ -3026,15 +3086,34 @@ export default function CompromisedDashboard() {
                                 {data.date}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "280px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "230px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.pass}
+                                <p
+                                  style={{
+                                    maxWidth: "150px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.pass}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
@@ -3191,15 +3270,34 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
@@ -3441,15 +3539,34 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
@@ -3686,15 +3803,34 @@ export default function CompromisedDashboard() {
                                 {data.date}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "280px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "230px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.pass}
+                                <p
+                                  style={{
+                                    maxWidth: "150px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.pass}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
@@ -3852,15 +3988,34 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
@@ -4102,15 +4257,34 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.url}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
