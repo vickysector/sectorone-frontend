@@ -17,7 +17,7 @@ const myFont = localFont({
 });
 
 export const metadata = {
-  title: "Sector One",
+  title: "SectorOne | Dashboard.",
   description: "Securing Your Digital World",
 };
 
