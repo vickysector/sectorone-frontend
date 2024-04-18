@@ -2096,7 +2096,7 @@ export default function CompromisedDashboard() {
           </div>
         </div>
         <div className="mt-8">
-          {/* <OverviewCard
+          <OverviewCard
             descriptions={"Corporate credentials found"}
             image={"/images/sector_image_magnifier.svg"}
             total={breachesAll && breachesAll}
@@ -2110,13 +2110,13 @@ export default function CompromisedDashboard() {
             descriptions={"User compromised"}
             image={"/images/sector_image_user-like.svg"}
             total={usersBreaches && usersBreaches}
-          /> */}
-          <ReactApexChart
+          />
+          {/* <ReactApexChart
             options={options}
             series={series}
             type="area"
             height={350}
-          />
+          /> */}
         </div>
       </div>
       <section className="mt-10">
