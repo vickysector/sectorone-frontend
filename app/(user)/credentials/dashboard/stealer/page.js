@@ -40,11 +40,13 @@ import {
   setBookmarkConfirmState,
   setBookmarkDomainData,
   setBookmarkIdData,
+  setBookmarkStatusData,
 } from "@/app/_lib/store/features/Compromised/BookmarkSlices";
 import {
   setUnBookmarkConfirmState,
   setUnBookmarkDomainData,
   setUnBookmarkIdData,
+  setUnBookmarkStatusData,
 } from "@/app/_lib/store/features/Compromised/UnBookmarkSlices";
 import {
   addIdtoIds,
@@ -206,6 +208,17 @@ export default function StealerUserPage() {
     }
   };
 
+  const handleCheckBookmarkOrUnBookmarkText = () => {
+    switch (selectSection) {
+      case "stealer":
+        return "Bookmark Item";
+      case "bookmark-stealer":
+        return "Unbookmark Item";
+      default:
+        break;
+    }
+  };
+
   const handleSelectSection = (value) => {
     setSelectSection(value.target.name);
     setInputSearch("");
@@ -328,7 +341,8 @@ export default function StealerUserPage() {
   const fetchStealerData = async (keyword = "") => {
     try {
       dispatch(setLoadingStealerState(true));
-
+      dispatch(setBookmarkStatusData(null));
+      dispatch(setUnBookmarkStatusData(null));
       if (keyword || startDate || endDate) {
         setPage(1);
       }
@@ -341,6 +355,7 @@ export default function StealerUserPage() {
           headers: {
             Authorization: `Bearer ${getCookie("access_token")}`,
           },
+          cache: "no-store",
         }
       );
 
@@ -373,6 +388,8 @@ export default function StealerUserPage() {
   const fetchStealerBookmarkData = async (keyword = "") => {
     try {
       dispatch(setLoadingStealerState(true));
+      dispatch(setBookmarkStatusData(null));
+      dispatch(setUnBookmarkStatusData(null));
 
       if (keyword || startDate || endDate) {
         setBookmarkPage(1);
@@ -386,6 +403,7 @@ export default function StealerUserPage() {
           headers: {
             Authorization: `Bearer ${getCookie("access_token")}`,
           },
+          cache: "no-store",
         }
       );
 
@@ -649,7 +667,9 @@ export default function StealerUserPage() {
                       className="flex items-center justify-between mt-2 cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px] px-[8px] "
                       onClick={handleBookmarkAllCheckboxes}
                     >
-                      <h1 className="mr-6 text-Base-normal">Bookmark item</h1>
+                      <h1 className="mr-6 text-Base-normal">
+                        {handleCheckBookmarkOrUnBookmarkText()}
+                      </h1>
                       <RightOutlined />
                     </div>
                   </div>
