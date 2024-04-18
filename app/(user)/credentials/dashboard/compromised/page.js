@@ -1846,31 +1846,31 @@ export default function CompromisedDashboard() {
     dispatch(clearIds());
   };
 
-  useEffect(() => {
-    fetchEmployeeData(inputSearch);
-    fetchUsersData(inputSearch);
-    fetchThirdPartyData(inputSearch);
-    fetchDevicesData(inputSearch);
-  }, []);
+  // useEffect(() => {
+  //   fetchEmployeeData(inputSearch);
+  //   fetchUsersData(inputSearch);
+  //   fetchThirdPartyData(inputSearch);
+  //   fetchDevicesData(inputSearch);
+  // }, []);
 
-  useEffect(() => {
-    if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE) {
-      fetchEmployeeData();
-      fetchEmployeeBookmark();
-      fetchEmployeeTesting();
-    } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
-      fetchUsersData();
-      fetchUserBookmark();
-      fetchUserTesting();
-    } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
-      fetchThirdPartyData();
-      fetchThirdPartyBookmark();
-      fetchThirdPartyTesting();
-    } else {
-      fetchDevicesData();
-      fetchDevicesBookmark();
-    }
-  }, [selectedButton]);
+  // useEffect(() => {
+  //   if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE) {
+  //     fetchEmployeeData();
+  //     fetchEmployeeBookmark();
+  //     fetchEmployeeTesting();
+  //   } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
+  //     fetchUsersData();
+  //     fetchUserBookmark();
+  //     fetchUserTesting();
+  //   } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
+  //     fetchThirdPartyData();
+  //     fetchThirdPartyBookmark();
+  //     fetchThirdPartyTesting();
+  //   } else {
+  //     fetchDevicesData();
+  //     fetchDevicesBookmark();
+  //   }
+  // }, [selectedButton]);
 
   useEffect(() => {
     // fetchEmployeeData();
@@ -2003,7 +2003,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
               }
-              total={employeeData && employeeData.count}
+              // total={employeeData && employeeData.count}
               value={"Employee"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE}
@@ -2011,7 +2011,7 @@ export default function CompromisedDashboard() {
 
             <CompromiseButton
               isActive={selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS}
-              total={usersData && usersData.count}
+              // total={usersData && usersData.count}
               value={"User"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_USERS}
@@ -2021,7 +2021,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
               }
-              total={totalThirdParty && totalThirdParty}
+              // total={totalThirdParty && totalThirdParty}
               value={"Third-party"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY}
@@ -2031,7 +2031,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES
               }
-              total={totalDevice && totalDevice}
+              // total={totalDevice && totalDevice}
               value={"Device"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_DEVICES}
@@ -2040,7 +2040,7 @@ export default function CompromisedDashboard() {
           <section className="p-8">
             <OutlineButton
               isActive={selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT}
-              total={GetOutlineTotalDataCompromiseOutlineButton(selectedButton)}
+              // total={GetOutlineTotalDataCompromiseOutlineButton(selectedButton)}
               value={"Data compromise "}
               onClick={handleButtonOutlineClick}
               nameData={DETAIL_COMPROMISED_DEFAULT}
@@ -2048,9 +2048,9 @@ export default function CompromisedDashboard() {
             {selectedButton !== DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
               <OutlineButton
                 isActive={selectedOutlineButton === DETAIL_COMPROMISED_TESTING}
-                total={GetOutlineTotalDataValidatedOutlineButton(
-                  selectedButton
-                )}
+                // total={GetOutlineTotalDataValidatedOutlineButton(
+                //   selectedButton
+                // )}
                 value={"Validated "}
                 onClick={handleButtonOutlineClick}
                 nameData={DETAIL_COMPROMISED_TESTING}
@@ -2058,7 +2058,7 @@ export default function CompromisedDashboard() {
             )}
             <OutlineButton
               isActive={selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK}
-              total={GetOutlineTotalDataBookmarkedOutlineButton(selectedButton)}
+              // total={GetOutlineTotalDataBookmarkedOutlineButton(selectedButton)}
               value={"Bookmark "}
               onClick={handleButtonOutlineClick}
               nameData={DETAIL_COMPROMISED_BOOKMARK}

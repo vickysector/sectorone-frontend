@@ -508,7 +508,6 @@ export default function StealerUserPage() {
     getListDomainUsers();
     getBreachesData();
     getBreachesDataStealer();
-    fetchStealerBookmarkData();
   }, []);
 
   useEffect(() => {
@@ -624,14 +623,12 @@ export default function StealerUserPage() {
           <section className="p-8">
             <OutlineButton
               isActive={selectSection === "stealer"}
-              total={mapStealerData && mapStealerData.count}
-              value={"Data compromise "}
+              value={"Data Compromise "}
               nameData={"stealer"}
               onClick={handleSelectSection}
             />
             <OutlineButton
               isActive={selectSection === "bookmark-stealer"}
-              total={mapStealerBookmarkData && mapStealerBookmarkData.count}
               value={"Bookmark "}
               nameData={"bookmark-stealer"}
               onClick={handleSelectSection}

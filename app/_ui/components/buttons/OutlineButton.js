@@ -19,7 +19,8 @@ export default function OutlineButton({
         onClick={onClick}
         name={nameData}
       >
-        {value} ({total})
+        {value}
+        {/* ({total}) */}
       </button>
     </>
   );
