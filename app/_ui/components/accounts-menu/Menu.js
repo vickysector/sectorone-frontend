@@ -14,7 +14,9 @@ export default function Menu({ data }) {
       <Image alt={title} src={`/${imageLink}`} width={62} height={48} />
       <div className="ml-8 flex-grow">
         <h1 className="text-black text-heading-4">{title}</h1>
-        <p className="text-justify w-[60%]  mt-2">{description}</p>
+        <p className="text-justify w-[60%]  mt-2 text-text-description">
+          {description}
+        </p>
       </div>
       <div className="flex justify-self-end items-center ">
         <RightOutlined />

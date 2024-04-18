@@ -83,6 +83,8 @@ import {
   setSectionExportToCSVCompromise,
   setSubSectionExportToCSVCompromise,
 } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
+import ReactApexChart from "react-apexcharts";
+import ApexCharts from "apexcharts";
 
 const { RangePicker } = DatePicker;
 
@@ -187,6 +189,43 @@ export default function CompromisedDashboard() {
   };
 
   // End of: Handle Page
+
+  // Start of: Spline area Chart
+
+  const options = {
+    chart: {
+      type: "area",
+      height: 350,
+      width: "100%",
+      zoom: {
+        enabled: true,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: "smooth",
+    },
+    colors: ["#FF6F1E", "#2F54EB"],
+    xaxis: {
+      categories: ["2023", "2024"], // Add year labels
+    },
+    // Add more options as needed
+  };
+
+  const series = [
+    {
+      name: "Customer Breach",
+      data: [0, usersBreaches && usersBreaches],
+    },
+    {
+      name: "Employee Breach",
+      data: [0, employeeBreaches && employeeBreaches],
+    },
+  ];
+
+  // End of: Spline area Chart
 
   // Start of: Handle export to CSV
 
@@ -304,6 +343,84 @@ export default function CompromisedDashboard() {
   };
 
   // End of: Handle export to CSV
+
+  // Start of: Handle detect export button when empty
+
+  const handleDisableExportButton = () => {
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return employeeBookmarkData && employeeBookmarkData.count === null;
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          return employeeValidatedData && employeeValidatedData.count === null;
+        } else {
+          return employeeData && employeeData.count === null;
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return devicesBookmarkData && devicesBookmarkData.count === null;
+        } else {
+          return devicesData && devicesData.count === null;
+        }
+      // // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return usersBookmarkData && usersBookmarkData.count === null;
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          return usersValidatedData && usersValidatedData.count === null;
+        } else {
+          return usersData && usersData.count === null;
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return (
+            thirdPartyBookmarkData && thirdPartyBookmarkData.count === null
+          );
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          return (
+            thirdPartyValidatedData && thirdPartyValidatedData.count === null
+          );
+        } else {
+          return thirdPartyData && thirdPartyData.count === null;
+        }
+      default:
+        break;
+    }
+  };
+
+  // End of: Handle detect export button when empty
+
+  const handleCheckBookmarkOrUnbookmarkText = () => {
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "Unbookmark Item";
+        } else {
+          return "Bookmark Item";
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "Unbookmark Item";
+        } else {
+          return "Bookmark Item";
+        }
+      // // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "Unbookmark Item";
+        } else {
+          return "Bookmark Item";
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "Unbookmark Item";
+        } else {
+          return "Bookmark Item";
+        }
+      default:
+        break;
+    }
+  };
 
   // Start of:  Checkbox Bookmark Functionality
 
@@ -1800,31 +1917,31 @@ export default function CompromisedDashboard() {
     dispatch(clearIds());
   };
 
-  useEffect(() => {
-    fetchEmployeeData(inputSearch);
-    fetchUsersData(inputSearch);
-    fetchThirdPartyData(inputSearch);
-    fetchDevicesData(inputSearch);
-  }, []);
+  // useEffect(() => {
+  //   fetchEmployeeData(inputSearch);
+  //   fetchUsersData(inputSearch);
+  //   fetchThirdPartyData(inputSearch);
+  //   fetchDevicesData(inputSearch);
+  // }, []);
 
-  useEffect(() => {
-    if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE) {
-      fetchEmployeeData();
-      fetchEmployeeBookmark();
-      fetchEmployeeTesting();
-    } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
-      fetchUsersData();
-      fetchUserBookmark();
-      fetchUserTesting();
-    } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
-      fetchThirdPartyData();
-      fetchThirdPartyBookmark();
-      fetchThirdPartyTesting();
-    } else {
-      fetchDevicesData();
-      fetchDevicesBookmark();
-    }
-  }, [selectedButton]);
+  // useEffect(() => {
+  //   if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE) {
+  //     fetchEmployeeData();
+  //     fetchEmployeeBookmark();
+  //     fetchEmployeeTesting();
+  //   } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS) {
+  //     fetchUsersData();
+  //     fetchUserBookmark();
+  //     fetchUserTesting();
+  //   } else if (selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY) {
+  //     fetchThirdPartyData();
+  //     fetchThirdPartyBookmark();
+  //     fetchThirdPartyTesting();
+  //   } else {
+  //     fetchDevicesData();
+  //     fetchDevicesBookmark();
+  //   }
+  // }, [selectedButton]);
 
   useEffect(() => {
     // fetchEmployeeData();
@@ -1931,8 +2048,8 @@ export default function CompromisedDashboard() {
             </ChangeUrlButton>
           </div>
         </div>
-        <div className="mt-8 flex justify-between">
-          <OverviewCard
+        <div className="mt-8">
+          {/* <OverviewCard
             descriptions={"Corporate credentials found"}
             image={"/images/sector_image_magnifier.svg"}
             total={breachesAll && breachesAll}
@@ -1946,6 +2063,12 @@ export default function CompromisedDashboard() {
             descriptions={"User compromised"}
             image={"/images/sector_image_user-like.svg"}
             total={usersBreaches && usersBreaches}
+          /> */}
+          <ReactApexChart
+            options={options}
+            series={series}
+            type="area"
+            height={350}
           />
         </div>
       </div>
@@ -1957,7 +2080,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
               }
-              total={employeeData && employeeData.count}
+              // total={employeeData && employeeData.count}
               value={"Employee"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE}
@@ -1965,7 +2088,7 @@ export default function CompromisedDashboard() {
 
             <CompromiseButton
               isActive={selectedButton === DETAIL_COMPROMISED_COMPROMISE_USERS}
-              total={usersData && usersData.count}
+              // total={usersData && usersData.count}
               value={"User"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_USERS}
@@ -1975,7 +2098,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
               }
-              total={totalThirdParty && totalThirdParty}
+              // total={totalThirdParty && totalThirdParty}
               value={"Third-party"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY}
@@ -1985,7 +2108,7 @@ export default function CompromisedDashboard() {
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES
               }
-              total={totalDevice && totalDevice}
+              // total={totalDevice && totalDevice}
               value={"Device"}
               onClick={handleButtonClick}
               nameData={DETAIL_COMPROMISED_COMPROMISE_DEVICES}
@@ -1994,7 +2117,7 @@ export default function CompromisedDashboard() {
           <section className="p-8">
             <OutlineButton
               isActive={selectedOutlineButton === DETAIL_COMPROMISED_DEFAULT}
-              total={GetOutlineTotalDataCompromiseOutlineButton(selectedButton)}
+              // total={GetOutlineTotalDataCompromiseOutlineButton(selectedButton)}
               value={"Data compromise "}
               onClick={handleButtonOutlineClick}
               nameData={DETAIL_COMPROMISED_DEFAULT}
@@ -2002,9 +2125,9 @@ export default function CompromisedDashboard() {
             {selectedButton !== DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
               <OutlineButton
                 isActive={selectedOutlineButton === DETAIL_COMPROMISED_TESTING}
-                total={GetOutlineTotalDataValidatedOutlineButton(
-                  selectedButton
-                )}
+                // total={GetOutlineTotalDataValidatedOutlineButton(
+                //   selectedButton
+                // )}
                 value={"Validated "}
                 onClick={handleButtonOutlineClick}
                 nameData={DETAIL_COMPROMISED_TESTING}
@@ -2012,7 +2135,7 @@ export default function CompromisedDashboard() {
             )}
             <OutlineButton
               isActive={selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK}
-              total={GetOutlineTotalDataBookmarkedOutlineButton(selectedButton)}
+              // total={GetOutlineTotalDataBookmarkedOutlineButton(selectedButton)}
               value={"Bookmark "}
               onClick={handleButtonOutlineClick}
               nameData={DETAIL_COMPROMISED_BOOKMARK}
@@ -2045,7 +2168,10 @@ export default function CompromisedDashboard() {
                       className="flex items-center justify-between mt-2 cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px] px-[8px] "
                       onClick={handleBookmarkAllCheckboxes}
                     >
-                      <h1 className="mr-6 text-Base-normal">Bookmark item</h1>
+                      <h1 className="mr-6 text-Base-normal">
+                        {" "}
+                        {handleCheckBookmarkOrUnbookmarkText()}{" "}
+                      </h1>
                       <RightOutlined />
                     </div>
                   </div>
@@ -2118,7 +2244,6 @@ export default function CompromisedDashboard() {
                     }}
                   >
                     <RangePicker
-                      renderExtraFooter={() => "extra footer"}
                       onChange={handleRangePicker}
                       className="ml-8"
                       size="large"
@@ -2126,7 +2251,10 @@ export default function CompromisedDashboard() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton onClick={handleExportToCSV} />
+                  <ExportButton
+                    onClick={handleExportToCSV}
+                    disabled={handleDisableExportButton()}
+                  />
                 </div>
               </div>
             </div>
@@ -2314,23 +2442,63 @@ export default function CompromisedDashboard() {
                               <td className="py-[19px] px-[16px]">
                                 {data.date}
                               </td>
-                              <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                              <td
+                                className="py-[19px] px-[16px] w-[100px] text-wrap"
+                                style={{ width: "100px" }}
+                              >
+                                <p
+                                  style={{
+                                    maxWidth: "280px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "230px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.pass}
+                                <p
+                                  style={{
+                                    maxWidth: "150px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.pass}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -2470,22 +2638,59 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -2708,22 +2913,59 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -2942,22 +3184,59 @@ export default function CompromisedDashboard() {
                                 {data.date}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "280px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "230px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.pass}
+                                <p
+                                  style={{
+                                    maxWidth: "150px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.pass}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3095,22 +3374,59 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3333,22 +3649,59 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3566,22 +3919,59 @@ export default function CompromisedDashboard() {
                                 {data.date}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "280px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "230px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.pass}
+                                <p
+                                  style={{
+                                    maxWidth: "150px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.pass}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.pass
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3720,22 +4110,59 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(
@@ -3958,22 +4385,59 @@ export default function CompromisedDashboard() {
                                 {convertDateFormat(data.datetime_added)}
                               </td>
                               <td className="py-[19px] px-[16px] w-[100px] text-wrap">
-                                {data.url}
+                                <p
+                                  style={{
+                                    maxWidth: "200px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
-                                <p className="text-wrap whitespace-pre-line">
+                                <p
+                                  style={{
+                                    maxWidth: "170px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
                                   {data.login}
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
-                                {data.password}
+                                <p
+                                  style={{
+                                    maxWidth: "140px",
+                                    wordWrap: "break-word",
+                                  }}
+                                >
+                                  {data.password}
+                                </p>
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <p
                                   className={clsx(
-                                    "Medium" === "Weak" && "text-pink",
-                                    "Medium" === "Medium" && "text-text-orange",
-                                    "Medium" === "Strong" && "text-text-green"
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Bad" && "text-error",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Weak" && "text-pink",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Medium" && "text-text-orange",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Good" && "text-blue-600",
+                                    CalculatePasswordStrengthWithReturnPlainString(
+                                      data.password
+                                    ) === "Strong" && "text-text-green"
                                   )}
                                 >
                                   {CalculatePasswordStrengthWithReturnPlainString(

@@ -63,8 +63,8 @@ export default function NavLinks() {
             <LinkIcon
               className="link-icon"
               style={{
-                fontSize: "24px",
-                color: pathname === link.href ? "#fff" : "#676767",
+                fontSize: "20px",
+                color: pathname === link.href && "#fff",
               }}
             />
             <p

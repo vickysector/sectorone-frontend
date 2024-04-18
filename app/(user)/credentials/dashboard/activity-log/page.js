@@ -95,19 +95,6 @@ export default function ActivityLogUserPage() {
           <section className="p-8">
             <div className=" ">
               <div className="flex items-center">
-                <div>
-                  <input
-                    type="checkbox"
-                    name=""
-                    id="agreements"
-                    value="I agree to the Terms & Conditions and Privacy Policy"
-                    className=" text-Base-normal"
-                  />
-                  <label
-                    htmlFor="agreements"
-                    className="text-Base-normal ml-1.5 text-text-description"
-                  ></label>
-                </div>
                 <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
                   <input
                     type="email"
