@@ -1441,22 +1441,29 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Employee-default-page-${page}.csv`; // Set the desired file name
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Employee-default-page-${page}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Employee-keyword-${keyword}-page-${page}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-page-${page}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        console.log(
+          "Server-side rendering detected, cannot create download link"
+        );
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Employee-keyword-${keyword}-page-${page}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-page-${page}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1484,22 +1491,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Employee-validated-page-${pageEmployeeValidate}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Employee-validated-page-${pageEmployeeValidate}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Employee-keyword-${keyword}-validated-page-${pageEmployeeValidate}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-validated-page-${pageEmployeeValidate}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Employee-keyword-${keyword}-validated-page-${pageEmployeeValidate}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-validated-page-${pageEmployeeValidate}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1527,22 +1538,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Employee-bookmark-page-${pageEmployeeBookmark}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Employee-bookmark-page-${pageEmployeeBookmark}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Employee-keyword-${keyword}-bookmark-page-${pageEmployeeBookmark}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-bookmark-page-${pageEmployeeBookmark}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Employee-keyword-${keyword}-bookmark-page-${pageEmployeeBookmark}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Employee-Date Range-${startDate} - ${endDate}-bookmark-page-${pageEmployeeBookmark}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1570,22 +1585,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Users-default-page-${pageUsers}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Users-default-page-${pageUsers}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Users-keyword-${keyword}-page-${pageUsers}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-page-${pageUsers}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Users-keyword-${keyword}-page-${pageUsers}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-page-${pageUsers}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1613,22 +1632,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Users-validate-page-${pageUsersValidate}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Users-validate-page-${pageUsersValidate}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Users-keyword-${keyword}-validate-page-${pageUsersValidate}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-validate-page-${pageUsersValidate}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Users-keyword-${keyword}-validate-page-${pageUsersValidate}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-validate-page-${pageUsersValidate}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1656,22 +1679,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Users-bookmark-page-${pageUsersBookmark}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Users-bookmark-page-${pageUsersBookmark}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Users-keyword-${keyword}-bookmark-page-${pageUsersBookmark}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-bookmark-page-${pageUsersBookmark}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Users-keyword-${keyword}-bookmark-page-${pageUsersBookmark}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Users-Date Range-${startDate} - ${endDate}-bookmark-page-${pageUsersBookmark}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1699,22 +1726,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-ThirdParty-default-page-${pageThirdParty}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-ThirdParty-default-page-${pageThirdParty}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-page-${pageThirdParty}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-page-${pageThirdParty}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-page-${pageThirdParty}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-page-${pageThirdParty}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1742,22 +1773,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-ThirdParty-validate-page-${pageThirdPartyValidate}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-ThirdParty-validate-page-${pageThirdPartyValidate}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-validate-page-${pageThirdPartyValidate}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-validate-page-${pageThirdPartyValidate}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-validate-page-${pageThirdPartyValidate}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-validate-page-${pageThirdPartyValidate}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1785,22 +1820,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-ThirdParty-bookmark-page-${pageThirdPartyBookmark}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-ThirdParty-bookmark-page-${pageThirdPartyBookmark}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-bookmark-page-${pageThirdPartyBookmark}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-bookmark-page-${pageThirdPartyBookmark}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-ThirdParty-keyword-${keyword}-bookmark-page-${pageThirdPartyBookmark}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-ThirdParty-Date Range-${startDate} - ${endDate}-bookmark-page-${pageThirdPartyBookmark}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1828,22 +1867,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Devices-default-page-${pageDevices}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Devices-default-page-${pageDevices}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Devices-keyword-${keyword}-page-${pageDevices}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Devices-Date Range-${startDate} - ${endDate}-page-${pageDevices}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Devices-keyword-${keyword}-page-${pageDevices}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Devices-Date Range-${startDate} - ${endDate}-page-${pageDevices}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -1871,22 +1914,26 @@ export default function CompromisedDashboard() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Devices-Bookmark-page-${pageDevicesBookmark}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Devices-Bookmark-page-${pageDevicesBookmark}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Devices-keyword-${keyword}-Bookmark-page-${pageDevicesBookmark}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Devices-Date Range-${startDate} - ${endDate}-Bookmark-page-${pageDevicesBookmark}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Devices-keyword-${keyword}-Bookmark-page-${pageDevicesBookmark}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Devices-Date Range-${startDate} - ${endDate}-Bookmark-page-${pageDevicesBookmark}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
