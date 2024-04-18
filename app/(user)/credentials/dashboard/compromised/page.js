@@ -83,8 +83,8 @@ import {
   setSectionExportToCSVCompromise,
   setSubSectionExportToCSVCompromise,
 } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
-import ReactApexChart from "react-apexcharts";
-import ApexCharts from "apexcharts";
+// import ReactApexChart from "react-apexcharts";
+// import ApexCharts from "apexcharts";
 
 const { RangePicker } = DatePicker;
 
