@@ -305,6 +305,52 @@ export default function CompromisedDashboard() {
 
   // End of: Handle export to CSV
 
+  // Start of: Handle detect export button when empty
+
+  const handleDisableExportButton = () => {
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return employeeBookmarkData && employeeBookmarkData.count === null;
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          return employeeValidatedData && employeeValidatedData.count === null;
+        } else {
+          return employeeData && employeeData.count === null;
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return devicesBookmarkData && devicesBookmarkData.count === null;
+        } else {
+          return devicesData && devicesData.count === null;
+        }
+      // // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return usersBookmarkData && usersBookmarkData.count === null;
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          return usersValidatedData && usersValidatedData.count === null;
+        } else {
+          return usersData && usersData.count === null;
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return (
+            thirdPartyBookmarkData && thirdPartyBookmarkData.count === null
+          );
+        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+          return (
+            thirdPartyValidatedData && thirdPartyValidatedData.count === null
+          );
+        } else {
+          return thirdPartyData && thirdPartyData.count === null;
+        }
+      default:
+        break;
+    }
+  };
+
+  // End of: Handle detect export button when empty
+
   // Start of:  Checkbox Bookmark Functionality
 
   const [initialCheckboxState, setInitialCheckboxState] = useState(false);
@@ -2125,7 +2171,10 @@ export default function CompromisedDashboard() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton onClick={handleExportToCSV} />
+                  <ExportButton
+                    onClick={handleExportToCSV}
+                    disabled={handleDisableExportButton()}
+                  />
                 </div>
               </div>
             </div>
@@ -2495,19 +2544,19 @@ export default function CompromisedDashboard() {
                                 <p
                                   className={clsx(
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Bad" && "text-error",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Weak" && "text-pink",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Medium" && "text-text-orange",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Good" && "text-blue-600",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Strong" && "text-text-green"
                                   )}
                                 >
@@ -2745,19 +2794,19 @@ export default function CompromisedDashboard() {
                                 <p
                                   className={clsx(
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Bad" && "text-error",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Weak" && "text-pink",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Medium" && "text-text-orange",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Good" && "text-blue-600",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Strong" && "text-text-green"
                                   )}
                                 >
@@ -3156,19 +3205,19 @@ export default function CompromisedDashboard() {
                                 <p
                                   className={clsx(
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Bad" && "text-error",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Weak" && "text-pink",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Medium" && "text-text-orange",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Good" && "text-blue-600",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Strong" && "text-text-green"
                                   )}
                                 >
@@ -3406,19 +3455,19 @@ export default function CompromisedDashboard() {
                                 <p
                                   className={clsx(
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Bad" && "text-error",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Weak" && "text-pink",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Medium" && "text-text-orange",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Good" && "text-blue-600",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Strong" && "text-text-green"
                                   )}
                                 >
@@ -3817,19 +3866,19 @@ export default function CompromisedDashboard() {
                                 <p
                                   className={clsx(
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Bad" && "text-error",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Weak" && "text-pink",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Medium" && "text-text-orange",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Good" && "text-blue-600",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Strong" && "text-text-green"
                                   )}
                                 >
@@ -4067,19 +4116,19 @@ export default function CompromisedDashboard() {
                                 <p
                                   className={clsx(
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Bad" && "text-error",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Weak" && "text-pink",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Medium" && "text-text-orange",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Good" && "text-blue-600",
                                     CalculatePasswordStrengthWithReturnPlainString(
-                                      data.pass
+                                      data.password
                                     ) === "Strong" && "text-text-green"
                                   )}
                                 >
