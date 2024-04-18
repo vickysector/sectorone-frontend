@@ -351,6 +351,38 @@ export default function CompromisedDashboard() {
 
   // End of: Handle detect export button when empty
 
+  const handleCheckBookmarkOrUnbookmarkText = () => {
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "Unbookmark Item";
+        } else {
+          return "Bookmark Item";
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "Unbookmark Item";
+        } else {
+          return "Bookmark Item";
+        }
+      // // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "Unbookmark Item";
+        } else {
+          return "Bookmark Item";
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "Unbookmark Item";
+        } else {
+          return "Bookmark Item";
+        }
+      default:
+        break;
+    }
+  };
+
   // Start of:  Checkbox Bookmark Functionality
 
   const [initialCheckboxState, setInitialCheckboxState] = useState(false);
@@ -2091,7 +2123,10 @@ export default function CompromisedDashboard() {
                       className="flex items-center justify-between mt-2 cursor-pointer hover:bg-[#FFEBD4] rounded-lg py-[4px] px-[8px] "
                       onClick={handleBookmarkAllCheckboxes}
                     >
-                      <h1 className="mr-6 text-Base-normal">Bookmark item</h1>
+                      <h1 className="mr-6 text-Base-normal">
+                        {" "}
+                        {handleCheckBookmarkOrUnbookmarkText()}{" "}
+                      </h1>
                       <RightOutlined />
                     </div>
                   </div>
