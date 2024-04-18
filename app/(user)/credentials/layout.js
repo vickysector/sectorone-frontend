@@ -372,7 +372,11 @@ export default function DashboardLayout({ children }) {
 
   const handleUrlListYes = () => {
     UpdateDomain();
-    window.location.reload();
+
+    // Check if the `window` object is defined (browser environment)
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
   };
 
   const handleBookmarkCompromiseData = () => {

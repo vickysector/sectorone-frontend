@@ -463,22 +463,26 @@ export default function StealerUserPage() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Stealer-default-page-${exportToCVPage}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Stealer-default-page-${exportToCVPage}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Stealer-keyword-${keyword}-page-${exportToCVPage}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Stealer-Date Range-${startDate} - ${endDate}-page-${exportToCVPage}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Stealer-keyword-${keyword}-page-${exportToCVPage}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Stealer-Date Range-${startDate} - ${endDate}-page-${exportToCVPage}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
@@ -506,23 +510,27 @@ export default function StealerUserPage() {
       );
 
       const blob = await res.blob();
-      const downloadUrl = window.URL.createObjectURL(blob);
 
-      const link = document.createElement("a");
-      link.href = downloadUrl;
-      // link.download = `Data-Compromised-Stealer-bookmark-page-${exportToCsvBookmarkPage}.csv`; // Set the desired file name
-      if (!keyword || !startDate || !endDate) {
-        link.download = `Data-Compromised-Stealer-bookmark-page-${exportToCsvBookmarkPage}.csv`; // Set the desired file name
+      // Check if the `window` object is defined (browser environment)
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        // link.download = `Data-Compromised-Stealer-bookmark-page-${exportToCsvBookmarkPage}.csv`; // Set the desired file name
+        if (!keyword || !startDate || !endDate) {
+          link.download = `Data-Compromised-Stealer-bookmark-page-${exportToCsvBookmarkPage}.csv`; // Set the desired file name
+        }
+        if (keyword) {
+          link.download = `Data-Compromised-Stealer-keyword-${keyword}-bookmark-page-${exportToCsvBookmarkPage}.csv`;
+        }
+        if (startDate || endDate) {
+          link.download = `Data-Compromised-Stealer-Date Range-${startDate} - ${endDate}-bookmark page-${exportToCsvBookmarkPage}.csv`;
+        }
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       }
-      if (keyword) {
-        link.download = `Data-Compromised-Stealer-keyword-${keyword}-bookmark-page-${exportToCsvBookmarkPage}.csv`;
-      }
-      if (startDate || endDate) {
-        link.download = `Data-Compromised-Stealer-Date Range-${startDate} - ${endDate}-bookmark page-${exportToCsvBookmarkPage}.csv`;
-      }
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
