@@ -2095,7 +2095,7 @@ export default function CompromisedDashboard() {
             </ChangeUrlButton>
           </div>
         </div>
-        <div className="mt-8">
+        <div className="mt-8 flex justify-between">
           <OverviewCard
             descriptions={"Corporate credentials found"}
             image={"/images/sector_image_magnifier.svg"}
