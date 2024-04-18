@@ -83,6 +83,8 @@ import {
   setSectionExportToCSVCompromise,
   setSubSectionExportToCSVCompromise,
 } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
+import ReactApexChart from "react-apexcharts";
+import ApexCharts from "apexcharts";
 
 const { RangePicker } = DatePicker;
 
@@ -187,6 +189,43 @@ export default function CompromisedDashboard() {
   };
 
   // End of: Handle Page
+
+  // Start of: Spline area Chart
+
+  const options = {
+    chart: {
+      type: "area",
+      height: 350,
+      width: "100%",
+      zoom: {
+        enabled: true,
+      },
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    stroke: {
+      curve: "smooth",
+    },
+    colors: ["#FF6F1E", "#2F54EB"],
+    xaxis: {
+      categories: ["2023", "2024"], // Add year labels
+    },
+    // Add more options as needed
+  };
+
+  const series = [
+    {
+      name: "Customer Breach",
+      data: [0, usersBreaches && usersBreaches],
+    },
+    {
+      name: "Employee Breach",
+      data: [0, employeeBreaches && employeeBreaches],
+    },
+  ];
+
+  // End of: Spline area Chart
 
   // Start of: Handle export to CSV
 
@@ -2009,8 +2048,8 @@ export default function CompromisedDashboard() {
             </ChangeUrlButton>
           </div>
         </div>
-        <div className="mt-8 flex justify-between">
-          <OverviewCard
+        <div className="mt-8">
+          {/* <OverviewCard
             descriptions={"Corporate credentials found"}
             image={"/images/sector_image_magnifier.svg"}
             total={breachesAll && breachesAll}
@@ -2024,6 +2063,12 @@ export default function CompromisedDashboard() {
             descriptions={"User compromised"}
             image={"/images/sector_image_user-like.svg"}
             total={usersBreaches && usersBreaches}
+          /> */}
+          <ReactApexChart
+            options={options}
+            series={series}
+            type="area"
+            height={350}
           />
         </div>
       </div>
