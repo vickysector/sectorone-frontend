@@ -2407,7 +2407,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
@@ -2593,7 +2599,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
@@ -2862,7 +2874,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
@@ -3127,7 +3145,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
@@ -3311,7 +3335,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
@@ -3580,7 +3610,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
@@ -3844,7 +3880,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
@@ -4029,7 +4071,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
@@ -4298,7 +4346,13 @@ export default function CompromisedDashboard() {
                                     wordWrap: "break-word",
                                   }}
                                 >
-                                  {data.url}
+                                  <a
+                                    href={`${data.url}`}
+                                    target="_blank"
+                                    className="underline"
+                                  >
+                                    {data.url}
+                                  </a>
                                 </p>
                               </td>
                               <td className="py-[19px] px-[16px] text-wrap w-[100px] whitespace-pre-line">
