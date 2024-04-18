@@ -84,6 +84,7 @@ export default function StealerUserPage() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [inputSearch, setInputSearch] = useState();
+  const [yearSelect, setYearSelect] = useState("2024");
   const dispatch = useDispatch();
 
   const [initialCheckboxState, setInitialCheckboxState] = useState(false);
@@ -105,6 +106,10 @@ export default function StealerUserPage() {
 
   const handleBookmarkAllCheckboxes = () => {
     dispatch(setMarkedAsBookmark(true));
+  };
+
+  const handleYearSelect = (value) => {
+    setYearSelect(value);
   };
 
   const handleGatheringIds = (e, id, status) => {
@@ -314,13 +319,16 @@ export default function StealerUserPage() {
 
   const getBreachesDataStealer = async () => {
     try {
-      const res = await fetch(`${APIDATAV1}breaches/stealer?year=2024`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-        },
-      });
+      const res = await fetch(
+        `${APIDATAV1}breaches/stealer?year=${yearSelect}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
 
       if (res.status === 401 || res.status === 403) {
         DeleteCookies();
@@ -525,8 +533,12 @@ export default function StealerUserPage() {
   useEffect(() => {
     getListDomainUsers();
     getBreachesData();
-    getBreachesDataStealer();
+    // getBreachesDataStealer();
   }, []);
+
+  useEffect(() => {
+    getBreachesDataStealer();
+  }, [yearSelect]);
 
   useEffect(() => {
     setInitialCheckboxState(false);
@@ -588,7 +600,7 @@ export default function StealerUserPage() {
       <section className="mt-8">
         <h1 className="text-heading-4 text-black ">Total Stealer</h1>
         <div className="p-8 bg-white border-input-border border-2 mt-4 rounded-[16px]">
-          {/* <ConfigProvider
+          <ConfigProvider
             theme={{
               token: {
                 colorBgContainer: "#F7F7F7",
@@ -605,17 +617,17 @@ export default function StealerUserPage() {
             }}
           >
             <Select
-              defaultValue="all"
+              defaultValue="2024"
               style={{ width: 91 }}
-              // onChange={handleChange}
+              onChange={handleYearSelect}
+              value={yearSelect}
               options={[
-                { value: "all", label: "All time" },
-
-                { value: "malware", label: "Malware" },
+                { value: "2024", label: "2024" },
+                { value: "2023", label: "2023" },
               ]}
             />
 
-            <Select
+            {/* <Select
               defaultValue="all"
               style={{ width: 200 }}
               // onChange={handleChange}
@@ -625,8 +637,8 @@ export default function StealerUserPage() {
                 { value: "employee", label: "Emlpoyee" },
               ]}
               className="ml-8"
-            />
-          </ConfigProvider> */}
+            /> */}
+          </ConfigProvider>
           <div className="border-2 border-input-border rounded-[16px] mt-4 p-8 flex justify-center items-center w-full relative">
             <ChartBarVerticalStealer stealerData={stealersdata} />
           </div>
