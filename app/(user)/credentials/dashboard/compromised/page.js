@@ -85,6 +85,13 @@ import {
 } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
 // import ReactApexChart from "react-apexcharts";
 // import ApexCharts from "apexcharts";
+import dynamic from "next/dynamic";
+
+// const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
+//   ssr: false, // Ensure ApexCharts is not imported during SSR
+// });
+
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const { RangePicker } = DatePicker;
 
@@ -2095,8 +2102,8 @@ export default function CompromisedDashboard() {
             </ChangeUrlButton>
           </div>
         </div>
-        <div className="mt-8 flex justify-between">
-          <OverviewCard
+        <div className="mt-8">
+          {/* <OverviewCard
             descriptions={"Corporate credentials found"}
             image={"/images/sector_image_magnifier.svg"}
             total={breachesAll && breachesAll}
@@ -2110,13 +2117,14 @@ export default function CompromisedDashboard() {
             descriptions={"User compromised"}
             image={"/images/sector_image_user-like.svg"}
             total={usersBreaches && usersBreaches}
-          />
-          {/* <ReactApexChart
+          /> */}
+          <Chart
             options={options}
             series={series}
             type="area"
             height={350}
-          /> */}
+            width={"100%"}
+          />
         </div>
       </div>
       <section className="mt-10">
