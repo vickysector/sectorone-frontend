@@ -109,7 +109,7 @@ export default function ChartBarVertical(props) {
   };
 
   return (
-    <>
+    <div className="w-full text-center">
       <div className="absolute top-[32px] left-[32px] flex items-center">
         {" "}
         <span className="w-[16px] h-[16px] bg-orange-chart block rounded-[50%]"></span>{" "}
@@ -121,10 +121,16 @@ export default function ChartBarVertical(props) {
         <p className="ml-3 text-LG-normal text-black">Users</p>{" "}
       </div>
       <Bar
-        options={{ ...options, scales: { y: { min: minValue } } }}
+        options={{
+          ...options,
+          scales: { y: { min: minValue } },
+          maintainAspectRatio: true,
+        }}
         data={data}
         className="mt-12"
+        width={"500px"}
+        height={"200px"}
       />
-    </>
+    </div>
   );
 }

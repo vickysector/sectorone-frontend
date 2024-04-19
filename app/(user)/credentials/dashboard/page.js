@@ -432,7 +432,7 @@ export default function UserDashboardPage() {
               className="ml-8"
             />
           </ConfigProvider>
-          <div className="border-2 border-input-border rounded-[16px] mt-4 p-8 flex justify-center items-center w-full relative">
+          <div className="border-2 border-input-border rounded-[16px] mt-4 p-12 flex justify-center items-center w-full relative">
             <ChartBarVertical
               employeeData={employeeData}
               usersData={usersData}
