@@ -2067,10 +2067,10 @@ export default function CompromisedDashboard() {
       <h1 className="text-heading-2 text-black mb-4">Compromised</h1>
       <div className="bg-white  p-12 rounded-xl">
         <div className="flex items-center">
-          <div className="h-[80px] w-[80px] bg-input-container ">
+          <div className="h-[60px] w-[60px] bg-input-container ">
             <Image
-              width={80}
-              height={80}
+              width={60}
+              height={60}
               src={iconBreaches && iconBreaches}
               alt="Icon Logo Users"
               // style={{
@@ -2082,8 +2082,8 @@ export default function CompromisedDashboard() {
           </div>
           <div className="ml-4">
             <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
-            <h2 className="text-LG-strong text-text-description mt-2">
-              {lastUpdate && lastUpdate}
+            <h2 className="text-LG-normal text-text-description mt-2">
+              Last update: {lastUpdate && lastUpdate}
             </h2>
           </div>
           <div className="flex flex-grow justify-end items-center">

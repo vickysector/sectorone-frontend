@@ -339,8 +339,8 @@ export default function UserDashboardPage() {
             </div>
             <div className="ml-4">
               <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
-              <h2 className="text-LG-strong text-text-description mt-2">
-                {lastUpdate && lastUpdate}
+              <h2 className="text-LG-normal text-text-description mt-2">
+                Last update: {lastUpdate && lastUpdate}
               </h2>
             </div>
             <div className="flex flex-grow justify-end items-center">
