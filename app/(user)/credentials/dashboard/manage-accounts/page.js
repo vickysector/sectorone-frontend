@@ -22,7 +22,7 @@ export default function SettingsUserPage() {
   return (
     <main>
       <section>
-        <h1 className="text-black text-heading-2">Manage account</h1>
+        <h1 className="text-black text-heading-2">Settings</h1>
         <section className="bg-white rounded-lg p-8 mt-8">
           <section>
             <h1 className="text-heading-4 text-black">Documentation</h1>
