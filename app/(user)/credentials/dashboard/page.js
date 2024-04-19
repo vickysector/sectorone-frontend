@@ -324,10 +324,10 @@ export default function UserDashboardPage() {
         <h1 className="text-heading-2 text-black mb-4">Overview</h1>
         <div className="bg-white  p-12 rounded-xl">
           <div className="flex items-center">
-            <div className="h-[80px] w-[80px] bg-input-container ">
+            <div className="h-[60px] w-[60px] bg-input-container ">
               <Image
-                width={80}
-                height={80}
+                width={60}
+                height={60}
                 src={iconBreaches && iconBreaches}
                 alt="Icon Logo Users"
                 // style={{
