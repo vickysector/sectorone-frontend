@@ -166,9 +166,9 @@ export default function NewPasswordPage() {
             />
 
             <h1 className="text-heading-2 text-black mb-4">Create password</h1>
-            <p className="text-text-description text-LG-normal mb-8">
+            {/* <p className="text-text-description text-LG-normal mb-8">
               Your new password must be different from previous used passwords.
-            </p>
+            </p> */}
             <div className="bg-input-container relative w-full text-left">
               <Password
                 showPassword={showPassword}
