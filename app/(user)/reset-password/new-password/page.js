@@ -92,7 +92,8 @@ export default function NewPasswordPage() {
     // setAgreements(!retypePassword);
   };
 
-  const canSave = password && retypePassword && !passwordMatchError;
+  const canSave =
+    password && retypePassword && !passwordMatchError && passwordRequirement;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
