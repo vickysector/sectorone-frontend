@@ -47,6 +47,7 @@ import {
 import LoadingStateCard from "@/app/_ui/components/utils/LoadingStateCard";
 import { setConfirmExportToCsv } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
 import { setConfirmExportToCsvCompromise } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
+import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -54,7 +55,7 @@ export default function DashboardLayout({ children }) {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [errorLogout, setErrorLogout] = useState(false);
   const [usersData, setUsersData] = useState();
-  const [sessionExpired, setSessionExpired] = useState();
+  // const [sessionExpired, setSessionExpired] = useState();
   const [isUrlListSelected, setIsUrlListSelected] = useState(false);
   const [idDomainUrl, setIdDomainUrl] = useState();
   const [searchTerm, setSearchTerm] = useState("");
@@ -80,6 +81,10 @@ export default function DashboardLayout({ children }) {
   );
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
+  );
+
+  const sessionExpiredRefreshToken = useSelector(
+    (state) => state.refreshTokenExpired.status
   );
 
   const bookmarkCompromisedState = useSelector(
@@ -240,7 +245,8 @@ export default function DashboardLayout({ children }) {
   };
 
   const handleMultipleBookmarkCheckbox = () => {
-    CheckboxMultipleBookmark();
+    // CheckboxMultipleBookmark();
+    fetchCheckboxMultipleBookmarkWithRefreshToken();
     dispatch(clearIds());
     dispatch(setMarkedAsBookmark(false));
   };
@@ -265,8 +271,9 @@ export default function DashboardLayout({ children }) {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -278,15 +285,21 @@ export default function DashboardLayout({ children }) {
       dispatch(setSuccessMultipleBookmark(true));
       dispatch(setBannerMultipleBookmark(true));
       dispatch(clearIds());
+      return res;
     } catch (error) {
       dispatch(setBannerMultipleBookmark(false));
       dispatch(clearIds());
+      return res;
     } finally {
       dispatch(clearIds());
       setTimeout(() => {
         dispatch(setBannerMultipleBookmark(null));
       }, 9000);
     }
+  };
+
+  const fetchCheckboxMultipleBookmarkWithRefreshToken = async () => {
+    await fetchWithRefreshToken(CheckboxMultipleBookmark, router, dispatch);
   };
 
   // End of: Handle Checkboxes Bookmark in Compromised pages
@@ -302,7 +315,8 @@ export default function DashboardLayout({ children }) {
   };
 
   const handleMultipleValidatedCheckbox = () => {
-    CheckboxMultipleValidated();
+    // CheckboxMultipleValidated();
+    fetchCheckboxMultipleValidatedWithRefreshToken();
     dispatch(clearIds());
     dispatch(setMarkedAsValidated(false));
   };
@@ -327,8 +341,9 @@ export default function DashboardLayout({ children }) {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -340,15 +355,21 @@ export default function DashboardLayout({ children }) {
       dispatch(setSuccessMultipleValidated(true));
       dispatch(setBannerMultipleValidated(true));
       dispatch(clearIds());
+      return res;
     } catch (error) {
       dispatch(setBannerMultipleValidated(false));
       dispatch(clearIds());
+      return res;
     } finally {
       dispatch(clearIds());
       setTimeout(() => {
         dispatch(setBannerMultipleValidated(null));
       }, 9000);
     }
+  };
+
+  const fetchCheckboxMultipleValidatedWithRefreshToken = async () => {
+    await fetchWithRefreshToken(CheckboxMultipleValidated, router, dispatch);
   };
 
   // End of: Handle Checkboxes Validated in Compromised pages
@@ -369,21 +390,24 @@ export default function DashboardLayout({ children }) {
   };
 
   const handleUrlListYes = () => {
-    UpdateDomain();
+    // UpdateDomain();
+    fetchUpdateDomainWithRefreshToken();
 
     // Check if the `window` object is defined (browser environment)
-    if (typeof window !== "undefined") {
-      window.location.reload();
-    }
+    // if (typeof window !== "undefined") {
+    // window.location.reload();
+    // }
   };
 
   const handleBookmarkCompromiseData = () => {
-    BookmarkCompromisedData();
+    // BookmarkCompromisedData();
+    fetchBookmarkCompromisedDataWithRefreshToken();
     dispatch(setBookmarkConfirmState(false));
   };
 
   const handleUnBookmarkCompromiseData = () => {
-    UnBookmarkCompromisedData();
+    // UnBookmarkCompromisedData();
+    fetchUnBookmarkCompromisedDataWithRefreshToken();
     dispatch(setUnBookmarkConfirmState(false));
   };
 
@@ -419,8 +443,9 @@ export default function DashboardLayout({ children }) {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -431,14 +456,20 @@ export default function DashboardLayout({ children }) {
 
       dispatch(setBookmarkStatusData(true));
       dispatch(setBookmarkBannerSuccess(true));
+      return res;
     } catch (error) {
       dispatch(setBookmarkStatusData(false));
       dispatch(setBookmarkBannerSuccess(false));
+      return res;
     } finally {
       setTimeout(() => {
         dispatch(setBookmarkBannerSuccess(null));
       }, 9000);
     }
+  };
+
+  const fetchBookmarkCompromisedDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(BookmarkCompromisedData, router, dispatch);
   };
 
   const UnBookmarkCompromisedData = async () => {
@@ -460,8 +491,9 @@ export default function DashboardLayout({ children }) {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -472,14 +504,20 @@ export default function DashboardLayout({ children }) {
 
       dispatch(setUnBookmarkStatusData(true));
       dispatch(setUnBookmarkBannerSuccess(true));
+      return res;
     } catch (error) {
       dispatch(setUnBookmarkStatusData(false));
       dispatch(setUnBookmarkBannerSuccess(false));
+      return res;
     } finally {
       setTimeout(() => {
         dispatch(setUnBookmarkBannerSuccess(null));
       }, 9000);
     }
+  };
+
+  const fetchUnBookmarkCompromisedDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(UnBookmarkCompromisedData, router, dispatch);
   };
 
   const UpdateDomain = async () => {
@@ -496,21 +534,35 @@ export default function DashboardLayout({ children }) {
         }),
       });
 
+      // console.log("res update domain: ", res);
+
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        // console.log("res 401 | 403", res);
+        return res;
       }
 
       const data = await res.json();
 
-      if (data.data.Severity === "ERROR") {
-        DeleteCookies();
-        RedirectToLogin();
-      }
+      // console.log("data update domain: ", data);
+
+      // if (data.data.Severity === "ERROR") {
+      //   // DeleteCookies();
+      //   // RedirectToLogin();
+      //   // return res;
+      // }
       // setReloadChange(true);
+      // console.log("res most bottom: ", res);
+      return res;
     } catch (error) {
     } finally {
+      window.location.reload();
     }
+  };
+
+  const fetchUpdateDomainWithRefreshToken = async () => {
+    await fetchWithRefreshToken(UpdateDomain, router, dispatch);
   };
 
   // End of: Update Domain
@@ -533,6 +585,7 @@ export default function DashboardLayout({ children }) {
       });
 
       if (res.status === 401 || res.status === 403) {
+        return res;
         throw new Error("");
       }
 
@@ -552,6 +605,10 @@ export default function DashboardLayout({ children }) {
     }
   };
 
+  const fetchLogoutFunctionWithRefreshToken = async () => {
+    await fetchWithRefreshToken(Logout, router, dispatch);
+  };
+
   // End of: Handle Logout
 
   // Start of: Handle Get Users and Get ID Users.
@@ -567,16 +624,22 @@ export default function DashboardLayout({ children }) {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setUsersData(data.data.email);
+      return res;
     } catch (error) {
     } finally {
     }
+  };
+
+  const fetchGetUsersDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getUsersData, router, dispatch);
   };
 
   const getUserDomain = async () => {
@@ -590,21 +653,29 @@ export default function DashboardLayout({ children }) {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setCookie("user_identifier", data.data.id_domain);
+      return res;
     } catch (error) {
     } finally {
     }
   };
 
+  const fetchGetUserDomainWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getUserDomain, router, dispatch);
+  };
+
   useEffect(() => {
-    getUsersData();
-    getUserDomain();
+    // getUsersData();
+    // getUserDomain();
+    fetchGetUsersDataWithRefreshToken();
+    fetchGetUserDomainWithRefreshToken();
   }, []);
 
   // End of: Handle Get Users and Get ID Users.
@@ -1110,7 +1181,7 @@ export default function DashboardLayout({ children }) {
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center",
-          sessionExpired ? "visible" : "hidden"
+          sessionExpiredRefreshToken ? "visible" : "hidden"
         )}
       >
         <div className="bg-white p-[32px] rounded-lg w-[30%]">
@@ -1167,7 +1238,10 @@ export default function DashboardLayout({ children }) {
           >
             <p className="text-heading-4"> {usersData && usersData} </p>
             <div className="w-full h-[1px] bg-input-border my-[24px]"></div>
-            <div className="flex items-center cursor-pointer" onClick={Logout}>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={fetchLogoutFunctionWithRefreshToken}
+            >
               <div>
                 <Image
                   src={"/images/image_logout.svg"}
