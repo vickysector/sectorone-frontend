@@ -703,7 +703,10 @@ export default function UserDashboardPage() {
           </h1>
           <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
             {antivirusTopCompromised ? (
-              <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
+              <div
+                className="border-l-2 border-b-2 border-input-border w-full h-auto p-5"
+                key={"antivirus"}
+              >
                 {antivirusTopCompromised.map((data, index) => (
                   <div className="mb-4" key={data.id}>
                     <ChartBarHorizontal
@@ -727,7 +730,10 @@ export default function UserDashboardPage() {
           </h1>
           <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
             {malwareTopCompromised ? (
-              <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
+              <div
+                className="border-l-2 border-b-2 border-input-border w-full h-auto p-5"
+                key={"malware"}
+              >
                 {malwareTopCompromised.map((data, index) => (
                   <div className="mb-4" key={data.id}>
                     <ChartBarHorizontal

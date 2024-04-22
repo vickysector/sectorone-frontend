@@ -235,8 +235,6 @@ export default function DashboardLayout({ children }) {
   );
   const multipleBookmarkStatus = useSelector((state) => state.checkbox.status);
 
-  console.log("all data id checkbox from compromised: ", allCheckboxesIdData);
-
   const handleCloseConfirmCheckboxIdsData = () => {
     dispatch(setMarkedAsBookmark(false));
   };

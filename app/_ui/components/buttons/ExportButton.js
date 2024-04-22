@@ -3,7 +3,6 @@ import { DownloadOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 
 export default function ExportButton({ onClick, disabled }) {
-  console.log("stealer: ", disabled);
   return (
     <button
       className={clsx(
