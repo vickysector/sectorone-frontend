@@ -613,45 +613,46 @@ export default function DashboardLayout({ children }) {
 
   // Start of: Refresh Token
 
-  const getRefreshToken = async () => {
-    try {
-      const res = await fetch(`${APIKEY}refresh-token`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Authorization: "app_secret!!!",
-        },
-      });
+  // const getRefreshToken = async () => {
+  //   try {
+  //     const res = await fetch(`${APIKEY}refresh-token`, {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: {
+  //         Authorization: "app_secret!!!",
+  //       },
+  //     });
 
-      console.log("refresh token res: ", res);
+  //     console.log("refresh token res: ", res);
 
-      if (res.status === 401 || res.status === 403 || res.status === 400) {
-        setSessionExpired(true);
-        setTimeout(() => {
-          setSessionExpired(false);
-          DeleteCookies();
-          router.push("/auth/login");
-        }, 7000);
-      }
+  //     if (res.status === 401 || res.status === 403 || res.status === 400) {
+  //       setSessionExpired(true);
+  //       setTimeout(() => {
+  //         setSessionExpired(false);
+  //         DeleteCookies();
+  //         router.push("/auth/login");
+  //       }, 7000);
+  //     }
 
-      const data = await res.json();
+  //     const data = await res.json();
 
-      deleteCookie("access_token");
-      setCookie("access_token", data.data.access_token);
+  //     deleteCookie("access_token");
+  //     setCookie("access_token", data.data.access_token);
 
-      console.log("refresh token data: ", data);
-    } catch (error) {
-    } finally {
-    }
-  };
+  //     console.log("refresh token data: ", data);
+  //   } catch (error) {
+  //   } finally {
+  //   }
+  // };
 
-  useEffect(() => {
-    const IntervalId = setInterval(() => {
-      getRefreshToken();
-    }, 15 * 60 * 1000);
+  // Commented because the mechanism is change to every request
+  // useEffect(() => {
+  //   const IntervalId = setInterval(() => {
+  //     getRefreshToken();
+  //   }, 15 * 60 * 1000);
 
-    return () => clearInterval(IntervalId);
-  }, []);
+  //   return () => clearInterval(IntervalId);
+  // }, []);
 
   // End of: Refresh Token
 

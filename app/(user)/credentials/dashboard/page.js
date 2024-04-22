@@ -49,6 +49,8 @@ import {
   setLoadingTopCompromiseUrl,
   setLoadingTopCompromiseUser,
 } from "@/app/_lib/store/features/Home/LoadingOverviewSlices";
+import { getRefreshToken } from "@/app/_lib/token/getRefreshToken";
+// import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(
@@ -123,10 +125,10 @@ export default function UserDashboardPage() {
         }
       );
 
-      if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
-      }
+      // if (res.status === 401 || res.status === 403) {
+      //   DeleteCookies();
+      //   RedirectToLogin();
+      // }
 
       const data = await res.json();
 
@@ -144,16 +146,59 @@ export default function UserDashboardPage() {
       dispatch(setLastUpdateUsers(data.data.last_update));
       setUsersData(data.data.user);
       setEmployeeData(data.data.employee);
+
+      return data.success;
     } catch (error) {
     } finally {
       dispatch(setLoadingBreachesOverview(false));
     }
   };
 
+  // const fetchDataBreachesWithRefreshToken = async () => {
+  //   console.log("running get data bracheswith refresh token");
+  //   await fetchWithRefreshToken(getBreachesData);
+  // };
+
+  const fetchBreachesDataWithRefreshToken = async () => {
+    try {
+      let success = getBreachesData();
+      if (!success) {
+        throw new Error("");
+      }
+    } catch (error) {
+      if (error.status === 401 || error.status === 403) {
+        try {
+          let success = getRefreshToken();
+
+          if (!success) {
+            throw new Error("");
+          }
+
+          getBreachesData();
+        } catch (refreshError) {
+          console.error("Refresh token failed:", refreshError);
+          // Handle refresh token failure (e.g., logout, redirect to login)
+          DeleteCookies();
+          console.log("cookie deleted because refresh token is failed");
+        }
+      } else {
+        console.error("Error fetching breaches data:", error);
+        // Handle other errors
+        DeleteCookies();
+        RedirectToLogin();
+      }
+    }
+  };
+
   useEffect(() => {
-    getBreachesData();
+    // getBreachesData();
+    fetchBreachesDataWithRefreshToken();
     // getRefreshToken();
   }, [yearSelect]);
+
+  useEffect(() => {
+    getRefreshToken();
+  }, []);
 
   // Start of: Change URL - Get Domain USERS
 
@@ -169,23 +214,61 @@ export default function UserDashboardPage() {
         },
       });
 
-      if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
-      }
+      // if (res.status === 401 || res.status === 403) {
+      //   DeleteCookies();
+      //   RedirectToLogin();
+      // }
 
       const data = await res.json();
 
       // setDomainUsers(data.data);
       dispatch(setUrlData(data.data));
+
+      return data.success;
     } catch (error) {
     } finally {
       dispatch(setLoadingListDomainUsers(false));
     }
   };
 
+  // const fetchListDomainUsersWithRefreshToken = async () => {
+  //   await fetchWithRefreshToken(getListDomainUsers);
+  // };
+
+  const fetchListDomainWithRefreshToken = async () => {
+    try {
+      let success = getListDomainUsers();
+      if (!success) {
+        throw new Error("");
+      }
+    } catch (error) {
+      if (error.status === 401 || error.status === 403) {
+        try {
+          let success = getRefreshToken();
+
+          if (!success) {
+            throw new Error("");
+          }
+
+          getListDomainUsers();
+        } catch (refreshError) {
+          console.error("Refresh token failed:", refreshError);
+          // Handle refresh token failure (e.g., logout, redirect to login)
+          DeleteCookies();
+          console.log("cookie deleted because refresh token is failed");
+        }
+      } else {
+        console.error("Error fetching breaches data:", error);
+        // Handle other errors
+        DeleteCookies();
+        RedirectToLogin();
+      }
+    }
+  };
+
   useEffect(() => {
-    getListDomainUsers();
+    // getListDomainUsers();
+    fetchListDomainWithRefreshToken();
   }, []);
 
   // End of: Change URL - Get Domain USERS
@@ -204,17 +287,54 @@ export default function UserDashboardPage() {
         },
       });
 
-      if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
-      }
+      // if (res.status === 401 || res.status === 403) {
+      //   DeleteCookies();
+      //   RedirectToLogin();
+      // }
 
       const data = await res.json();
 
       setUserTopCompromised(data.data.top_user);
+
+      return data.success;
     } catch (error) {
     } finally {
       dispatch(setLoadingTopCompromiseUser(false));
+    }
+  };
+
+  // const fetchTopCompromiseUserWithRefreshToken = async () => {
+  //   await fetchWithRefreshToken(getTopCompromisedUser);
+  // };
+
+  const fetchCompromisedUserWithRefreshToken = async () => {
+    try {
+      let success = getTopCompromisedUser();
+      if (!success) {
+        throw new Error("");
+      }
+    } catch (error) {
+      if (error.status === 401 || error.status === 403) {
+        try {
+          let success = getRefreshToken();
+
+          if (!success) {
+            throw new Error("");
+          }
+
+          getTopCompromisedUser();
+        } catch (refreshError) {
+          console.error("Refresh token failed:", refreshError);
+          // Handle refresh token failure (e.g., logout, redirect to login)
+          DeleteCookies();
+          console.log("cookie deleted because refresh token is failed");
+        }
+      } else {
+        console.error("Error fetching breaches data:", error);
+        // Handle other errors
+        DeleteCookies();
+        RedirectToLogin();
+      }
     }
   };
 
@@ -230,23 +350,62 @@ export default function UserDashboardPage() {
         },
       });
 
-      if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
-      }
+      // if (res.status === 401 || res.status === 403) {
+      //   DeleteCookies();
+      //   RedirectToLogin();
+      // }
 
       const data = await res.json();
 
       setUrlTopCompromised(data.data.top_url);
+
+      return data.success;
     } catch (error) {
     } finally {
       dispatch(setLoadingTopCompromiseUrl(false));
     }
   };
 
+  const fetchCompromisedUrlWithRefreshToken = async () => {
+    try {
+      let success = getTopCompromisedUrl();
+      if (!success) {
+        throw new Error("");
+      }
+    } catch (error) {
+      if (error.status === 401 || error.status === 403) {
+        try {
+          let success = getRefreshToken();
+
+          if (!success) {
+            throw new Error("");
+          }
+
+          getTopCompromisedUrl();
+        } catch (refreshError) {
+          console.error("Refresh token failed:", refreshError);
+          // Handle refresh token failure (e.g., logout, redirect to login)
+          DeleteCookies();
+          console.log("cookie deleted because refresh token is failed");
+        }
+      } else {
+        console.error("Error fetching breaches data:", error);
+        // Handle other errors
+        DeleteCookies();
+        RedirectToLogin();
+      }
+    }
+  };
+
+  // const fetchTopCompromiseUrlWithRefreshToken = async () => {
+  //   await fetchWithRefreshToken(getTopCompromisedUrl);
+  // };
+
   useEffect(() => {
-    getTopCompromisedUser();
-    getTopCompromisedUrl();
+    // getTopCompromisedUser();
+    // getTopCompromisedUrl();
+    fetchCompromisedUserWithRefreshToken();
+    fetchCompromisedUrlWithRefreshToken();
   }, []);
 
   //  End of: Get data Top Compromised
@@ -265,19 +424,56 @@ export default function UserDashboardPage() {
         },
       });
 
-      if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
-      }
+      // if (res.status === 401 || res.status === 403) {
+      //   DeleteCookies();
+      //   RedirectToLogin();
+      // }
 
       const data = await res.json();
 
       setAntivirusTopCompromised(data.data.top_url);
+
+      return data.success;
     } catch (error) {
     } finally {
       dispatch(setLoadingTopCompromiseAntivirus(false));
     }
   };
+
+  const fetchCompromisedAntivirusWithRefreshToken = async () => {
+    try {
+      let success = getTopComrpomisedAntivirus();
+      if (!success) {
+        throw new Error("");
+      }
+    } catch (error) {
+      if (error.status === 401 || error.status === 403) {
+        try {
+          let success = getRefreshToken();
+
+          if (!success) {
+            throw new Error("");
+          }
+
+          getTopComrpomisedAntivirus();
+        } catch (refreshError) {
+          console.error("Refresh token failed:", refreshError);
+          // Handle refresh token failure (e.g., logout, redirect to login)
+          DeleteCookies();
+          console.log("cookie deleted because refresh token is failed");
+        }
+      } else {
+        console.error("Error fetching breaches data:", error);
+        // Handle other errors
+        DeleteCookies();
+        RedirectToLogin();
+      }
+    }
+  };
+
+  // const fetchTopCompromiseAntivirusWithRefreshToken = async () => {
+  //   await fetchWithRefreshToken(getTopComrpomisedAntivirus);
+  // };
 
   const getTopComrpomisedMalware = async () => {
     try {
@@ -291,23 +487,61 @@ export default function UserDashboardPage() {
         },
       });
 
-      if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
-      }
+      // if (res.status === 401 || res.status === 403) {
+      //   DeleteCookies();
+      //   RedirectToLogin();
+      // }
 
       const data = await res.json();
 
       setMalwareTopCompromised(data.data.top_malware);
+      return data.success;
     } catch (error) {
     } finally {
       dispatch(setLoadingTopCompromiseMalware(false));
     }
   };
 
+  const fetchCompromisedMalwareWithRefreshToken = async () => {
+    try {
+      let success = getTopComrpomisedMalware();
+      if (!success) {
+        throw new Error("");
+      }
+    } catch (error) {
+      if (error.status === 401 || error.status === 403) {
+        try {
+          let success = getRefreshToken();
+
+          if (!success) {
+            throw new Error("");
+          }
+
+          getTopComrpomisedMalware();
+        } catch (refreshError) {
+          console.error("Refresh token failed:", refreshError);
+          // Handle refresh token failure (e.g., logout, redirect to login)
+          DeleteCookies();
+          console.log("cookie deleted because refresh token is failed");
+        }
+      } else {
+        console.error("Error fetching breaches data:", error);
+        // Handle other errors
+        DeleteCookies();
+        RedirectToLogin();
+      }
+    }
+  };
+
+  // const fetchTopCompromiseMalwawreWithRefreshToken = async () => {
+  //   await fetchWithRefreshToken(getTopComrpomisedMalware);
+  // };
+
   useEffect(() => {
-    getTopComrpomisedAntivirus();
-    getTopComrpomisedMalware();
+    // getTopComrpomisedAntivirus();
+    // getTopComrpomisedMalware();
+    fetchCompromisedMalwareWithRefreshToken();
+    fetchCompromisedAntivirusWithRefreshToken();
   }, []);
 
   // End of: Get data Top Antivirus and Malware
