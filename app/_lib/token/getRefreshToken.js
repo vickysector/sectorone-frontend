@@ -13,14 +13,15 @@ export const getRefreshToken = async () => {
 
     // console.log("refresh token res: ", res);
 
-    // if (res.status === 401 || res.status === 403 || res.status === 400) {
-    //   setSessionExpired(true);
-    //   setTimeout(() => {
-    //     setSessionExpired(false);
-    //     DeleteCookies();
-    //     router.push("/auth/login");
-    //   }, 7000);
-    // }
+    if (res.status === 401 || res.status === 403 || res.status === 400) {
+      //   setSessionExpired(true);
+      //   setTimeout(() => {
+      //     setSessionExpired(false);
+      //     DeleteCookies();
+      //     router.push("/auth/login");
+      //   }, 7000);
+      return res;
+    }
 
     const data = await res.json();
 
@@ -29,7 +30,7 @@ export const getRefreshToken = async () => {
 
     console.log("refresh token data: ", data);
 
-    return data.success;
+    return res;
   } catch (error) {
   } finally {
   }
