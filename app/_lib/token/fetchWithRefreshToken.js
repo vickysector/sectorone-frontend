@@ -1,7 +1,13 @@
 import { DeleteCookies } from "../helpers/DeleteCookies";
+import { setStatusRefreshTokenExpired } from "../store/features/RefreshToken/RefreshTokenSlice";
 import { getRefreshToken } from "./getRefreshToken";
 
-export const fetchWithRefreshToken = async (fetchFunction, router, ...args) => {
+export const fetchWithRefreshToken = async (
+  fetchFunction,
+  router,
+  dispatch,
+  ...args
+) => {
   try {
     // await fetchFunction(...args);
     let success = await fetchFunction(...args);
@@ -30,12 +36,18 @@ export const fetchWithRefreshToken = async (fetchFunction, router, ...args) => {
         // Handle refresh token failure (e.g., logout, redirect to login)
         DeleteCookies();
         console.log("cookie deleted because refresh token is failed");
+        dispatch(setStatusRefreshTokenExpired(true));
+        setTimeout(() => {
+          dispatch(setStatusRefreshTokenExpired(false));
+          router.push("/auth/login");
+        }, 8000);
       }
     } else {
       console.error("Error fetching data:", error);
 
       DeleteCookies();
       // Handle other errors
+      router.push("/auth/login");
     }
   }
 };

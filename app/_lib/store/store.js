@@ -12,6 +12,7 @@ import LoadingStelaerSlices from "./features/Stealer/LoadingStelaerSlices";
 import LoadingOverviewSlices from "./features/Home/LoadingOverviewSlices";
 import ExportToCsvSlice from "./features/Export/ExportToCsvSlice";
 import ExportToCsvCompromiseSlice from "./features/Export/ExportToCsvCompromiseSlice";
+import RefreshTokenSlice from "./features/RefreshToken/RefreshTokenSlice";
 
 export const store = configureStore({
   reducer: {
@@ -28,5 +29,6 @@ export const store = configureStore({
     overviewLoading: LoadingOverviewSlices,
     exportToCsv: ExportToCsvSlice,
     exportToCsvCompromise: ExportToCsvCompromiseSlice,
+    refreshTokenExpired: RefreshTokenSlice,
   },
 });

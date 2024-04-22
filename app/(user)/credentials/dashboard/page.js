@@ -158,7 +158,7 @@ export default function UserDashboardPage() {
 
   const fetchDataBreachesWithRefreshToken = async () => {
     console.log("running get data bracheswith refresh token");
-    await fetchWithRefreshToken(getBreachesData);
+    await fetchWithRefreshToken(getBreachesData, router, dispatch);
   };
 
   // const fetchBreachesDataWithRefreshToken = async () => {
@@ -237,39 +237,8 @@ export default function UserDashboardPage() {
   };
 
   const fetchListDomainUsersWithRefreshToken = async () => {
-    await fetchWithRefreshToken(getListDomainUsers);
+    await fetchWithRefreshToken(getListDomainUsers, router, dispatch);
   };
-
-  // const fetchListDomainWithRefreshToken = async () => {
-  //   try {
-  //     let success = await getListDomainUsers();
-  //     if (!success) {
-  //       throw new Error("");
-  //     }
-  //   } catch (error) {
-  //     if (error.status === 401 || error.status === 403) {
-  //       try {
-  //         let success = await getRefreshToken();
-
-  //         if (!success) {
-  //           throw new Error("");
-  //         }
-
-  //         await getListDomainUsers();
-  //       } catch (refreshError) {
-  //         console.error("Refresh token failed:", refreshError);
-  //         // Handle refresh token failure (e.g., logout, redirect to login)
-  //         DeleteCookies();
-  //         console.log("cookie deleted because refresh token is failed");
-  //       }
-  //     } else {
-  //       console.error("Error fetching breaches data:", error);
-  //       // Handle other errors
-  //       DeleteCookies();
-  //       // RedirectToLogin();
-  //     }
-  //   }
-  // };
 
   useEffect(() => {
     // getListDomainUsers();
@@ -312,39 +281,8 @@ export default function UserDashboardPage() {
   };
 
   const fetchTopCompromiseUserWithRefreshToken = async () => {
-    await fetchWithRefreshToken(getTopCompromisedUser);
+    await fetchWithRefreshToken(getTopCompromisedUser, router, dispatch);
   };
-
-  // const fetchCompromisedUserWithRefreshToken = async () => {
-  //   try {
-  //     let success = await getTopCompromisedUser();
-  //     if (!success) {
-  //       throw new Error("");
-  //     }
-  //   } catch (error) {
-  //     if (error.status === 401 || error.status === 403) {
-  //       try {
-  //         let success = await getRefreshToken();
-
-  //         if (!success) {
-  //           throw new Error("");
-  //         }
-
-  //         await getTopCompromisedUser();
-  //       } catch (refreshError) {
-  //         console.error("Refresh token failed:", refreshError);
-  //         // Handle refresh token failure (e.g., logout, redirect to login)
-  //         DeleteCookies();
-  //         console.log("cookie deleted because refresh token is failed");
-  //       }
-  //     } else {
-  //       console.error("Error fetching breaches data:", error);
-  //       // Handle other errors
-  //       DeleteCookies();
-  //       // RedirectToLogin();
-  //     }
-  //   }
-  // };
 
   const getTopCompromisedUrl = async () => {
     try {
@@ -376,39 +314,8 @@ export default function UserDashboardPage() {
     }
   };
 
-  // const fetchCompromisedUrlWithRefreshToken = async () => {
-  //   try {
-  //     let success = await getTopCompromisedUrl();
-  //     if (!success) {
-  //       throw new Error("");
-  //     }
-  //   } catch (error) {
-  //     if (error.status === 401 || error.status === 403) {
-  //       try {
-  //         let success = await getRefreshToken();
-
-  //         if (!success) {
-  //           throw new Error("");
-  //         }
-
-  //         await getTopCompromisedUrl();
-  //       } catch (refreshError) {
-  //         console.error("Refresh token failed:", refreshError);
-  //         // Handle refresh token failure (e.g., logout, redirect to login)
-  //         DeleteCookies();
-  //         console.log("cookie deleted because refresh token is failed");
-  //       }
-  //     } else {
-  //       console.error("Error fetching breaches data:", error);
-  //       // Handle other errors
-  //       DeleteCookies();
-  //       // RedirectToLogin();
-  //     }
-  //   }
-  // };
-
   const fetchTopCompromiseUrlWithRefreshToken = async () => {
-    await fetchWithRefreshToken(getTopCompromisedUrl);
+    await fetchWithRefreshToken(getTopCompromisedUrl, router, dispatch);
   };
 
   useEffect(() => {
@@ -452,39 +359,8 @@ export default function UserDashboardPage() {
     }
   };
 
-  // const fetchCompromisedAntivirusWithRefreshToken = async () => {
-  //   try {
-  //     let success = await getTopComrpomisedAntivirus();
-  //     if (!success) {
-  //       throw new Error("");
-  //     }
-  //   } catch (error) {
-  //     if (error.status === 401 || error.status === 403) {
-  //       try {
-  //         let success = await getRefreshToken();
-
-  //         if (!success) {
-  //           throw new Error("");
-  //         }
-
-  //         await getTopComrpomisedAntivirus();
-  //       } catch (refreshError) {
-  //         console.error("Refresh token failed:", refreshError);
-  //         // Handle refresh token failure (e.g., logout, redirect to login)
-  //         DeleteCookies();
-  //         console.log("cookie deleted because refresh token is failed");
-  //       }
-  //     } else {
-  //       console.error("Error fetching breaches data:", error);
-  //       // Handle other errors
-  //       DeleteCookies();
-  //       // RedirectToLogin();
-  //     }
-  //   }
-  // };
-
   const fetchTopCompromiseAntivirusWithRefreshToken = async () => {
-    await fetchWithRefreshToken(getTopComrpomisedAntivirus);
+    await fetchWithRefreshToken(getTopComrpomisedAntivirus, router, dispatch);
   };
 
   const getTopComrpomisedMalware = async () => {
@@ -516,39 +392,8 @@ export default function UserDashboardPage() {
     }
   };
 
-  // const fetchCompromisedMalwareWithRefreshToken = async () => {
-  //   try {
-  //     let success = await getTopComrpomisedMalware();
-  //     if (!success) {
-  //       throw new Error("");
-  //     }
-  //   } catch (error) {
-  //     if (error.status === 401 || error.status === 403) {
-  //       try {
-  //         let success = await getRefreshToken();
-
-  //         if (!success) {
-  //           throw new Error("");
-  //         }
-
-  //         await getTopComrpomisedMalware();
-  //       } catch (refreshError) {
-  //         console.error("Refresh token failed:", refreshError);
-  //         // Handle refresh token failure (e.g., logout, redirect to login)
-  //         DeleteCookies();
-  //         console.log("cookie deleted because refresh token is failed");
-  //       }
-  //     } else {
-  //       console.error("Error fetching breaches data:", error);
-  //       // Handle other errors
-  //       DeleteCookies();
-  //       // RedirectToLogin();
-  //     }
-  //   }
-  // };
-
   const fetchTopCompromiseMalwawreWithRefreshToken = async () => {
-    await fetchWithRefreshToken(getTopComrpomisedMalware);
+    await fetchWithRefreshToken(getTopComrpomisedMalware, router, dispatch);
   };
 
   useEffect(() => {
