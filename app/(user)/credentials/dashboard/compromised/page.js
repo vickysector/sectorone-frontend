@@ -3059,7 +3059,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -3334,7 +3334,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -3608,7 +3608,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -3795,7 +3795,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4070,7 +4070,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4344,7 +4344,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4531,7 +4531,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4806,7 +4806,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -5080,7 +5080,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -5208,7 +5208,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -5360,7 +5360,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
