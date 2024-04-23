@@ -48,6 +48,7 @@ import LoadingStateCard from "@/app/_ui/components/utils/LoadingStateCard";
 import { setConfirmExportToCsv } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
 import { setConfirmExportToCsvCompromise } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import { setDocumentationSectorApiStatus } from "@/app/_lib/store/features/Accounts/DocumentationSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -136,6 +137,14 @@ export default function DashboardLayout({ children }) {
   const loadingTopCompromiseMalwareOverview = useSelector(
     (state) => state.overviewLoading.topCompromiseMalwareState.status
   );
+
+  const documentationSectorOneStatus = useSelector(
+    (state) => state.documentationSectorOne.documentationStatus
+  );
+
+  const handleDocumentationSectorOneStatus = () => {
+    dispatch(setDocumentationSectorApiStatus(false));
+  };
 
   // console.log(
   //   "loading top compromise malware: ",
@@ -753,6 +762,48 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
+          documentationSectorOneStatus ? "visible" : "hidden"
+        )}
+      >
+        <div
+          className={clsx("rounded-lg bg-white p-[28px] w-[28%] text-center ")}
+        >
+          <div className="m-auto mb-6">
+            <Image
+              alt={"icon"}
+              src={`/images/Icon_Documentation.svg`}
+              width={165}
+              height={136}
+              className="m-auto"
+            />
+          </div>
+          <h1 className="text-LG-strong mb-2">Integration with Sector API</h1>
+          <p className="mb-6 text-text-description  text-Base-normal">
+            Please contact us at{" "}
+            <span className="text-Base-strong text-black">
+              support@sector.co.id
+            </span>{" "}
+            to connect with Sector API.
+          </p>
+          <div className="flex justify-end">
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg mr-2"
+              onClick={handleDocumentationSectorOneStatus}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleDocumentationSectorOneStatus}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
