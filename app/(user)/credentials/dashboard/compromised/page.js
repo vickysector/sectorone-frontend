@@ -410,6 +410,42 @@ export default function CompromisedDashboard() {
 
   // End of: Handle detect export button when empty
 
+  // Start of: check if section is bookmark
+
+  const checkIsBookmarkSection = () => {
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "bookmark";
+        } else {
+          return "no-bookmark";
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "bookmark";
+        } else {
+          return "no-bookmark";
+        }
+      // // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "bookmark";
+        } else {
+          return "no-bookmark";
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "bookmark";
+        } else {
+          return "no-bookmark";
+        }
+      default:
+        break;
+    }
+  };
+
+  // End of : Check if section is Bookmark
+
   const handleCheckBookmarkOrUnbookmarkText = () => {
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
@@ -2705,10 +2741,14 @@ export default function CompromisedDashboard() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton
-                    onClick={handleExportToCSV}
-                    disabled={handleDisableExportButton()}
-                  />
+                  {checkIsBookmarkSection() === "no-bookmark" ? (
+                    <ExportButton
+                      onClick={handleExportToCSV}
+                      disabled={handleDisableExportButton()}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>

@@ -218,6 +218,17 @@ export default function StealerUserPage() {
     }
   };
 
+  const checkIsBookmarkSection = () => {
+    switch (selectSection) {
+      case "stealer":
+        return "stealer";
+      case "bookmark-stealer":
+        return "bookmark-stealer";
+      default:
+        break;
+    }
+  };
+
   const handleCheckBookmarkOrUnBookmarkText = () => {
     switch (selectSection) {
       case "stealer":
@@ -846,10 +857,14 @@ export default function StealerUserPage() {
                   </ConfigProvider>
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton
-                    onClick={handleExportToCV}
-                    disabled={handleDisabledButton()}
-                  />
+                  {checkIsBookmarkSection() === "stealer" ? (
+                    <ExportButton
+                      onClick={handleExportToCV}
+                      disabled={handleDisabledButton()}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
