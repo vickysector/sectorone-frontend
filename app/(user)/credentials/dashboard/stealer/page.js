@@ -789,18 +789,22 @@ export default function StealerUserPage() {
                   </div>
                 </div>
                 <div>
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorPrimary: "#FF6F1E",
-                      },
-                    }}
-                  >
-                    <Checkbox
-                      onChange={handleInitialCheckboxState}
-                      checked={initialCheckboxState}
-                    ></Checkbox>
-                  </ConfigProvider>
+                  {handleDisabledButton() !== null ? (
+                    <ConfigProvider
+                      theme={{
+                        token: {
+                          colorPrimary: "#FF6F1E",
+                        },
+                      }}
+                    >
+                      <Checkbox
+                        onChange={handleInitialCheckboxState}
+                        checked={initialCheckboxState}
+                      ></Checkbox>
+                    </ConfigProvider>
+                  ) : (
+                    ""
+                  )}
                 </div>
                 <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
                   <input
