@@ -281,7 +281,8 @@ export default function DashboardLayout({ children }) {
       const data = await res.json();
 
       if (!data.success) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       dispatch(setSuccessMultipleBookmark(true));
@@ -291,7 +292,7 @@ export default function DashboardLayout({ children }) {
     } catch (error) {
       dispatch(setBannerMultipleBookmark(false));
       dispatch(clearIds());
-      return res;
+      return error;
     } finally {
       dispatch(clearIds());
       setTimeout(() => {
@@ -351,7 +352,8 @@ export default function DashboardLayout({ children }) {
       const data = await res.json();
 
       if (!data.success) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       dispatch(setSuccessMultipleValidated(true));
@@ -361,7 +363,7 @@ export default function DashboardLayout({ children }) {
     } catch (error) {
       dispatch(setBannerMultipleValidated(false));
       dispatch(clearIds());
-      return res;
+      return error;
     } finally {
       dispatch(clearIds());
       setTimeout(() => {
@@ -453,7 +455,8 @@ export default function DashboardLayout({ children }) {
       const data = await res.json();
 
       if (!data.success) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       dispatch(setBookmarkStatusData(true));
@@ -462,7 +465,7 @@ export default function DashboardLayout({ children }) {
     } catch (error) {
       dispatch(setBookmarkStatusData(false));
       dispatch(setBookmarkBannerSuccess(false));
-      return res;
+      return error;
     } finally {
       setTimeout(() => {
         dispatch(setBookmarkBannerSuccess(null));
@@ -501,7 +504,8 @@ export default function DashboardLayout({ children }) {
       const data = await res.json();
 
       if (!data.success) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       dispatch(setUnBookmarkStatusData(true));
@@ -510,7 +514,7 @@ export default function DashboardLayout({ children }) {
     } catch (error) {
       dispatch(setUnBookmarkStatusData(false));
       dispatch(setUnBookmarkBannerSuccess(false));
-      return res;
+      return error;
     } finally {
       setTimeout(() => {
         dispatch(setUnBookmarkBannerSuccess(null));
@@ -594,8 +598,9 @@ export default function DashboardLayout({ children }) {
       });
 
       if (res.status === 401 || res.status === 403) {
-        return res;
-        throw new Error("");
+        // return res;
+        // throw new Error("");
+        throw res;
       }
 
       const data = await res.json();
@@ -603,12 +608,14 @@ export default function DashboardLayout({ children }) {
       if (data.success) {
         DeleteCookies();
         router.push("/auth/login");
+        return res;
       }
     } catch (error) {
       setErrorLogout(true);
       setTimeout(() => {
         setErrorLogout(false);
       }, 3000);
+      return error;
     } finally {
       setLogoutLoading(false);
     }
