@@ -61,6 +61,8 @@ import {
   setExportToCsvDefault,
   setSelectSectionStealer,
 } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
+import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import { useRouter, redirect } from "next/navigation";
 
 const { RangePicker } = DatePicker;
 
@@ -86,6 +88,7 @@ export default function StealerUserPage() {
   const [inputSearch, setInputSearch] = useState();
   const [yearSelect, setYearSelect] = useState("2024");
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const [initialCheckboxState, setInitialCheckboxState] = useState(false);
 
@@ -151,11 +154,13 @@ export default function StealerUserPage() {
   };
 
   const callExportToCSVStealerDefault = () => {
-    fetchExportToCsv(inputSearch);
+    // fetchExportToCsv(inputSearch);
+    fetchExportToCsvWithRefreshToken(inputSearch);
   };
 
   const callExportToCSVStealerBookmark = () => {
-    fetchExportToCsvBookmark(inputSearch);
+    // fetchExportToCsvBookmark(inputSearch);
+    fetchExportToCsvBookmarkWithRefreshToken(inputSearch);
   };
 
   const loadingStealerData = useSelector(
@@ -256,11 +261,13 @@ export default function StealerUserPage() {
     switch (selectSection) {
       case "stealer":
         setPage(1);
-        fetchStealerData(inputSearch);
+        // fetchStealerData(inputSearch);
+        fetchStealerDataWithRefreshToken(inputSearch);
         break;
       case "bookmark-stealer":
         setBookmarkPage(1);
-        fetchStealerBookmarkData(inputSearch);
+        // fetchStealerBookmarkData(inputSearch);
+        fetchStealerBookmarkDataWithRefreshToken(inputSearch);
         break;
       default:
         break;
@@ -281,8 +288,9 @@ export default function StealerUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -290,7 +298,13 @@ export default function StealerUserPage() {
       setUrlBreaches(data.data.name_domain);
       setIconBreaches(data.data.icon_domain);
       setLastUpdate(data.data.last_update);
+
+      return res;
     } catch (error) {}
+  };
+
+  const fetchGetBreachesDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getBreachesData, router, dispatch);
   };
 
   const getListDomainUsers = async () => {
@@ -304,17 +318,24 @@ export default function StealerUserPage() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setDomainUsers(data.data);
       dispatch(setUrlData(data.data));
+
+      return res;
     } catch (error) {
     } finally {
     }
+  };
+
+  const fetchGetListDomainUsersWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getListDomainUsers, router, dispatch);
   };
 
   const getBreachesDataStealer = async () => {
@@ -331,8 +352,9 @@ export default function StealerUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -343,7 +365,13 @@ export default function StealerUserPage() {
       setIconBreaches(data.data.icon_domain);
       setLastUpdate(data.data.last_update);
       setStealersData(data.data.stealer);
+
+      return res;
     } catch (error) {}
+  };
+
+  const fetchGetBreachesDataStelaerWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getBreachesDataStealer, router, dispatch);
   };
 
   const fetchStealerData = async (keyword = "") => {
@@ -368,14 +396,16 @@ export default function StealerUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -385,12 +415,19 @@ export default function StealerUserPage() {
           count: data.count_data,
           size: data.size,
         });
+
+        return res;
       }
     } catch (error) {
       setMapStealerData(null);
+      return error;
     } finally {
       dispatch(setLoadingStealerState(false));
     }
+  };
+
+  const fetchStealerDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchStealerData, router, dispatch, keyword);
   };
 
   const fetchStealerBookmarkData = async (keyword = "") => {
@@ -416,14 +453,16 @@ export default function StealerUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -433,14 +472,25 @@ export default function StealerUserPage() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       // setDataSource(null);
       console.log("error bookmark bro", error);
       setMapStealerbookmarkData(null);
+      return error;
     } finally {
       dispatch(setLoadingStealerState(false));
     }
+  };
+
+  const fetchStealerBookmarkDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchStealerBookmarkData,
+      router,
+      dispatch,
+      keyword
+    );
   };
 
   const fetchExportToCsv = async (keyword = "") => {
@@ -462,6 +512,12 @@ export default function StealerUserPage() {
         }
       );
 
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
       const blob = await res.blob();
 
       // Check if the `window` object is defined (browser environment)
@@ -482,12 +538,17 @@ export default function StealerUserPage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
       dispatch(setLoadingStealerState(false));
     }
+  };
+
+  const fetchExportToCsvWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchExportToCsv, router, dispatch, keyword);
   };
 
   const fetchExportToCsvBookmark = async (keyword = "") => {
@@ -508,6 +569,12 @@ export default function StealerUserPage() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -530,6 +597,8 @@ export default function StealerUserPage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -538,14 +607,26 @@ export default function StealerUserPage() {
     }
   };
 
+  const fetchExportToCsvBookmarkWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvBookmark,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   useEffect(() => {
-    getListDomainUsers();
-    getBreachesData();
+    // getListDomainUsers();
+    // getBreachesData();
+    fetchGetBreachesDataWithRefreshToken();
+    fetchGetListDomainUsersWithRefreshToken();
     // getBreachesDataStealer();
   }, []);
 
   useEffect(() => {
-    getBreachesDataStealer();
+    // getBreachesDataStealer();
+    fetchGetBreachesDataStelaerWithRefreshToken();
   }, [yearSelect]);
 
   useEffect(() => {
@@ -553,10 +634,12 @@ export default function StealerUserPage() {
     dispatch(clearIds());
     switch (selectSection) {
       case "stealer":
-        fetchStealerData(inputSearch);
+        // fetchStealerData(inputSearch);
+        fetchStealerDataWithRefreshToken(inputSearch);
         break;
       case "bookmark-stealer":
-        fetchStealerBookmarkData(inputSearch);
+        // fetchStealerBookmarkData(inputSearch);
+        fetchStealerBookmarkDataWithRefreshToken(inputSearch);
         break;
       default:
         break;
