@@ -30,7 +30,11 @@ export const fetchWithRefreshToken = async (
           throw new Error("");
         }
 
-        await fetchFunction(...args);
+        let success_run_again = await fetchFunction(...args);
+        console.log(
+          "running again... succes breaches: ",
+          success_run_again.status
+        );
       } catch (refreshError) {
         console.error("Refresh token failed:", refreshError);
         // Handle refresh token failure (e.g., logout, redirect to login)

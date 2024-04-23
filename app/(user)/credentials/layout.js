@@ -60,6 +60,8 @@ export default function DashboardLayout({ children }) {
   const [idDomainUrl, setIdDomainUrl] = useState();
   const [searchTerm, setSearchTerm] = useState("");
   const [reloadChange, setReloadChange] = useState(false);
+  const [isChangeDomainTokenExpired, setIsChangeDomainTokenExpired] =
+    useState();
   const [copied, setCopied] = useState(false);
 
   const router = useRouter();
@@ -261,7 +263,7 @@ export default function DashboardLayout({ children }) {
           method: "PATCH",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            Authorization: `Bearer ${getCookie("access_token")}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -330,7 +332,7 @@ export default function DashboardLayout({ children }) {
           method: "POST",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            Authorization: `Bearer ${getCookie("access_token")}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -433,7 +435,7 @@ export default function DashboardLayout({ children }) {
           method: "PATCH",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            Authorization: `Bearer ${getCookie("access_token")}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -481,7 +483,7 @@ export default function DashboardLayout({ children }) {
           method: "PATCH",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            Authorization: `Bearer ${getCookie("access_token")}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -526,7 +528,7 @@ export default function DashboardLayout({ children }) {
         method: "PATCH",
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${CredentialsAccess_Token}`,
+          Authorization: `Bearer ${getCookie("access_token")}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -540,6 +542,7 @@ export default function DashboardLayout({ children }) {
         // DeleteCookies();
         // RedirectToLogin();
         // console.log("res 401 | 403", res);
+        setIsChangeDomainTokenExpired(true);
         return res;
       }
 
@@ -554,10 +557,16 @@ export default function DashboardLayout({ children }) {
       // }
       // setReloadChange(true);
       // console.log("res most bottom: ", res);
+      setIsChangeDomainTokenExpired(false);
       return res;
     } catch (error) {
     } finally {
-      window.location.reload();
+      if (!isChangeDomainTokenExpired) {
+        setIsUrlListSelected(false);
+        dispatch(setChangeUrl(false));
+        // console.log("Running finally update domain");
+        window.location.reload();
+      }
     }
   };
 
@@ -580,7 +589,7 @@ export default function DashboardLayout({ children }) {
         method: "POST",
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${CredentialsAccess_Token}`,
+          Authorization: `Bearer ${getCookie("access_token")}`,
         },
       });
 
@@ -727,9 +736,9 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     if (
-      !CredentialsEmail ||
-      !CredentialsAccess_Token ||
-      !CredentialsRefresh_Token
+      !getCookie("email_credentials") ||
+      !getCookie("access_token") ||
+      !getCookie("refresh_token")
     ) {
       return redirect("/auth/login");
     }
