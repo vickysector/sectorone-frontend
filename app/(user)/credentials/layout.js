@@ -980,8 +980,20 @@ export default function DashboardLayout({ children }) {
             </div>
             <div className="mt-8">
               <h1 className="text-LG-strong">Url</h1>
-              <h2 className="text-text-description text-LG-normal mt-1">
-                {detailsCompromisedData.url ?? "-"}
+              <h2
+                className="text-text-description text-LG-normal mt-1"
+                style={{
+                  maxWidth: "450px",
+                  wordWrap: "break-word",
+                }}
+              >
+                <a
+                  href={`${detailsCompromisedData.url ?? "-"}`}
+                  target="_blank"
+                  className="underline"
+                >
+                  {detailsCompromisedData.url ?? "-"}
+                </a>
               </h2>
             </div>
             <div className="mt-8">
