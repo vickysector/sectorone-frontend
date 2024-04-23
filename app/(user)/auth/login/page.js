@@ -25,6 +25,19 @@ export default function LoginPage() {
   const [loadingQr, setLoadingQr] = useState(false);
   const router = useRouter();
 
+  // start of : handle need help
+
+  const [isNeedHelp, setIsNeedHelp] = useState(false);
+
+  const handleChangeNeedHelp = () => {
+    setIsNeedHelp(false);
+  };
+
+  const handleClickNeedHelp = () => {
+    setIsNeedHelp(true);
+  };
+  // end of : handle need help
+
   const toggleShowPasswordVisibility = () => {
     setShowPassword((prevPasswordState) => !prevPasswordState);
   };
@@ -116,6 +129,47 @@ export default function LoginPage() {
 
   return (
     <main className="h-auth-screen -500 flex relative">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
+          isNeedHelp ? "visible" : "hidden"
+        )}
+      >
+        <div
+          className={clsx("rounded-lg bg-white p-[28px] w-[28%] text-center ")}
+        >
+          <div className="m-auto mb-6">
+            <Image
+              alt={"icon"}
+              src={`/images/need_help_logo.svg`}
+              width={165}
+              height={136}
+              className="m-auto"
+            />
+          </div>
+          <h1 className="text-LG-strong mb-4">Found a problem?</h1>
+          <p className="mb-10 text-text-description  text-Base-normal">
+            Don't worry, we're here to help. Contact us at{" "}
+            <span className="text-Base-strong text-black">
+              support@sector.co.id
+            </span>
+          </p>
+          <div className="flex justify-end">
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg mr-2"
+              onClick={handleChangeNeedHelp}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleChangeNeedHelp}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
       <div className={clsx(loading || loadingQr ? "visible" : "hidden")}>
         <LoadingSpin />
       </div>
@@ -166,7 +220,11 @@ export default function LoginPage() {
             />
           </form>
           <div className="flex items-center mt-4 justify-between">
-            <a href="#" className="block text-text-description text-LG-normal">
+            <a
+              href={"#"}
+              onClick={handleClickNeedHelp}
+              className="block text-text-description text-LG-normal"
+            >
               Need help?
             </a>
             <Link

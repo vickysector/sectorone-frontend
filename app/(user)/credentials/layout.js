@@ -780,8 +780,8 @@ export default function DashboardLayout({ children }) {
               className="m-auto"
             />
           </div>
-          <h1 className="text-LG-strong mb-2">Integration with Sector API</h1>
-          <p className="mb-6 text-text-description  text-Base-normal">
+          <h1 className="text-LG-strong mb-4">Integration with Sector API</h1>
+          <p className="mb-10 text-text-description  text-Base-normal">
             Please contact us at{" "}
             <span className="text-Base-strong text-black">
               support@sector.co.id
