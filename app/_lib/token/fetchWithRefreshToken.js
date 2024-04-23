@@ -12,11 +12,11 @@ export const fetchWithRefreshToken = async (
     // await fetchFunction(...args);
     let success = await fetchFunction(...args);
     console.log("succes breaches: ", success.status);
-    if (success.status !== 200) {
+    if (success.status === 401 || success.status === 403) {
       throw success;
     }
   } catch (error) {
-    console.log("error breaches : ", error);
+    // console.log("error breaches : ", error);
     if (error.status === 401 || error.status === 403) {
       try {
         // await getRefreshToken();
@@ -47,7 +47,7 @@ export const fetchWithRefreshToken = async (
         }, 8000);
       }
     } else {
-      console.error("Error fetching data:", error);
+      //   console.error("Error fetching data:", error);
 
       DeleteCookies();
       // Handle other errors
