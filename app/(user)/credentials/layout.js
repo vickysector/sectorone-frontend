@@ -657,6 +657,7 @@ export default function DashboardLayout({ children }) {
       const data = await res.json();
 
       setUsersData(data.data.email);
+      setCookie("user_status", data.data.isDemo);
       return res;
     } catch (error) {
     } finally {

@@ -5,4 +5,5 @@ export function DeleteCookies() {
   deleteCookie("email_credentials");
   deleteCookie("refresh_token");
   deleteCookie("user_identifier");
+  deleteCookie("user_status");
 }
