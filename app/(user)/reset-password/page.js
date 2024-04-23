@@ -29,7 +29,10 @@ export default function ResetPasswordPage() {
 
           <p className="text-LG-normal text-text-description mt-8">
             If you did not initiate this request, please contact us immediately
-            at Sector@mail.com
+            at{" "}
+            <span className="text-Base-strong text-black">
+              support@sector.co.id
+            </span>
           </p>
 
           <p className="text-LG-normal text-text-description mt-8">
