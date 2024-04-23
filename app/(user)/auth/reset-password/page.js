@@ -101,7 +101,7 @@ export default function ResetPasswordPage() {
       <div className="bg-white w-[50%] py-[40px] px-[110px]">
         <div className="text-center flex items-center justify-center flex-col w-[80%] mx-auto">
           <Image
-            src={"/images/sector_logo.png"}
+            src={"/images/SectorOne.png"}
             alt="Logo Sector"
             width={92}
             height={38}

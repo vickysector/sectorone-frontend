@@ -5,7 +5,7 @@ export default function UserAuthLayout({ children }) {
     <main>
       <nav className="py-1.5 px-8 border-b-2 border-b-input-border">
         <Image
-          src={"/images/sector_logo.png"}
+          src={"/images/SectorOne.png"}
           alt="Logo Sector"
           width={92}
           height={38}

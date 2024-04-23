@@ -1286,7 +1286,7 @@ export default function DashboardLayout({ children }) {
       </div>
       <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white border-b-2 border-b-input-border">
         <Image
-          src={"/images/sector_logo.png"}
+          src={"/images/SectorOne.png"}
           alt="Logo Sector"
           width={92}
           height={38}
