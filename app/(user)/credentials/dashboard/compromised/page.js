@@ -2667,24 +2667,28 @@ export default function CompromisedDashboard() {
                   </div>
                 </div>
                 <div>
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorPrimary: "#FF6F1E",
-                      },
-                    }}
-                  >
-                    <Checkbox
-                      onChange={handleInitialCheckboxState}
-                      checked={initialCheckboxState}
-                    ></Checkbox>
-                  </ConfigProvider>
+                  {handleDisableExportButton() !== null && (
+                    <ConfigProvider
+                      theme={{
+                        token: {
+                          colorPrimary: "#FF6F1E",
+                        },
+                      }}
+                    >
+                      <Checkbox
+                        onChange={handleInitialCheckboxState}
+                        checked={initialCheckboxState}
+                      ></Checkbox>
+                    </ConfigProvider>
+                  )}
                 </div>
                 <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
+                      handleDisableExportButton() === null &&
+                        "cursor-not-allowed"
                     )}
                     placeholder={
                       selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES
@@ -2698,6 +2702,8 @@ export default function CompromisedDashboard() {
                         handleClickSearch();
                       }
                     }}
+                    disabled={handleDisableExportButton() === null}
+                    readOnly={handleDisableExportButton() === null}
                   />
                   <div
                     className="px-3 cursor-pointer"
@@ -2737,6 +2743,8 @@ export default function CompromisedDashboard() {
                       onChange={handleRangePicker}
                       className="ml-8"
                       size="large"
+                      disabled={handleDisableExportButton() === null}
+                      readOnly={handleDisableExportButton() === null}
                     />
                   </ConfigProvider>
                 </div>
