@@ -9,6 +9,8 @@ import {
   RightOutlined,
   CloseOutlined,
   CopyOutlined,
+  UnlockTwoTone,
+  LockTwoTone,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
@@ -1293,6 +1295,15 @@ export default function DashboardLayout({ children }) {
           height={38}
         />
         <div className="flex items-center">
+          <div
+            className={clsx(
+              "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1.5 px-2.5 mr-8 flex items-center",
+              getCookie("user_status") ? "visible" : "hidden"
+            )}
+          >
+            <LockTwoTone twoToneColor={"#FF6F1E"} />
+            <p className="text-SM-normal text-[#FF6F1E] ml-3 ">Free trial</p>
+          </div>
           <div className="cursor-pointer">
             <Image
               src={"/images/sector_notification.svg"}
