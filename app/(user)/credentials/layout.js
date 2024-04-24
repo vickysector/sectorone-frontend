@@ -55,6 +55,7 @@ import {
   setFreeTrialStatusToFalse,
   setFreeTrialStatusToTrue,
 } from "@/app/_lib/store/features/Accounts/FreetrialSlices";
+import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -70,6 +71,18 @@ export default function DashboardLayout({ children }) {
   const [isChangeDomainTokenExpired, setIsChangeDomainTokenExpired] =
     useState();
   const [copied, setCopied] = useState(false);
+
+  // Start of: Tooptips in notifications
+
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+  // End of: Tooltips in notifications
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -1349,7 +1362,7 @@ export default function DashboardLayout({ children }) {
         <div className="flex items-center">
           <div
             className={clsx(
-              "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1.5 px-2.5 mr-8 flex items-center",
+              "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1 px-2.5 mr-8 flex items-center",
               getCookie("user_status") ? "visible" : "hidden"
             )}
             onClick={() => dispatch(setFreeTrialStatusToTrue())}
@@ -1364,7 +1377,10 @@ export default function DashboardLayout({ children }) {
               width={22}
               height={22}
               className="mr-5"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             />
+            <Tooltip isActive={isHovered} right={0} top={"20px"} />
           </div>
           <div className="cursor-pointer" onClick={toggleAccount}>
             <Image
