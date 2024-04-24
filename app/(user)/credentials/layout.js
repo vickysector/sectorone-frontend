@@ -1380,7 +1380,7 @@ export default function DashboardLayout({ children }) {
               onMouseEnter={handleMouseEnter}
               onMouseLeave={handleMouseLeave}
             />
-            <Tooltip isActive={isHovered} right={0} top={"20px"} />
+            <Tooltip isActive={isHovered} right={0} top={"10px"} />
           </div>
           <div className="cursor-pointer" onClick={toggleAccount}>
             <Image
