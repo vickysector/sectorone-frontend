@@ -25,6 +25,9 @@ export default function LoginPage() {
   const [loadingQr, setLoadingQr] = useState(false);
   const router = useRouter();
 
+  const [showPopupNotResponsive, setShowPopupNotResponsive] = useState(false);
+  const [isOkayNotResponsive, setIsOkayNotResponsive] = useState(false);
+
   // start of : handle need help
 
   const [isNeedHelp, setIsNeedHelp] = useState(false);
@@ -127,8 +130,64 @@ export default function LoginPage() {
 
   const canSumbit = password && email;
 
+  useEffect(() => {
+    const handleResize = () => {
+      setShowPopupNotResponsive(window.innerWidth <= 400);
+      // console.log("resize : ", window.innerWidth);
+    };
+
+    handleResize(); // Check the initial window width
+
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
+
   return (
     <main className="h-auth-screen -500 flex relative">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
+          showPopupNotResponsive ? "visible" : "hidden"
+        )}
+      >
+        <div
+          className={clsx("rounded-lg bg-white p-[28px] w-[95%] text-center ")}
+        >
+          <div className="m-auto mb-6">
+            <Image
+              alt={"icon"}
+              src={`/images/sector_image_auth_login.svg`}
+              width={165}
+              height={136}
+              className="m-auto"
+            />
+          </div>
+          <h1 className="text-LG-strong mb-4">
+            Please use a dekstop or laptop for a better experience
+          </h1>
+          <p className="mb-10 text-text-description  text-Base-normal">
+            Some parts of one visibility tool may not work on a mobile device.
+          </p>
+          <div className="flex justify-end">
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg mr-2"
+              // onClick={() => dispatch(setFreeTrialStatusToFalse())}
+              onClick={() => setShowPopupNotResponsive(false)}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              // onClick={() => dispatch(setFreeTrialStatusToFalse())}
+              onClick={() => setShowPopupNotResponsive(false)}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
