@@ -180,6 +180,8 @@ export default function DashboardLayout({ children }) {
   const CredentialsAccess_Token = getCookie("access_token");
   const CredentialsRefresh_Token = getCookie("refresh_token");
 
+  console.log("cookie get user_status", getCookie("user_status") == "true");
+
   // End of: Checking Users Credentials
 
   const toggleHideIcon = () => {
@@ -1360,16 +1362,18 @@ export default function DashboardLayout({ children }) {
           height={38}
         />
         <div className="flex items-center">
-          <div
-            className={clsx(
-              "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1 px-2.5 mr-8 flex items-center",
-              getCookie("user_status") ? "visible" : "hidden"
-            )}
-            onClick={() => dispatch(setFreeTrialStatusToTrue())}
-          >
-            <LockTwoTone twoToneColor={"#FF6F1E"} />
-            <p className="text-SM-normal text-[#FF6F1E] ml-3 ">Free trial</p>
-          </div>
+          {getCookie("user_status") === "true" && (
+            <div
+              className={clsx(
+                "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1 px-2.5 mr-8 flex items-center"
+                // getCookie("user_status") === "true" ? "visible" : "hidden"
+              )}
+              onClick={() => dispatch(setFreeTrialStatusToTrue())}
+            >
+              <LockTwoTone twoToneColor={"#FF6F1E"} />
+              <p className="text-SM-normal text-[#FF6F1E] ml-3 ">Free trial</p>
+            </div>
+          )}
           <div className="cursor-pointer">
             <Image
               src={"/images/sector_notification.svg"}

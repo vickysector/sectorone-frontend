@@ -88,6 +88,7 @@ import {
 // import ApexCharts from "apexcharts";
 import dynamic from "next/dynamic";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 
 // const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
 //   ssr: false, // Ensure ApexCharts is not imported during SSR
@@ -198,6 +199,27 @@ export default function CompromisedDashboard() {
   };
 
   // End of: Handle Page
+
+  // Start of: Tooptips in notifications
+
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const [isHoveredRangeDate, setIsHoveredRangeDate] = useState(false);
+  const handleMouseEnterRangeDate = () => {
+    setIsHoveredRangeDate(true);
+  };
+
+  const handleMouseLeaveRangeDate = () => {
+    setIsHoveredRangeDate(false);
+  };
+  // End of: Tooltips in notifications
 
   // Start of: Spline area Chart
 
@@ -2682,12 +2704,18 @@ export default function CompromisedDashboard() {
                     </ConfigProvider>
                   )}
                 </div>
-                <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
+                <div
+                  className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
                   <input
                     type="email"
                     className={clsx(
                       " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
-                      handleDisableExportButton() === null &&
+                      // handleDisableExportButton() === null &&
+                      //   "cursor-not-allowed"
+                      getCookie("user_status") === "true" &&
                         "cursor-not-allowed"
                     )}
                     placeholder={
@@ -2702,8 +2730,10 @@ export default function CompromisedDashboard() {
                         handleClickSearch();
                       }
                     }}
-                    disabled={handleDisableExportButton() === null}
-                    readOnly={handleDisableExportButton() === null}
+                    // disabled={handleDisableExportButton() === null}
+                    // readOnly={handleDisableExportButton() === null}
+                    disabled={getCookie("user_status") === "true"}
+                    readOnly={getCookie("user_status") === "true"}
                   />
                   <div
                     className="px-3 cursor-pointer"
@@ -2717,6 +2747,7 @@ export default function CompromisedDashboard() {
                     />
                   </div>
                 </div>
+                <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} />
                 <div>
                   <ConfigProvider
                     theme={{
@@ -2743,10 +2774,19 @@ export default function CompromisedDashboard() {
                       onChange={handleRangePicker}
                       className="ml-8"
                       size="large"
-                      disabled={handleDisableExportButton() === null}
-                      readOnly={handleDisableExportButton() === null}
+                      // disabled={handleDisableExportButton() === null}
+                      // readOnly={handleDisableExportButton() === null}
+                      disabled={getCookie("user_status") === "true"}
+                      readOnly={getCookie("user_status") === "true"}
+                      onMouseEnter={handleMouseEnterRangeDate}
+                      onMouseLeave={handleMouseLeaveRangeDate}
                     />
                   </ConfigProvider>
+                  <Tooltip
+                    isActive={isHoveredRangeDate}
+                    right={"0"}
+                    bottom={"50px"}
+                  />
                 </div>
                 <div className="ml-auto ">
                   {checkIsBookmarkSection() === "no-bookmark" ? (

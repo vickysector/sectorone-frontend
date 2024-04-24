@@ -63,6 +63,7 @@ import {
 } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { useRouter, redirect } from "next/navigation";
+import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 
 const { RangePicker } = DatePicker;
 
@@ -87,6 +88,28 @@ export default function StealerUserPage() {
   const [endDate, setEndDate] = useState("");
   const [inputSearch, setInputSearch] = useState();
   const [yearSelect, setYearSelect] = useState("2024");
+
+  // Start of: Tooptips in notifications
+
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const [isHoveredRangeDate, setIsHoveredRangeDate] = useState(false);
+  const handleMouseEnterRangeDate = () => {
+    setIsHoveredRangeDate(true);
+  };
+
+  const handleMouseLeaveRangeDate = () => {
+    setIsHoveredRangeDate(false);
+  };
+  // End of: Tooltips in notifications
+
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -217,6 +240,11 @@ export default function StealerUserPage() {
         break;
     }
   };
+
+  // console.log("inputsearch: ", !inputSearch);
+  // console.log("startdate: ", !startDate);
+  // console.log("enddate: ", !endDate);
+  // console.log("all of them: ", !(!inputSearch && !startDate && !endDate));
 
   const checkIsBookmarkSection = () => {
     switch (selectSection) {
@@ -806,11 +834,17 @@ export default function StealerUserPage() {
                     ""
                   )}
                 </div>
-                <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
+                <div
+                  className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
+                      getCookie("user_status") === "true" &&
+                        "cursor-not-allowed"
                     )}
                     placeholder={"Search by Malware/Devices name"}
                     onChange={handleSearchKeyword}
@@ -820,6 +854,20 @@ export default function StealerUserPage() {
                         handleClickSearch();
                       }
                     }}
+                    // disabled={
+                    //   handleDisabledButton() === null &&
+                    //   !(!inputSearch && !startDate && !endDate)
+                    //     ? true
+                    //     : false
+                    // }
+                    // readOnly={
+                    //   handleDisabledButton() === null &&
+                    //   !(!inputSearch && !startDate && !endDate)
+                    //     ? true
+                    //     : false
+                    // }
+                    disabled={getCookie("user_status") === "true"}
+                    readOnly={getCookie("user_status") === "true"}
                   />
                   <div className="px-3 cursor-pointer">
                     <Image
@@ -830,6 +878,7 @@ export default function StealerUserPage() {
                     />
                   </div>
                 </div>
+                <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} />
                 <div>
                   <ConfigProvider
                     theme={{
@@ -857,8 +906,19 @@ export default function StealerUserPage() {
                       onChange={handleRangePicker}
                       className="ml-8"
                       size="large"
+                      // disabled={handleDisabledButton() === null}
+                      // readOnly={handleDisabledButton() === null}
+                      disabled={getCookie("user_status") === "true"}
+                      readOnly={getCookie("user_status") === "true"}
+                      onMouseEnter={handleMouseEnterRangeDate}
+                      onMouseLeave={handleMouseLeaveRangeDate}
                     />
                   </ConfigProvider>
+                  <Tooltip
+                    isActive={isHoveredRangeDate}
+                    right={"0"}
+                    bottom={"50px"}
+                  />
                 </div>
                 <div className="ml-auto ">
                   {checkIsBookmarkSection() === "stealer" ? (

@@ -149,7 +149,7 @@ export default function LoginPage() {
           </div>
           <h1 className="text-LG-strong mb-4">Found a problem?</h1>
           <p className="mb-10 text-text-description  text-Base-normal">
-            Don't worry, we're here to help. Contact us at{" "}
+            Dont worry, were here to help. Contact us at{" "}
             <span className="text-Base-strong text-black">
               support@sector.co.id
             </span>
