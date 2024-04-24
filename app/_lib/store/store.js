@@ -14,6 +14,7 @@ import ExportToCsvSlice from "./features/Export/ExportToCsvSlice";
 import ExportToCsvCompromiseSlice from "./features/Export/ExportToCsvCompromiseSlice";
 import RefreshTokenSlice from "./features/RefreshToken/RefreshTokenSlice";
 import DocumentationSlices from "./features/Accounts/DocumentationSlices";
+import FreetrialSlices from "./features/Accounts/FreetrialSlices";
 
 export const store = configureStore({
   reducer: {
@@ -32,5 +33,6 @@ export const store = configureStore({
     exportToCsvCompromise: ExportToCsvCompromiseSlice,
     refreshTokenExpired: RefreshTokenSlice,
     documentationSectorOne: DocumentationSlices,
+    freeTrialPopup: FreetrialSlices,
   },
 });

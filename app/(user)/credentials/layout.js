@@ -51,6 +51,10 @@ import { setConfirmExportToCsv } from "@/app/_lib/store/features/Export/ExportTo
 import { setConfirmExportToCsvCompromise } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { setDocumentationSectorApiStatus } from "@/app/_lib/store/features/Accounts/DocumentationSlices";
+import {
+  setFreeTrialStatusToFalse,
+  setFreeTrialStatusToTrue,
+} from "@/app/_lib/store/features/Accounts/FreetrialSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -142,6 +146,10 @@ export default function DashboardLayout({ children }) {
 
   const documentationSectorOneStatus = useSelector(
     (state) => state.documentationSectorOne.documentationStatus
+  );
+
+  const freeTrialPopupStatus = useSelector(
+    (state) => state.freeTrialPopup.status
   );
 
   const handleDocumentationSectorOneStatus = () => {
@@ -768,6 +776,50 @@ export default function DashboardLayout({ children }) {
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
+          freeTrialPopupStatus ? "visible" : "hidden"
+        )}
+      >
+        <div
+          className={clsx("rounded-lg bg-white p-[28px] w-[28%] text-center ")}
+        >
+          <div className="m-auto mb-6">
+            <Image
+              alt={"icon"}
+              src={`/images/popup_free_trial.svg`}
+              width={165}
+              height={136}
+              className="m-auto"
+            />
+          </div>
+          <h1 className="text-LG-strong mb-4">
+            Keep getting the best from SectorOne
+          </h1>
+          <p className="mb-10 text-text-description  text-Base-normal">
+            Upgrade your account to access all SectorOne dashboard features.
+            Contact us at{" "}
+            <span className="text-Base-strong text-black">
+              support@sector.co.id
+            </span>
+          </p>
+          <div className="flex justify-end">
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg mr-2"
+              onClick={() => dispatch(setFreeTrialStatusToFalse())}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={() => dispatch(setFreeTrialStatusToFalse())}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
           documentationSectorOneStatus ? "visible" : "hidden"
         )}
       >
@@ -783,7 +835,7 @@ export default function DashboardLayout({ children }) {
               className="m-auto"
             />
           </div>
-          <h1 className="text-LG-strong mb-4">Integration with Sector API</h1>
+          <h1 className="text-LG-strong mb-4">Intregration with Sector API</h1>
           <p className="mb-10 text-text-description  text-Base-normal">
             Please contact us at{" "}
             <span className="text-Base-strong text-black">
@@ -1300,6 +1352,7 @@ export default function DashboardLayout({ children }) {
               "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1.5 px-2.5 mr-8 flex items-center",
               getCookie("user_status") ? "visible" : "hidden"
             )}
+            onClick={() => dispatch(setFreeTrialStatusToTrue())}
           >
             <LockTwoTone twoToneColor={"#FF6F1E"} />
             <p className="text-SM-normal text-[#FF6F1E] ml-3 ">Free trial</p>
