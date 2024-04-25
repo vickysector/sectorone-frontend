@@ -1,8 +1,14 @@
 import clsx from "clsx";
+import { getCookie } from "cookies-next";
 
 export function Tooltip({ isActive, top, left, right, bottom }) {
   return (
-    <div className={clsx(isActive ? "visible" : "hidden", "relative")}>
+    <div
+      className={clsx(
+        isActive && getCookie("user_status") === "true" ? "visible" : "hidden",
+        "relative"
+      )}
+    >
       <div
         className="absolute  py-1.5 px-2.5 rounded-[6px] bg-[#000000E0] w-[304px] "
         style={{
