@@ -3578,6 +3578,7 @@ export default function CompromisedDashboard() {
                                       defaultValue={data.status_validasi}
                                       value={data.status_validasi}
                                       style={{ width: 91 }}
+                                      disabled={true}
                                       onChange={(value) =>
                                         handleSelectValidation(
                                           value,
@@ -4314,6 +4315,7 @@ export default function CompromisedDashboard() {
                                       defaultValue={data.status_validasi}
                                       value={data.status_validasi}
                                       style={{ width: 91 }}
+                                      disabled={true}
                                       onChange={(value) =>
                                         handleSelectValidation(
                                           value,
@@ -5050,6 +5052,7 @@ export default function CompromisedDashboard() {
                                       defaultValue={data.status_validasi}
                                       value={data.status_validasi}
                                       style={{ width: 91 }}
+                                      disabled={true}
                                       onChange={(value) =>
                                         handleSelectValidation(
                                           value,
