@@ -92,7 +92,7 @@ export default function ResetPasswordPage() {
                 <SecondaryButton value={"Cancel"} href={"/auth/login"} />
               </div>
               <div className="ml-2 items-center">
-                <PrimaryButton value={"Done"} href={"/reset-password"} />
+                <PrimaryButton value={"Done"} href={"/auth/login"} />
               </div>
             </div>
           </div>
