@@ -106,6 +106,9 @@ export default function CompromisedDashboard() {
   const [selectedOutlineButton, setSelectedOutlineButton] = useState(
     DETAIL_COMPROMISED_DEFAULT
   );
+
+  const [filterApplied, setFilterApplied] = useState(false); // state for make sure data after search and rangedate is running once
+
   const [dataSource, setDataSource] = useState();
 
   const [inputSearch, setInputSearch] = useState("");
@@ -1046,8 +1049,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1103,8 +1107,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUsers(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1161,8 +1166,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdParty(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1219,8 +1225,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageDevices(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1277,8 +1284,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageEmployeeBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1336,8 +1344,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageEmployeeValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1396,8 +1405,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUserBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1449,8 +1459,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUsersValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1502,8 +1513,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdPartyBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1559,8 +1571,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdPartyValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1616,8 +1629,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageDevicesBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1675,8 +1689,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1743,8 +1758,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageEmployeeValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1808,8 +1824,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageEmployeeBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1873,8 +1890,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUsers(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1936,8 +1954,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUsersValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1999,8 +2018,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUserBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -2062,8 +2082,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdParty(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -2128,8 +2149,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdPartyValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -2194,8 +2216,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdPartyBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -2260,8 +2283,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageDevices(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -2325,8 +2349,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageDevicesBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
