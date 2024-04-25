@@ -417,24 +417,28 @@ export default function UserDashboardPage() {
         <h1 className="text-heading-2 text-black mb-4">Overview</h1>
         <div className="bg-white  p-12 rounded-xl">
           <div className="flex items-center">
-            <div className="h-[60px] w-[60px] bg-input-container ">
-              <Image
-                width={60}
-                height={60}
-                src={iconBreaches && iconBreaches}
-                alt="Icon Logo Users"
-                // style={{
-                //   objectFit: "cover",
-                //   backgroundSize: "cover",
-                //   width: "100%",
-                // }}
-              />
-            </div>
-            <div className="ml-4">
-              <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
-              <h2 className="text-LG-normal text-text-description mt-2">
-                Last update: {lastUpdate && lastUpdate}
-              </h2>
+            <div>
+              <div className="h-[32px] w-[32px] bg-input-container flex">
+                <Image
+                  width={32}
+                  height={32}
+                  src={iconBreaches && iconBreaches}
+                  alt="Icon Logo Users"
+                  // style={{
+                  //   objectFit: "cover",
+                  //   backgroundSize: "cover",
+                  //   width: "100%",
+                  // }}
+                />
+                <h1 className="text-heading-3 ml-4">
+                  {urlBreaches && urlBreaches}
+                </h1>
+              </div>
+              <div className="">
+                <h2 className="text-LG-normal text-text-description mt-2">
+                  Last update: {lastUpdate && lastUpdate}
+                </h2>
+              </div>
             </div>
             <div className="flex flex-grow justify-end items-center">
               <ChangeUrlButton
