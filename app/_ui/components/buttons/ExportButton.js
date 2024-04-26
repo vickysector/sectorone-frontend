@@ -3,24 +3,23 @@ import { DownloadOutlined } from "@ant-design/icons";
 import clsx from "clsx";
 
 export default function ExportButton({ onClick, disabled }) {
-  console.log("stealer: ", disabled);
   return (
     <button
       className={clsx(
-        "py-2 px-5 flex items-center bg-blue-export  rounded-lg",
+        " px-5 flex items-center   rounded-lg",
         disabled === null
-          ? "cursor-not-allowed opacity-30"
-          : "cursor-pointer opacity-100"
+          ? "cursor-not-allowed border-2 py-1.5 border-[#D5D5D5] bg-[#0000000A]"
+          : "cursor-pointer opacity-100 py-2 bg-blue-export"
       )}
       onClick={onClick}
       disabled={disabled === null}
     >
       {disabled === null ? (
-        <p className="text-white text-LG-normal">Cannot Export</p>
+        <p className="text-[#00000040] text-LG-normal">Download CSV</p>
       ) : (
         <>
           <DownloadOutlined style={{ color: "white" }} />
-          <p className="ml-3 text-white text-LG-normal">Export CSV</p>
+          <p className="ml-3 text-white text-LG-normal">Download CSV</p>
         </>
       )}
     </button>

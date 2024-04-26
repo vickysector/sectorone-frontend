@@ -1,7 +1,11 @@
+"use client";
+
 import Image from "next/image";
 import clsx from "clsx";
 import { RightOutlined } from "@ant-design/icons";
 import Menu from "@/app/_ui/components/accounts-menu/Menu";
+import { useSelector, useDispatch } from "react-redux";
+import { setDocumentationSectorApiStatus } from "@/app/_lib/store/features/Accounts/DocumentationSlices";
 
 const documentation = {
   title: "Sector API(s)",
@@ -19,15 +23,21 @@ const changePassword = {
 };
 
 export default function SettingsUserPage() {
+  const dispatch = useDispatch();
+
+  const handleOpenDocumentation = () => {
+    dispatch(setDocumentationSectorApiStatus(true));
+  };
+
   return (
     <main>
       <section>
-        <h1 className="text-black text-heading-2">Manage account</h1>
+        <h1 className="text-black text-heading-2">Settings</h1>
         <section className="bg-white rounded-lg p-8 mt-8">
           <section>
             <h1 className="text-heading-4 text-black">Documentation</h1>
             <div className="mt-4">
-              <Menu data={documentation} />
+              <Menu data={documentation} onClick={handleOpenDocumentation} />
             </div>
           </section>
           <section className="mt-8">

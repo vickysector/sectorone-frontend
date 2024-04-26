@@ -99,6 +99,8 @@ export default function ChartBarVerticalStealer(props) {
         options={{ ...options, scales: { y: { min: 0 } } }}
         data={data}
         className="mt-12"
+        width={"500px"}
+        height={"200px"}
       />
     </>
   );

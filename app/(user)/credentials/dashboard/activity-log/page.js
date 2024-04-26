@@ -15,6 +15,8 @@ import { setLoadingLogState } from "@/app/_lib/store/features/LogActivity/Loadin
 import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import { useRouter, redirect } from "next/navigation";
+import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 
 const { RangePicker } = DatePicker;
 
@@ -24,6 +26,7 @@ export default function ActivityLogUserPage() {
   const [page, setPage] = useState(1);
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const loadingLogActivityData = useSelector(
     (state) => state.activityLogLoading.status
@@ -61,14 +64,16 @@ export default function ActivityLogUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       setLogActivityData({
@@ -76,15 +81,23 @@ export default function ActivityLogUserPage() {
         count: data.count_data,
         size: data.size,
       });
+
+      return res;
     } catch (error) {
       setLogActivityData(null);
+      return error;
     } finally {
       dispatch(setLoadingLogState(false));
     }
   };
 
+  const fetchLogActivityWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchLogActivity, router, dispatch, keyword);
+  };
+
   useEffect(() => {
-    fetchLogActivity(keywordSearch);
+    // fetchLogActivity(keywordSearch);
+    fetchLogActivityWithRefreshToken(keywordSearch);
   }, [page]);
 
   return (
