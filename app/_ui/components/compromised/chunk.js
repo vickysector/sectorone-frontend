@@ -60,7 +60,7 @@ export default function Chunk({ children, level }) {
 
       <div
         className=" flex items-center mb-2.5 cursor-pointer"
-        onClick={handleOpenShow}
+        // onClick={handleOpenShow}
       >
         {" "}
         <span
@@ -70,8 +70,10 @@ export default function Chunk({ children, level }) {
           )}
           style={{ backgroundColor: `${level}` }}
         ></span>{" "}
-        <p className="ml-3 text-LG-normal text-black w-[470px] text-left more">
-          {children}
+        <p className="ml-3 text-LG-normal text-black w-[470px] text-left more underline">
+          <a href={`${children}`} target="_blank">
+            {children}
+          </a>
         </p>{" "}
       </div>
     </main>

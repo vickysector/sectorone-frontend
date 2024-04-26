@@ -8,6 +8,7 @@ import OverviewCard from "@/app/_ui/dashboard/OverviewCard";
 import "@/app/_ui/CheckboxCustom2.css";
 import clsx from "clsx";
 import Image from "next/image";
+import { useRouter, redirect } from "next/navigation";
 import ExportButton from "@/app/_ui/components/buttons/ExportButton";
 import {
   EyeOutlined,
@@ -85,6 +86,15 @@ import {
 } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
 // import ReactApexChart from "react-apexcharts";
 // import ApexCharts from "apexcharts";
+import dynamic from "next/dynamic";
+import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
+
+// const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
+//   ssr: false, // Ensure ApexCharts is not imported during SSR
+// });
+
+const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const { RangePicker } = DatePicker;
 
@@ -96,6 +106,9 @@ export default function CompromisedDashboard() {
   const [selectedOutlineButton, setSelectedOutlineButton] = useState(
     DETAIL_COMPROMISED_DEFAULT
   );
+
+  const [filterApplied, setFilterApplied] = useState(false); // state for make sure data after search and rangedate is running once
+
   const [dataSource, setDataSource] = useState();
 
   const [inputSearch, setInputSearch] = useState("");
@@ -190,6 +203,27 @@ export default function CompromisedDashboard() {
 
   // End of: Handle Page
 
+  // Start of: Tooptips in notifications
+
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const [isHoveredRangeDate, setIsHoveredRangeDate] = useState(false);
+  const handleMouseEnterRangeDate = () => {
+    setIsHoveredRangeDate(true);
+  };
+
+  const handleMouseLeaveRangeDate = () => {
+    setIsHoveredRangeDate(false);
+  };
+  // End of: Tooltips in notifications
+
   // Start of: Spline area Chart
 
   const options = {
@@ -230,47 +264,58 @@ export default function CompromisedDashboard() {
   // Start of: Handle export to CSV
 
   const callExportToCSVEmployeeDefault = () => {
-    fetchExportToCsvEmployeeDefault(inputSearch);
+    // fetchExportToCsvEmployeeDefault(inputSearch);
+    fetchExportToCSVEmployeeDefaultWithRefreshToken(inputSearch);
   };
 
   const callExportToCSVEmployeeTested = () => {
-    fetchExportToCsvEmployeeTested(inputSearch);
+    // fetchExportToCsvEmployeeTested(inputSearch);
+    fetchExportToCSVEmployeeTestedWithRefreshToken(inputSearch);
   };
 
   const callExportToCSVEmployeeBookmark = () => {
-    fetchExportToCsvEmployeeBookmark(inputSearch);
+    // fetchExportToCsvEmployeeBookmark(inputSearch);
+    fetchExportToCSVEmployeeBookmarkWithRefreshToken(inputSearch);
   };
 
   const callExportToCSVUsersDefault = () => {
-    fetchExportToCsvUserDefault(inputSearch);
+    // fetchExportToCsvUserDefault(inputSearch);
+    fetchExportToCSVUserDefaultWithRefreshToken(inputSearch);
   };
 
   const callExportToCSVUsersTested = () => {
-    fetchExportToCsvUserTested(inputSearch);
+    // fetchExportToCsvUserTested(inputSearch);
+    fetchExportToCSVUserTestedWithRefreshToken(inputSearch);
   };
 
   const callExportTocSVUserBookmark = () => {
-    fetchExportToCsvUserBookmark(inputSearch);
+    // fetchExportToCsvUserBookmark(inputSearch);
+    fetchExportToCSVUserBookmarkWithRefreshToken(inputSearch);
   };
 
   const callExportToCsvThirdpartyDefault = () => {
-    fetchExportToCsvThirdPartyDefault(inputSearch);
+    // fetchExportToCsvThirdPartyDefault(inputSearch);
+    fetchExportToCSVThirdPartyDefaultWithRefreshToken(inputSearch);
   };
 
   const callExportToCsvThirdpartyTested = () => {
-    fetchExportToCsvThirdPartyTested(inputSearch);
+    // fetchExportToCsvThirdPartyTested(inputSearch);
+    fetchExportToCSVThirdPartyTestedWithRefreshToken(inputSearch);
   };
 
   const callExportToCsvThirdpartyBookmark = () => {
-    fetchExportToCsvThirdPartyBookmark(inputSearch);
+    // fetchExportToCsvThirdPartyBookmark(inputSearch);
+    fetchExportToCSVThirdPartyBookmarkWithRefreshToken(inputSearch);
   };
 
   const callExportToCsvDeviceDefault = () => {
-    fetchExportToCsvDevicesDefault(inputSearch);
+    // fetchExportToCsvDevicesDefault(inputSearch);
+    fetchExportToCSVDevicesDefaultWithRefreshToken(inputSearch);
   };
 
   const callExportToCsvDeviceBookmark = () => {
-    fetchExportToCsvDevicesBookmark(inputSearch);
+    // fetchExportToCsvDevicesBookmark(inputSearch);
+    fetchExportToCSVDevicesBookmarkWithRefreshToken(inputSearch);
   };
 
   const handleExportToCSV = () => {
@@ -390,6 +435,42 @@ export default function CompromisedDashboard() {
 
   // End of: Handle detect export button when empty
 
+  // Start of: check if section is bookmark
+
+  const checkIsBookmarkSection = () => {
+    switch (selectedButton) {
+      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "bookmark";
+        } else {
+          return "no-bookmark";
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "bookmark";
+        } else {
+          return "no-bookmark";
+        }
+      // // Add more cases for other buttons if needed
+      case DETAIL_COMPROMISED_COMPROMISE_USERS:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "bookmark";
+        } else {
+          return "no-bookmark";
+        }
+      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
+        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+          return "bookmark";
+        } else {
+          return "no-bookmark";
+        }
+      default:
+        break;
+    }
+  };
+
+  // End of : Check if section is Bookmark
+
   const handleCheckBookmarkOrUnbookmarkText = () => {
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
@@ -477,6 +558,7 @@ export default function CompromisedDashboard() {
   );
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   // const domainUsers = useSelector((state) => state.chooseUrl.urlData);
 
@@ -521,8 +603,9 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -533,7 +616,12 @@ export default function CompromisedDashboard() {
       setUrlBreaches(data.data.name_domain);
       setIconBreaches(data.data.icon_domain);
       setLastUpdate(data.data.last_update);
+      return res;
     } catch (error) {}
+  };
+
+  const fetchGetBreachesDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getBreachesData, router, dispatch);
   };
 
   const getListDomainUsers = async () => {
@@ -547,22 +635,30 @@ export default function CompromisedDashboard() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setDomainUsers(data.data);
       dispatch(setUrlData(data.data));
+      return res;
     } catch (error) {
     } finally {
     }
   };
 
+  const fetchGetListDomainUsersWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getListDomainUsers, router, dispatch);
+  };
+
   useEffect(() => {
-    getListDomainUsers();
-    getBreachesData();
+    // getListDomainUsers();
+    // getBreachesData();
+    fetchGetListDomainUsersWithRefreshToken();
+    fetchGetBreachesDataWithRefreshToken();
   }, []);
 
   const handleChangeUrlOpen = (value) => {
@@ -638,56 +734,71 @@ export default function CompromisedDashboard() {
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         setPage(1);
-        fetchEmployeeData(inputSearch);
+        fetchEmployeeDataWithRefreshToken(inputSearch);
+        // fetchEmployeeData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
           setPageEmployeeBookmark(1);
-          fetchEmployeeBookmark(inputSearch);
+          fetchEmployeeBookmarkDataWithRefreshToken(inputSearch);
+          //fetchEmployeeBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
           setPageEmployeeValidate(1);
-          fetchEmployeeTesting(inputSearch);
+          fetchEmployeeTestingDataWithRefreshToken(input);
+          //fetchEmployeeTesting(inputSearch);
         } else {
           setPage(1);
-          fetchEmployeeData(inputSearch);
+          fetchEmployeeDataWithRefreshToken(inputSearch);
+          // fetchEmployeeData(inputSearch);
         }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
         setPageDevices(1);
-        fetchDevicesData(inputSearch);
+        fetchDevicesDataWithRefreshToken(inputSearch);
+        // fetchDevicesData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
           setPageDevicesBookmark(1);
-          fetchDevicesBookmark(inputSearch);
+          fetchDevicesBookmarkWithRefreshToken(inputSearch);
+          // fetchDevicesBookmark(inputSearch);
         } else {
           setPageDevices(1);
-          fetchDevicesData(inputSearch);
+          fetchDevicesDataWithRefreshToken(inputSearch);
+          // fetchDevicesData(inputSearch);
         }
         break;
       // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
         setPageUsers(1);
-        fetchUsersData(inputSearch);
+        fetchUsersDataWithRefreshToken(inputSearch);
+        // fetchUsersData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
           setPageUserBookmark(1);
-          fetchUserBookmark(inputSearch);
+          fetchUserBookmarkDataWithRefreshToken(inputSearch);
+          //fetchUserBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
           setPageUsersValidate(1);
-          fetchUserTesting(inputSearch);
+          fetchUserTestingDataWithRefreshToken(inputSearch);
+          // fetchUserTesting(inputSearch);
         } else {
           setPageUsers(1);
-          fetchUsersData(inputSearch);
+          fetchUsersDataWithRefreshToken(inputSearch);
+          // fetchUsersData(inputSearch);
         }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
         setPageThirdParty(1);
-        fetchThirdPartyData(inputSearch);
+        fetchThirdPartyDataWithRefreshToken(inputSearch);
+        // fetchThirdPartyData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
           setPageThirdPartyBookmark(1);
-          fetchThirdPartyBookmark(inputSearch);
+          fetchThirdPartyBookmarkWithRefreshToken(inputSearch);
+          // fetchThirdPartyBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
           setPageThirdPartyValidate(1);
-          fetchThirdPartyTesting(inputSearch);
+          fetchThirdPartyTestingWithRefreshToken(inputSearch);
+          //fetchThirdPartyTesting(inputSearch);
         } else {
           setPageThirdParty(1);
-          fetchThirdPartyData(inputSearch);
+          fetchThirdPartyDataWithRefreshToken(inputSearch);
+          // fetchThirdPartyData(inputSearch);
         }
         break;
       default:
@@ -829,7 +940,8 @@ export default function CompromisedDashboard() {
   const handleSelectValidation = (value, id, status) => {
     setSelectValidasi(value);
 
-    UpdateValidateTesting(id, value, status);
+    // UpdateValidateTesting(id, value, status);
+    fetchUpdateValidateTestingWithRefreshToken(id, value, status);
   };
 
   const UpdateValidateTesting = async (id, validasi, status) => {
@@ -849,27 +961,47 @@ export default function CompromisedDashboard() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.success === false) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.success) {
         setValidasiSuccess(true);
+        return res;
       }
     } catch (error) {
       setValidasiSuccess(false);
+      // return res
+      return error;
     } finally {
       dispatch(setLoadingState(false));
       setTimeout(() => {
         setValidasiSuccess(null);
       }, 5000);
     }
+  };
+
+  const fetchUpdateValidateTestingWithRefreshToken = async (
+    id,
+    validasi,
+    status
+  ) => {
+    await fetchWithRefreshToken(
+      UpdateValidateTesting,
+      router,
+      dispatch,
+      id,
+      validasi,
+      status
+    );
   };
 
   const GetOutlineTotalDataCompromiseOutlineButton = (selectButton) => {
@@ -917,8 +1049,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -933,14 +1066,15 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -953,21 +1087,29 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       // setDataSource(null);
       setEmployeeData(null);
+      console.log("inside catch: ", error);
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchEmployeeDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchEmployeeData, router, dispatch, keyword);
   };
 
   const fetchUsersData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUsers(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -982,14 +1124,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1002,21 +1146,29 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       // setDataSource(null);
       setUsersData(null);
+      // return res
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchUsersDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchUsersData, router, dispatch, keyword);
   };
 
   const fetchThirdPartyData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdParty(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1031,14 +1183,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1051,21 +1205,29 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       // setDataSource(null);
       setThirdPartyData(null);
+      // return res
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchThirdPartyDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchThirdPartyData, router, dispatch, keyword);
   };
 
   const fetchDevicesData = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageDevices(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1080,14 +1242,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1100,21 +1264,29 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       // setDataSource(null);
       setDevicesData(null);
+      // return res
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchDevicesDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchDevicesData, router, dispatch, keyword);
   };
 
   const fetchEmployeeBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageEmployeeBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1129,14 +1301,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1145,20 +1319,34 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+
+        return res;
       }
     } catch (error) {
       setEmployeeBookmarkData(null);
+      // return res
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchEmployeeBookmarkDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchEmployeeBookmark,
+      router,
+      dispatch,
+      keyword
+    );
   };
 
   const fetchEmployeeTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageEmployeeValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1173,8 +1361,9 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -1182,7 +1371,8 @@ export default function CompromisedDashboard() {
       console.log("employee data testing: ", data);
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1191,20 +1381,33 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       setEmployeeValidatedData(null);
+      // return res
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchEmployeeTestingDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchEmployeeTesting,
+      router,
+      dispatch,
+      keyword
+    );
   };
 
   const fetchUserBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUserBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1219,14 +1422,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1235,20 +1440,28 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       setUsersBookmarkData(null);
+      // return res
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchUserBookmarkDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchUserBookmark, router, dispatch, keyword);
   };
 
   const fetchUserTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUsersValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1263,14 +1476,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1279,20 +1494,28 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       setUsersValidatedData(null);
+      // return res
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchUserTestingDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchUserTesting, router, dispatch, keyword);
   };
 
   const fetchThirdPartyBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdPartyBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1307,14 +1530,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1323,20 +1548,32 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       setThirdPartyBookmarkData(null);
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchThirdPartyBookmarkWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchThirdPartyBookmark,
+      router,
+      dispatch,
+      keyword
+    );
   };
 
   const fetchThirdPartyTesting = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdPartyValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1351,14 +1588,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1367,20 +1606,32 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       setThirdPartyValidatedData(null);
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchThirdPartyTestingWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchThirdPartyTesting,
+      router,
+      dispatch,
+      keyword
+    );
   };
 
   const fetchDevicesBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageDevicesBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1395,14 +1646,16 @@ export default function CompromisedDashboard() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -1411,12 +1664,23 @@ export default function CompromisedDashboard() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       setDevicesBookmarkData(null);
+      return error;
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchDevicesBookmarkWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchDevicesBookmark,
+      router,
+      dispatch,
+      keyword
+    );
   };
 
   // Start of: Export to CSV
@@ -1425,8 +1689,9 @@ export default function CompromisedDashboard() {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1439,6 +1704,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
       // Check if the `window` object is defined (browser environment)
@@ -1459,6 +1730,7 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       } else {
         console.log(
           "Server-side rendering detected, cannot create download link"
@@ -1471,12 +1743,24 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVEmployeeDefaultWithRefreshToken = async (
+    keyword = ""
+  ) => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvEmployeeDefault,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvEmployeeTested = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageEmployeeValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1489,6 +1773,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1510,6 +1800,7 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1518,12 +1809,24 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVEmployeeTestedWithRefreshToken = async (
+    keyword = ""
+  ) => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvEmployeeTested,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvEmployeeBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageEmployeeBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1536,6 +1839,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1557,6 +1866,7 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1565,12 +1875,24 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVEmployeeBookmarkWithRefreshToken = async (
+    keyword = ""
+  ) => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvEmployeeBookmark,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvUserDefault = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUsers(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1583,6 +1905,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1604,6 +1932,7 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1612,12 +1941,22 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVUserDefaultWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvUserDefault,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvUserTested = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUsersValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1630,6 +1969,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1651,6 +1996,7 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1659,12 +2005,22 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVUserTestedWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvUserTested,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvUserBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageUserBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1677,6 +2033,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1698,6 +2060,7 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1706,12 +2069,22 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVUserBookmarkWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvUserBookmark,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvThirdPartyDefault = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdParty(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1724,6 +2097,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1745,6 +2124,8 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1753,12 +2134,24 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVThirdPartyDefaultWithRefreshToken = async (
+    keyword = ""
+  ) => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvThirdPartyDefault,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvThirdPartyTested = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdPartyValidate(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1771,6 +2164,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1792,6 +2191,8 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1800,12 +2201,24 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVThirdPartyTestedWithRefreshToken = async (
+    keyword = ""
+  ) => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvThirdPartyTested,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvThirdPartyBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageThirdPartyBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1818,6 +2231,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1839,6 +2258,8 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1847,12 +2268,24 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVThirdPartyBookmarkWithRefreshToken = async (
+    keyword = ""
+  ) => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvThirdPartyBookmark,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvDevicesDefault = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageDevices(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1865,6 +2298,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1886,6 +2325,7 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -1894,12 +2334,24 @@ export default function CompromisedDashboard() {
     }
   };
 
+  const fetchExportToCSVDevicesDefaultWithRefreshToken = async (
+    keyword = ""
+  ) => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvDevicesDefault,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   const fetchExportToCsvDevicesBookmark = async (keyword = "") => {
     try {
       dispatch(setLoadingState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPageDevicesBookmark(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -1912,6 +2364,12 @@ export default function CompromisedDashboard() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -1933,12 +2391,24 @@ export default function CompromisedDashboard() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
       dispatch(setLoadingState(false));
     }
+  };
+
+  const fetchExportToCSVDevicesBookmarkWithRefreshToken = async (
+    keyword = ""
+  ) => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvDevicesBookmark,
+      router,
+      dispatch,
+      keyword
+    );
   };
 
   // End of: Export to CSV
@@ -1965,10 +2435,14 @@ export default function CompromisedDashboard() {
   };
 
   // useEffect(() => {
-  //   fetchEmployeeData(inputSearch);
+  // fetchEmployeeDataWithRefreshToken(inputSearch)
+  // fetchEmployeeData(inputSearch);
+  //  fetchUsersDataWithRefreshToken(inputSearch)
   //   fetchUsersData(inputSearch);
-  //   fetchThirdPartyData(inputSearch);
-  //   fetchDevicesData(inputSearch);
+  // fetchThirdPartyDataWithRefreshToken(inputSearch)//
+  // fetchThirdPartyData(inputSearch);
+  // fetchDevicesDataWithRefreshToken(inputSearch)//
+  // fetchDevicesData(inputSearch);
   // }, []);
 
   // useEffect(() => {
@@ -1996,42 +2470,57 @@ export default function CompromisedDashboard() {
     dispatch(clearIds());
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
-        fetchEmployeeData(inputSearch);
+        fetchEmployeeDataWithRefreshToken(inputSearch);
+        // fetchEmployeeData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          fetchEmployeeBookmark(inputSearch);
+          fetchEmployeeBookmarkDataWithRefreshToken(inputSearch);
+          //fetchEmployeeBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-          fetchEmployeeTesting(inputSearch);
+          fetchEmployeeTestingDataWithRefreshToken(inputSearch);
+          //fetchEmployeeTesting(inputSearch);
         } else {
-          fetchEmployeeData(inputSearch);
+          fetchEmployeeDataWithRefreshToken(inputSearch);
+          // fetchEmployeeData(inputSearch);
         }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
-        fetchDevicesData(inputSearch);
+        fetchDevicesDataWithRefreshToken(inputSearch);
+        // fetchDevicesData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          fetchDevicesBookmark(inputSearch);
+          fetchDevicesBookmarkWithRefreshToken(inputSearch);
+          // fetchDevicesBookmark(inputSearch);
         } else {
-          fetchDevicesData(inputSearch);
+          fetchDevicesDataWithRefreshToken(inputSearch);
+          // fetchDevicesData(inputSearch);
         }
         break;
       // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
-        fetchUsersData(inputSearch);
+        fetchUsersDataWithRefreshToken(inputSearch);
+        // fetchUsersData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          fetchUserBookmark(inputSearch);
+          fetchUserBookmarkDataWithRefreshToken(inputSearch);
+          //fetchUserBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-          fetchUserTesting(inputSearch);
+          fetchUserTestingDataWithRefreshToken(inputSearch);
+          // fetchUserTesting(inputSearch);
         } else {
-          fetchUsersData(inputSearch);
+          fetchUsersDataWithRefreshToken(inputSearch);
+          // fetchUsersData(inputSearch);
         }
         break;
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
-        fetchThirdPartyData(inputSearch);
+        fetchThirdPartyDataWithRefreshToken(inputSearch);
+        // fetchThirdPartyData(inputSearch);
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          fetchThirdPartyBookmark(inputSearch);
+          fetchThirdPartyBookmarkWithRefreshToken(inputSearch);
+          // fetchThirdPartyBookmark(inputSearch);
         } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-          fetchThirdPartyTesting(inputSearch);
+          fetchThirdPartyTestingWithRefreshToken(inputSearch);
+          //fetchThirdPartyTesting(inputSearch);
         } else {
-          fetchThirdPartyData(inputSearch);
+          fetchThirdPartyDataWithRefreshToken(inputSearch);
+          // fetchThirdPartyData(inputSearch);
         }
         break;
       default:
@@ -2067,24 +2556,28 @@ export default function CompromisedDashboard() {
       <h1 className="text-heading-2 text-black mb-4">Compromised</h1>
       <div className="bg-white  p-12 rounded-xl">
         <div className="flex items-center">
-          <div className="h-[80px] w-[80px] bg-input-container ">
-            <Image
-              width={80}
-              height={80}
-              src={iconBreaches && iconBreaches}
-              alt="Icon Logo Users"
-              // style={{
-              //   objectFit: "cover",
-              //   backgroundSize: "cover",
-              //   width: "100%",
-              // }}
-            />
-          </div>
-          <div className="ml-4">
-            <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
-            <h2 className="text-LG-strong text-text-description mt-2">
-              {lastUpdate && lastUpdate}
-            </h2>
+          <div>
+            <div className="h-[32px] w-[32px] bg-input-container flex">
+              <Image
+                width={32}
+                height={32}
+                src={iconBreaches && iconBreaches}
+                alt="Icon Logo Users"
+                // style={{
+                //   objectFit: "cover",
+                //   backgroundSize: "cover",
+                //   width: "100%",
+                // }}
+              />
+              <h1 className="text-heading-3 ml-4">
+                {urlBreaches && urlBreaches}
+              </h1>
+            </div>
+            <div className="">
+              <h2 className="text-LG-normal text-text-description mt-2">
+                Last update: {lastUpdate && lastUpdate}
+              </h2>
+            </div>
           </div>
           <div className="flex flex-grow justify-end items-center">
             <ChangeUrlButton
@@ -2095,8 +2588,8 @@ export default function CompromisedDashboard() {
             </ChangeUrlButton>
           </div>
         </div>
-        <div className="mt-8 flex justify-between">
-          <OverviewCard
+        <div className="mt-8">
+          {/* <OverviewCard
             descriptions={"Corporate credentials found"}
             image={"/images/sector_image_magnifier.svg"}
             total={breachesAll && breachesAll}
@@ -2110,13 +2603,14 @@ export default function CompromisedDashboard() {
             descriptions={"User compromised"}
             image={"/images/sector_image_user-like.svg"}
             total={usersBreaches && usersBreaches}
-          />
-          {/* <ReactApexChart
+          /> */}
+          <Chart
             options={options}
             series={series}
             type="area"
             height={350}
-          /> */}
+            width={"100%"}
+          />
         </div>
       </div>
       <section className="mt-10">
@@ -2224,24 +2718,34 @@ export default function CompromisedDashboard() {
                   </div>
                 </div>
                 <div>
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorPrimary: "#FF6F1E",
-                      },
-                    }}
-                  >
-                    <Checkbox
-                      onChange={handleInitialCheckboxState}
-                      checked={initialCheckboxState}
-                    ></Checkbox>
-                  </ConfigProvider>
+                  {handleDisableExportButton() !== null && (
+                    <ConfigProvider
+                      theme={{
+                        token: {
+                          colorPrimary: "#FF6F1E",
+                        },
+                      }}
+                    >
+                      <Checkbox
+                        onChange={handleInitialCheckboxState}
+                        checked={initialCheckboxState}
+                      ></Checkbox>
+                    </ConfigProvider>
+                  )}
                 </div>
-                <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
+                <div
+                  className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
+                      // handleDisableExportButton() === null &&
+                      //   "cursor-not-allowed"
+                      getCookie("user_status") === "true" &&
+                        "cursor-not-allowed"
                     )}
                     placeholder={
                       selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES
@@ -2255,6 +2759,10 @@ export default function CompromisedDashboard() {
                         handleClickSearch();
                       }
                     }}
+                    // disabled={handleDisableExportButton() === null}
+                    // readOnly={handleDisableExportButton() === null}
+                    disabled={getCookie("user_status") === "true"}
+                    readOnly={getCookie("user_status") === "true"}
                   />
                   <div
                     className="px-3 cursor-pointer"
@@ -2268,6 +2776,7 @@ export default function CompromisedDashboard() {
                     />
                   </div>
                 </div>
+                <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} />
                 <div>
                   <ConfigProvider
                     theme={{
@@ -2294,14 +2803,29 @@ export default function CompromisedDashboard() {
                       onChange={handleRangePicker}
                       className="ml-8"
                       size="large"
+                      // disabled={handleDisableExportButton() === null}
+                      // readOnly={handleDisableExportButton() === null}
+                      disabled={getCookie("user_status") === "true"}
+                      readOnly={getCookie("user_status") === "true"}
+                      onMouseEnter={handleMouseEnterRangeDate}
+                      onMouseLeave={handleMouseLeaveRangeDate}
                     />
                   </ConfigProvider>
+                  <Tooltip
+                    isActive={isHoveredRangeDate}
+                    right={"0"}
+                    bottom={"50px"}
+                  />
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton
-                    onClick={handleExportToCSV}
-                    disabled={handleDisableExportButton()}
-                  />
+                  {checkIsBookmarkSection() === "no-bookmark" ? (
+                    <ExportButton
+                      onClick={handleExportToCSV}
+                      disabled={handleDisableExportButton()}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
@@ -2612,7 +3136,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -2887,7 +3411,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -3054,6 +3578,7 @@ export default function CompromisedDashboard() {
                                       defaultValue={data.status_validasi}
                                       value={data.status_validasi}
                                       style={{ width: 91 }}
+                                      disabled={true}
                                       onChange={(value) =>
                                         handleSelectValidation(
                                           value,
@@ -3161,7 +3686,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -3348,7 +3873,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -3623,7 +4148,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -3790,6 +4315,7 @@ export default function CompromisedDashboard() {
                                       defaultValue={data.status_validasi}
                                       value={data.status_validasi}
                                       style={{ width: 91 }}
+                                      disabled={true}
                                       onChange={(value) =>
                                         handleSelectValidation(
                                           value,
@@ -3897,7 +4423,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4084,7 +4610,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4359,7 +4885,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4526,6 +5052,7 @@ export default function CompromisedDashboard() {
                                       defaultValue={data.status_validasi}
                                       value={data.status_validasi}
                                       style={{ width: 91 }}
+                                      disabled={true}
                                       onChange={(value) =>
                                         handleSelectValidation(
                                           value,
@@ -4633,7 +5160,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4761,7 +5288,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>
@@ -4913,7 +5440,7 @@ export default function CompromisedDashboard() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>

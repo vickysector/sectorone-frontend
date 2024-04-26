@@ -61,6 +61,9 @@ import {
   setExportToCsvDefault,
   setSelectSectionStealer,
 } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
+import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import { useRouter, redirect } from "next/navigation";
+import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 
 const { RangePicker } = DatePicker;
 
@@ -85,7 +88,30 @@ export default function StealerUserPage() {
   const [endDate, setEndDate] = useState("");
   const [inputSearch, setInputSearch] = useState();
   const [yearSelect, setYearSelect] = useState("2024");
+
+  // Start of: Tooptips in notifications
+
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+
+  const [isHoveredRangeDate, setIsHoveredRangeDate] = useState(false);
+  const handleMouseEnterRangeDate = () => {
+    setIsHoveredRangeDate(true);
+  };
+
+  const handleMouseLeaveRangeDate = () => {
+    setIsHoveredRangeDate(false);
+  };
+  // End of: Tooltips in notifications
+
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const [initialCheckboxState, setInitialCheckboxState] = useState(false);
 
@@ -151,11 +177,13 @@ export default function StealerUserPage() {
   };
 
   const callExportToCSVStealerDefault = () => {
-    fetchExportToCsv(inputSearch);
+    // fetchExportToCsv(inputSearch);
+    fetchExportToCsvWithRefreshToken(inputSearch);
   };
 
   const callExportToCSVStealerBookmark = () => {
-    fetchExportToCsvBookmark(inputSearch);
+    // fetchExportToCsvBookmark(inputSearch);
+    fetchExportToCsvBookmarkWithRefreshToken(inputSearch);
   };
 
   const loadingStealerData = useSelector(
@@ -213,6 +241,22 @@ export default function StealerUserPage() {
     }
   };
 
+  // console.log("inputsearch: ", !inputSearch);
+  // console.log("startdate: ", !startDate);
+  // console.log("enddate: ", !endDate);
+  // console.log("all of them: ", !(!inputSearch && !startDate && !endDate));
+
+  const checkIsBookmarkSection = () => {
+    switch (selectSection) {
+      case "stealer":
+        return "stealer";
+      case "bookmark-stealer":
+        return "bookmark-stealer";
+      default:
+        break;
+    }
+  };
+
   const handleCheckBookmarkOrUnBookmarkText = () => {
     switch (selectSection) {
       case "stealer":
@@ -256,11 +300,13 @@ export default function StealerUserPage() {
     switch (selectSection) {
       case "stealer":
         setPage(1);
-        fetchStealerData(inputSearch);
+        // fetchStealerData(inputSearch);
+        fetchStealerDataWithRefreshToken(inputSearch);
         break;
       case "bookmark-stealer":
         setBookmarkPage(1);
-        fetchStealerBookmarkData(inputSearch);
+        // fetchStealerBookmarkData(inputSearch);
+        fetchStealerBookmarkDataWithRefreshToken(inputSearch);
         break;
       default:
         break;
@@ -281,8 +327,9 @@ export default function StealerUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -290,7 +337,13 @@ export default function StealerUserPage() {
       setUrlBreaches(data.data.name_domain);
       setIconBreaches(data.data.icon_domain);
       setLastUpdate(data.data.last_update);
+
+      return res;
     } catch (error) {}
+  };
+
+  const fetchGetBreachesDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getBreachesData, router, dispatch);
   };
 
   const getListDomainUsers = async () => {
@@ -304,17 +357,24 @@ export default function StealerUserPage() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setDomainUsers(data.data);
       dispatch(setUrlData(data.data));
+
+      return res;
     } catch (error) {
     } finally {
     }
+  };
+
+  const fetchGetListDomainUsersWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getListDomainUsers, router, dispatch);
   };
 
   const getBreachesDataStealer = async () => {
@@ -331,8 +391,9 @@ export default function StealerUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -343,7 +404,13 @@ export default function StealerUserPage() {
       setIconBreaches(data.data.icon_domain);
       setLastUpdate(data.data.last_update);
       setStealersData(data.data.stealer);
+
+      return res;
     } catch (error) {}
+  };
+
+  const fetchGetBreachesDataStelaerWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getBreachesDataStealer, router, dispatch);
   };
 
   const fetchStealerData = async (keyword = "") => {
@@ -368,14 +435,16 @@ export default function StealerUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -385,12 +454,19 @@ export default function StealerUserPage() {
           count: data.count_data,
           size: data.size,
         });
+
+        return res;
       }
     } catch (error) {
       setMapStealerData(null);
+      return error;
     } finally {
       dispatch(setLoadingStealerState(false));
     }
+  };
+
+  const fetchStealerDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchStealerData, router, dispatch, keyword);
   };
 
   const fetchStealerBookmarkData = async (keyword = "") => {
@@ -416,14 +492,16 @@ export default function StealerUserPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (data.data === null) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       if (data.data) {
@@ -433,14 +511,25 @@ export default function StealerUserPage() {
           count: data.count_data,
           size: data.size,
         });
+        return res;
       }
     } catch (error) {
       // setDataSource(null);
       console.log("error bookmark bro", error);
       setMapStealerbookmarkData(null);
+      return error;
     } finally {
       dispatch(setLoadingStealerState(false));
     }
+  };
+
+  const fetchStealerBookmarkDataWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchStealerBookmarkData,
+      router,
+      dispatch,
+      keyword
+    );
   };
 
   const fetchExportToCsv = async (keyword = "") => {
@@ -462,6 +551,12 @@ export default function StealerUserPage() {
         }
       );
 
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
       const blob = await res.blob();
 
       // Check if the `window` object is defined (browser environment)
@@ -482,12 +577,17 @@ export default function StealerUserPage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
     } finally {
       dispatch(setLoadingStealerState(false));
     }
+  };
+
+  const fetchExportToCsvWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(fetchExportToCsv, router, dispatch, keyword);
   };
 
   const fetchExportToCsvBookmark = async (keyword = "") => {
@@ -508,6 +608,12 @@ export default function StealerUserPage() {
           },
         }
       );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
 
       const blob = await res.blob();
 
@@ -530,6 +636,8 @@ export default function StealerUserPage() {
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        return res;
       }
     } catch (error) {
       console.log("Error export to CSV");
@@ -538,14 +646,26 @@ export default function StealerUserPage() {
     }
   };
 
+  const fetchExportToCsvBookmarkWithRefreshToken = async (keyword = "") => {
+    await fetchWithRefreshToken(
+      fetchExportToCsvBookmark,
+      router,
+      dispatch,
+      keyword
+    );
+  };
+
   useEffect(() => {
-    getListDomainUsers();
-    getBreachesData();
+    // getListDomainUsers();
+    // getBreachesData();
+    fetchGetBreachesDataWithRefreshToken();
+    fetchGetListDomainUsersWithRefreshToken();
     // getBreachesDataStealer();
   }, []);
 
   useEffect(() => {
-    getBreachesDataStealer();
+    // getBreachesDataStealer();
+    fetchGetBreachesDataStelaerWithRefreshToken();
   }, [yearSelect]);
 
   useEffect(() => {
@@ -553,10 +673,12 @@ export default function StealerUserPage() {
     dispatch(clearIds());
     switch (selectSection) {
       case "stealer":
-        fetchStealerData(inputSearch);
+        // fetchStealerData(inputSearch);
+        fetchStealerDataWithRefreshToken(inputSearch);
         break;
       case "bookmark-stealer":
-        fetchStealerBookmarkData(inputSearch);
+        // fetchStealerBookmarkData(inputSearch);
+        fetchStealerBookmarkDataWithRefreshToken(inputSearch);
         break;
       default:
         break;
@@ -578,19 +700,28 @@ export default function StealerUserPage() {
         <h1 className="text-heading-2 text-black mb-4">Stealer</h1>
         <div className="bg-white  p-12 rounded-xl">
           <div className="flex items-center">
-            <div className="h-[80px] w-[80px] bg-input-container ">
-              <Image
-                width={80}
-                height={80}
-                src={iconBreaches && iconBreaches}
-                alt="Icon Logo Users"
-              />
-            </div>
-            <div className="ml-4">
-              <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
-              <h2 className="text-LG-strong text-text-description mt-2">
-                {lastUpdate && lastUpdate}
-              </h2>
+            <div>
+              <div className="h-[32px] w-[32px] bg-input-container flex">
+                <Image
+                  width={32}
+                  height={32}
+                  src={iconBreaches && iconBreaches}
+                  alt="Icon Logo Users"
+                  // style={{
+                  //   objectFit: "cover",
+                  //   backgroundSize: "cover",
+                  //   width: "100%",
+                  // }}
+                />
+                <h1 className="text-heading-3 ml-4">
+                  {urlBreaches && urlBreaches}
+                </h1>
+              </div>
+              <div className="">
+                <h2 className="text-LG-normal text-text-description mt-2">
+                  Last update: {lastUpdate && lastUpdate}
+                </h2>
+              </div>
             </div>
             <div className="flex flex-grow justify-end items-center">
               <ChangeUrlButton
@@ -695,24 +826,34 @@ export default function StealerUserPage() {
                   </div>
                 </div>
                 <div>
-                  <ConfigProvider
-                    theme={{
-                      token: {
-                        colorPrimary: "#FF6F1E",
-                      },
-                    }}
-                  >
-                    <Checkbox
-                      onChange={handleInitialCheckboxState}
-                      checked={initialCheckboxState}
-                    ></Checkbox>
-                  </ConfigProvider>
+                  {handleDisabledButton() !== null ? (
+                    <ConfigProvider
+                      theme={{
+                        token: {
+                          colorPrimary: "#FF6F1E",
+                        },
+                      }}
+                    >
+                      <Checkbox
+                        onChange={handleInitialCheckboxState}
+                        checked={initialCheckboxState}
+                      ></Checkbox>
+                    </ConfigProvider>
+                  ) : (
+                    ""
+                  )}
                 </div>
-                <div className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]">
+                <div
+                  className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]"
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                >
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
+                      getCookie("user_status") === "true" &&
+                        "cursor-not-allowed"
                     )}
                     placeholder={"Search by Malware/Devices name"}
                     onChange={handleSearchKeyword}
@@ -722,6 +863,20 @@ export default function StealerUserPage() {
                         handleClickSearch();
                       }
                     }}
+                    // disabled={
+                    //   handleDisabledButton() === null &&
+                    //   !(!inputSearch && !startDate && !endDate)
+                    //     ? true
+                    //     : false
+                    // }
+                    // readOnly={
+                    //   handleDisabledButton() === null &&
+                    //   !(!inputSearch && !startDate && !endDate)
+                    //     ? true
+                    //     : false
+                    // }
+                    disabled={getCookie("user_status") === "true"}
+                    readOnly={getCookie("user_status") === "true"}
                   />
                   <div className="px-3 cursor-pointer">
                     <Image
@@ -732,6 +887,7 @@ export default function StealerUserPage() {
                     />
                   </div>
                 </div>
+                <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} />
                 <div>
                   <ConfigProvider
                     theme={{
@@ -759,14 +915,29 @@ export default function StealerUserPage() {
                       onChange={handleRangePicker}
                       className="ml-8"
                       size="large"
+                      // disabled={handleDisabledButton() === null}
+                      // readOnly={handleDisabledButton() === null}
+                      disabled={getCookie("user_status") === "true"}
+                      readOnly={getCookie("user_status") === "true"}
+                      onMouseEnter={handleMouseEnterRangeDate}
+                      onMouseLeave={handleMouseLeaveRangeDate}
                     />
                   </ConfigProvider>
+                  <Tooltip
+                    isActive={isHoveredRangeDate}
+                    right={"0"}
+                    bottom={"50px"}
+                  />
                 </div>
                 <div className="ml-auto ">
-                  <ExportButton
-                    onClick={handleExportToCV}
-                    disabled={handleDisabledButton()}
-                  />
+                  {checkIsBookmarkSection() === "stealer" ? (
+                    <ExportButton
+                      onClick={handleExportToCV}
+                      disabled={handleDisabledButton()}
+                    />
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
             </div>
@@ -979,7 +1150,7 @@ export default function StealerUserPage() {
                     <div className="mt-5">
                       <h1 className="text-heading-3">No results found</h1>
                       <p className="text-text-description text-LG-normal mt-4">
-                        Try different keywords or remove search filters
+                        Nothing was found after the scan.
                       </p>
                     </div>
                   </div>
@@ -1133,7 +1304,7 @@ export default function StealerUserPage() {
                       <div className="mt-5">
                         <h1 className="text-heading-3">No results found</h1>
                         <p className="text-text-description text-LG-normal mt-4">
-                          Try different keywords or remove search filters
+                          Nothing was found after the scan.
                         </p>
                       </div>
                     </div>

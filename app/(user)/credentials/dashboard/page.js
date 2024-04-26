@@ -49,6 +49,9 @@ import {
   setLoadingTopCompromiseUrl,
   setLoadingTopCompromiseUser,
 } from "@/app/_lib/store/features/Home/LoadingOverviewSlices";
+import { getRefreshToken } from "@/app/_lib/token/getRefreshToken";
+import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+// import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(
@@ -124,8 +127,9 @@ export default function UserDashboardPage() {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
@@ -144,15 +148,59 @@ export default function UserDashboardPage() {
       dispatch(setLastUpdateUsers(data.data.last_update));
       setUsersData(data.data.user);
       setEmployeeData(data.data.employee);
+
+      return res;
     } catch (error) {
     } finally {
       dispatch(setLoadingBreachesOverview(false));
     }
   };
 
+  const fetchDataBreachesWithRefreshToken = async () => {
+    console.log("running get data bracheswith refresh token");
+    await fetchWithRefreshToken(getBreachesData, router, dispatch);
+  };
+
+  // const fetchBreachesDataWithRefreshToken = async () => {
+  //   try {
+  //     let success = await getBreachesData();
+  //     console.log("succes breaches: ", success.status);
+  //     if (success.status !== 200) {
+  //       throw success;
+  //     }
+  //   } catch (error) {
+  //     console.log("error breaches : ", error);
+  //     if (error.status === 401 || error.status === 403) {
+  //       console.log("error breaches inside if : ", error);
+  //       try {
+  //         let success = await getRefreshToken();
+
+  //         console.log("success refresh token: ", success);
+
+  //         if (success.status !== 200) {
+  //           throw new Error("");
+  //         }
+
+  //         await getBreachesData();
+  //       } catch (refreshError) {
+  //         console.error("Refresh token failed:", refreshError);
+  //         // Handle refresh token failure (e.g., logout, redirect to login)
+  //         DeleteCookies();
+  //         console.log("cookie deleted because refresh token is failed");
+  //       }
+  //     } else {
+  //       console.error("Error fetching breaches data:", error);
+  //       // Handle other errors
+  //       DeleteCookies();
+  //       // RedirectToLogin();
+  //     }
+  //   }
+  // };
+
   useEffect(() => {
-    getBreachesData();
-    // getRefreshToken();
+    // getBreachesData();
+    // fetchBreachesDataWithRefreshToken();
+    fetchDataBreachesWithRefreshToken();
   }, [yearSelect]);
 
   // Start of: Change URL - Get Domain USERS
@@ -170,22 +218,32 @@ export default function UserDashboardPage() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       // setDomainUsers(data.data);
       dispatch(setUrlData(data.data));
+
+      // return data.success;
+      return res;
     } catch (error) {
     } finally {
       dispatch(setLoadingListDomainUsers(false));
     }
   };
 
+  const fetchListDomainUsersWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getListDomainUsers, router, dispatch);
+  };
+
   useEffect(() => {
-    getListDomainUsers();
+    // getListDomainUsers();
+    // fetchListDomainWithRefreshToken();
+    fetchListDomainUsersWithRefreshToken();
   }, []);
 
   // End of: Change URL - Get Domain USERS
@@ -205,17 +263,25 @@ export default function UserDashboardPage() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setUserTopCompromised(data.data.top_user);
+
+      // return data.success;
+      return res;
     } catch (error) {
     } finally {
       dispatch(setLoadingTopCompromiseUser(false));
     }
+  };
+
+  const fetchTopCompromiseUserWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getTopCompromisedUser, router, dispatch);
   };
 
   const getTopCompromisedUrl = async () => {
@@ -231,22 +297,32 @@ export default function UserDashboardPage() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setUrlTopCompromised(data.data.top_url);
+
+      // return data.success;
+      return res;
     } catch (error) {
     } finally {
       dispatch(setLoadingTopCompromiseUrl(false));
     }
   };
 
+  const fetchTopCompromiseUrlWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getTopCompromisedUrl, router, dispatch);
+  };
+
   useEffect(() => {
-    getTopCompromisedUser();
-    getTopCompromisedUrl();
+    // getTopCompromisedUser();
+    // getTopCompromisedUrl();
+    fetchTopCompromiseUserWithRefreshToken();
+    fetchTopCompromiseUrlWithRefreshToken();
   }, []);
 
   //  End of: Get data Top Compromised
@@ -266,17 +342,25 @@ export default function UserDashboardPage() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setAntivirusTopCompromised(data.data.top_url);
+
+      // return data.success;
+      return res;
     } catch (error) {
     } finally {
       dispatch(setLoadingTopCompromiseAntivirus(false));
     }
+  };
+
+  const fetchTopCompromiseAntivirusWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getTopComrpomisedAntivirus, router, dispatch);
   };
 
   const getTopComrpomisedMalware = async () => {
@@ -292,22 +376,31 @@ export default function UserDashboardPage() {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setMalwareTopCompromised(data.data.top_malware);
+      // return data.success;
+      return res;
     } catch (error) {
     } finally {
       dispatch(setLoadingTopCompromiseMalware(false));
     }
   };
 
+  const fetchTopCompromiseMalwawreWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getTopComrpomisedMalware, router, dispatch);
+  };
+
   useEffect(() => {
-    getTopComrpomisedAntivirus();
-    getTopComrpomisedMalware();
+    // getTopComrpomisedAntivirus();
+    // getTopComrpomisedMalware();
+    fetchTopCompromiseAntivirusWithRefreshToken();
+    fetchTopCompromiseMalwawreWithRefreshToken();
   }, []);
 
   // End of: Get data Top Antivirus and Malware
@@ -324,24 +417,28 @@ export default function UserDashboardPage() {
         <h1 className="text-heading-2 text-black mb-4">Overview</h1>
         <div className="bg-white  p-12 rounded-xl">
           <div className="flex items-center">
-            <div className="h-[80px] w-[80px] bg-input-container ">
-              <Image
-                width={80}
-                height={80}
-                src={iconBreaches && iconBreaches}
-                alt="Icon Logo Users"
-                // style={{
-                //   objectFit: "cover",
-                //   backgroundSize: "cover",
-                //   width: "100%",
-                // }}
-              />
-            </div>
-            <div className="ml-4">
-              <h1 className="text-heading-3">{urlBreaches && urlBreaches}</h1>
-              <h2 className="text-LG-strong text-text-description mt-2">
-                {lastUpdate && lastUpdate}
-              </h2>
+            <div>
+              <div className="h-[32px] w-[32px] bg-input-container flex">
+                <Image
+                  width={32}
+                  height={32}
+                  src={iconBreaches && iconBreaches}
+                  alt="Icon Logo Users"
+                  // style={{
+                  //   objectFit: "cover",
+                  //   backgroundSize: "cover",
+                  //   width: "100%",
+                  // }}
+                />
+                <h1 className="text-heading-3 ml-4">
+                  {urlBreaches && urlBreaches}
+                </h1>
+              </div>
+              <div className="">
+                <h2 className="text-LG-normal text-text-description mt-2">
+                  Last update: {lastUpdate && lastUpdate}
+                </h2>
+              </div>
             </div>
             <div className="flex flex-grow justify-end items-center">
               <ChangeUrlButton
@@ -432,7 +529,7 @@ export default function UserDashboardPage() {
               className="ml-8"
             />
           </ConfigProvider>
-          <div className="border-2 border-input-border rounded-[16px] mt-4 p-8 flex justify-center items-center w-full relative">
+          <div className="border-2 border-input-border rounded-[16px] mt-4 p-12 flex justify-center items-center w-full relative">
             <ChartBarVertical
               employeeData={employeeData}
               usersData={usersData}
@@ -469,7 +566,10 @@ export default function UserDashboardPage() {
           </h1>
           <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
             {antivirusTopCompromised ? (
-              <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
+              <div
+                className="border-l-2 border-b-2 border-input-border w-full h-auto p-5"
+                key={"antivirus"}
+              >
                 {antivirusTopCompromised.map((data, index) => (
                   <div className="mb-4" key={data.id}>
                     <ChartBarHorizontal
@@ -493,7 +593,10 @@ export default function UserDashboardPage() {
           </h1>
           <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
             {malwareTopCompromised ? (
-              <div className="border-l-2 border-b-2 border-input-border w-full h-auto p-5">
+              <div
+                className="border-l-2 border-b-2 border-input-border w-full h-auto p-5"
+                key={"malware"}
+              >
                 {malwareTopCompromised.map((data, index) => (
                   <div className="mb-4" key={data.id}>
                     <ChartBarHorizontal

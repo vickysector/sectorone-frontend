@@ -9,6 +9,8 @@ import {
   RightOutlined,
   CloseOutlined,
   CopyOutlined,
+  UnlockTwoTone,
+  LockTwoTone,
 } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import clsx from "clsx";
@@ -47,6 +49,13 @@ import {
 import LoadingStateCard from "@/app/_ui/components/utils/LoadingStateCard";
 import { setConfirmExportToCsv } from "@/app/_lib/store/features/Export/ExportToCsvSlice";
 import { setConfirmExportToCsvCompromise } from "@/app/_lib/store/features/Export/ExportToCsvCompromiseSlice";
+import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import { setDocumentationSectorApiStatus } from "@/app/_lib/store/features/Accounts/DocumentationSlices";
+import {
+  setFreeTrialStatusToFalse,
+  setFreeTrialStatusToTrue,
+} from "@/app/_lib/store/features/Accounts/FreetrialSlices";
+import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -54,12 +63,26 @@ export default function DashboardLayout({ children }) {
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [errorLogout, setErrorLogout] = useState(false);
   const [usersData, setUsersData] = useState();
-  const [sessionExpired, setSessionExpired] = useState();
+  // const [sessionExpired, setSessionExpired] = useState();
   const [isUrlListSelected, setIsUrlListSelected] = useState(false);
   const [idDomainUrl, setIdDomainUrl] = useState();
   const [searchTerm, setSearchTerm] = useState("");
   const [reloadChange, setReloadChange] = useState(false);
+  const [isChangeDomainTokenExpired, setIsChangeDomainTokenExpired] =
+    useState();
   const [copied, setCopied] = useState(false);
+
+  // Start of: Tooptips in notifications
+
+  const [isHovered, setIsHovered] = useState(false);
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+  };
+  // End of: Tooltips in notifications
 
   const router = useRouter();
   const dispatch = useDispatch();
@@ -80,6 +103,10 @@ export default function DashboardLayout({ children }) {
   );
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
+  );
+
+  const sessionExpiredRefreshToken = useSelector(
+    (state) => state.refreshTokenExpired.status
   );
 
   const bookmarkCompromisedState = useSelector(
@@ -130,6 +157,18 @@ export default function DashboardLayout({ children }) {
     (state) => state.overviewLoading.topCompromiseMalwareState.status
   );
 
+  const documentationSectorOneStatus = useSelector(
+    (state) => state.documentationSectorOne.documentationStatus
+  );
+
+  const freeTrialPopupStatus = useSelector(
+    (state) => state.freeTrialPopup.status
+  );
+
+  const handleDocumentationSectorOneStatus = () => {
+    dispatch(setDocumentationSectorApiStatus(false));
+  };
+
   // console.log(
   //   "loading top compromise malware: ",
   //   loadingTopCompromiseMalwareOverview
@@ -140,6 +179,8 @@ export default function DashboardLayout({ children }) {
   const CredentialsEmail = getCookie("email_credentials");
   const CredentialsAccess_Token = getCookie("access_token");
   const CredentialsRefresh_Token = getCookie("refresh_token");
+
+  console.log("cookie get user_status", getCookie("user_status") == "true");
 
   // End of: Checking Users Credentials
 
@@ -235,14 +276,13 @@ export default function DashboardLayout({ children }) {
   );
   const multipleBookmarkStatus = useSelector((state) => state.checkbox.status);
 
-  console.log("all data id checkbox from compromised: ", allCheckboxesIdData);
-
   const handleCloseConfirmCheckboxIdsData = () => {
     dispatch(setMarkedAsBookmark(false));
   };
 
   const handleMultipleBookmarkCheckbox = () => {
-    CheckboxMultipleBookmark();
+    // CheckboxMultipleBookmark();
+    fetchCheckboxMultipleBookmarkWithRefreshToken();
     dispatch(clearIds());
     dispatch(setMarkedAsBookmark(false));
   };
@@ -257,7 +297,7 @@ export default function DashboardLayout({ children }) {
           method: "PATCH",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            Authorization: `Bearer ${getCookie("access_token")}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -267,28 +307,36 @@ export default function DashboardLayout({ children }) {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (!data.success) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       dispatch(setSuccessMultipleBookmark(true));
       dispatch(setBannerMultipleBookmark(true));
       dispatch(clearIds());
+      return res;
     } catch (error) {
       dispatch(setBannerMultipleBookmark(false));
       dispatch(clearIds());
+      return error;
     } finally {
       dispatch(clearIds());
       setTimeout(() => {
         dispatch(setBannerMultipleBookmark(null));
       }, 9000);
     }
+  };
+
+  const fetchCheckboxMultipleBookmarkWithRefreshToken = async () => {
+    await fetchWithRefreshToken(CheckboxMultipleBookmark, router, dispatch);
   };
 
   // End of: Handle Checkboxes Bookmark in Compromised pages
@@ -304,7 +352,8 @@ export default function DashboardLayout({ children }) {
   };
 
   const handleMultipleValidatedCheckbox = () => {
-    CheckboxMultipleValidated();
+    // CheckboxMultipleValidated();
+    fetchCheckboxMultipleValidatedWithRefreshToken();
     dispatch(clearIds());
     dispatch(setMarkedAsValidated(false));
   };
@@ -318,7 +367,7 @@ export default function DashboardLayout({ children }) {
           method: "POST",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            Authorization: `Bearer ${getCookie("access_token")}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -329,28 +378,36 @@ export default function DashboardLayout({ children }) {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (!data.success) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       dispatch(setSuccessMultipleValidated(true));
       dispatch(setBannerMultipleValidated(true));
       dispatch(clearIds());
+      return res;
     } catch (error) {
       dispatch(setBannerMultipleValidated(false));
       dispatch(clearIds());
+      return error;
     } finally {
       dispatch(clearIds());
       setTimeout(() => {
         dispatch(setBannerMultipleValidated(null));
       }, 9000);
     }
+  };
+
+  const fetchCheckboxMultipleValidatedWithRefreshToken = async () => {
+    await fetchWithRefreshToken(CheckboxMultipleValidated, router, dispatch);
   };
 
   // End of: Handle Checkboxes Validated in Compromised pages
@@ -371,21 +428,24 @@ export default function DashboardLayout({ children }) {
   };
 
   const handleUrlListYes = () => {
-    UpdateDomain();
+    // UpdateDomain();
+    fetchUpdateDomainWithRefreshToken();
 
     // Check if the `window` object is defined (browser environment)
-    if (typeof window !== "undefined") {
-      window.location.reload();
-    }
+    // if (typeof window !== "undefined") {
+    // window.location.reload();
+    // }
   };
 
   const handleBookmarkCompromiseData = () => {
-    BookmarkCompromisedData();
+    // BookmarkCompromisedData();
+    fetchBookmarkCompromisedDataWithRefreshToken();
     dispatch(setBookmarkConfirmState(false));
   };
 
   const handleUnBookmarkCompromiseData = () => {
-    UnBookmarkCompromisedData();
+    // UnBookmarkCompromisedData();
+    fetchUnBookmarkCompromisedDataWithRefreshToken();
     dispatch(setUnBookmarkConfirmState(false));
   };
 
@@ -411,7 +471,7 @@ export default function DashboardLayout({ children }) {
           method: "PATCH",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            Authorization: `Bearer ${getCookie("access_token")}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -421,26 +481,34 @@ export default function DashboardLayout({ children }) {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (!data.success) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       dispatch(setBookmarkStatusData(true));
       dispatch(setBookmarkBannerSuccess(true));
+      return res;
     } catch (error) {
       dispatch(setBookmarkStatusData(false));
       dispatch(setBookmarkBannerSuccess(false));
+      return error;
     } finally {
       setTimeout(() => {
         dispatch(setBookmarkBannerSuccess(null));
       }, 9000);
     }
+  };
+
+  const fetchBookmarkCompromisedDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(BookmarkCompromisedData, router, dispatch);
   };
 
   const UnBookmarkCompromisedData = async () => {
@@ -452,7 +520,7 @@ export default function DashboardLayout({ children }) {
           method: "PATCH",
           credentials: "include",
           headers: {
-            Authorization: `Bearer ${CredentialsAccess_Token}`,
+            Authorization: `Bearer ${getCookie("access_token")}`,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
@@ -462,26 +530,34 @@ export default function DashboardLayout({ children }) {
       );
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       if (!data.success) {
-        throw new Error("");
+        // throw new Error("");
+        throw res;
       }
 
       dispatch(setUnBookmarkStatusData(true));
       dispatch(setUnBookmarkBannerSuccess(true));
+      return res;
     } catch (error) {
       dispatch(setUnBookmarkStatusData(false));
       dispatch(setUnBookmarkBannerSuccess(false));
+      return error;
     } finally {
       setTimeout(() => {
         dispatch(setUnBookmarkBannerSuccess(null));
       }, 9000);
     }
+  };
+
+  const fetchUnBookmarkCompromisedDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(UnBookmarkCompromisedData, router, dispatch);
   };
 
   const UpdateDomain = async () => {
@@ -490,7 +566,7 @@ export default function DashboardLayout({ children }) {
         method: "PATCH",
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${CredentialsAccess_Token}`,
+          Authorization: `Bearer ${getCookie("access_token")}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -498,21 +574,42 @@ export default function DashboardLayout({ children }) {
         }),
       });
 
+      // console.log("res update domain: ", res);
+
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        // console.log("res 401 | 403", res);
+        setIsChangeDomainTokenExpired(true);
+        return res;
       }
 
       const data = await res.json();
 
-      if (data.data.Severity === "ERROR") {
-        DeleteCookies();
-        RedirectToLogin();
-      }
+      // console.log("data update domain: ", data);
+
+      // if (data.data.Severity === "ERROR") {
+      //   // DeleteCookies();
+      //   // RedirectToLogin();
+      //   // return res;
+      // }
       // setReloadChange(true);
+      // console.log("res most bottom: ", res);
+      setIsChangeDomainTokenExpired(false);
+      return res;
     } catch (error) {
     } finally {
+      if (!isChangeDomainTokenExpired) {
+        setIsUrlListSelected(false);
+        dispatch(setChangeUrl(false));
+        // console.log("Running finally update domain");
+        window.location.reload();
+      }
     }
+  };
+
+  const fetchUpdateDomainWithRefreshToken = async () => {
+    await fetchWithRefreshToken(UpdateDomain, router, dispatch);
   };
 
   // End of: Update Domain
@@ -530,12 +627,14 @@ export default function DashboardLayout({ children }) {
         method: "POST",
         credentials: "include",
         headers: {
-          Authorization: `Bearer ${CredentialsAccess_Token}`,
+          Authorization: `Bearer ${getCookie("access_token")}`,
         },
       });
 
       if (res.status === 401 || res.status === 403) {
-        throw new Error("");
+        // return res;
+        // throw new Error("");
+        throw res;
       }
 
       const data = await res.json();
@@ -543,15 +642,21 @@ export default function DashboardLayout({ children }) {
       if (data.success) {
         DeleteCookies();
         router.push("/auth/login");
+        return res;
       }
     } catch (error) {
       setErrorLogout(true);
       setTimeout(() => {
         setErrorLogout(false);
       }, 3000);
+      return error;
     } finally {
       setLogoutLoading(false);
     }
+  };
+
+  const fetchLogoutFunctionWithRefreshToken = async () => {
+    await fetchWithRefreshToken(Logout, router, dispatch);
   };
 
   // End of: Handle Logout
@@ -569,16 +674,23 @@ export default function DashboardLayout({ children }) {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setUsersData(data.data.email);
+      setCookie("user_status", data.data.isDemo);
+      return res;
     } catch (error) {
     } finally {
     }
+  };
+
+  const fetchGetUsersDataWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getUsersData, router, dispatch);
   };
 
   const getUserDomain = async () => {
@@ -592,74 +704,83 @@ export default function DashboardLayout({ children }) {
       });
 
       if (res.status === 401 || res.status === 403) {
-        DeleteCookies();
-        RedirectToLogin();
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
       }
 
       const data = await res.json();
 
       setCookie("user_identifier", data.data.id_domain);
+      return res;
     } catch (error) {
     } finally {
     }
   };
 
+  const fetchGetUserDomainWithRefreshToken = async () => {
+    await fetchWithRefreshToken(getUserDomain, router, dispatch);
+  };
+
   useEffect(() => {
-    getUsersData();
-    getUserDomain();
+    // getUsersData();
+    // getUserDomain();
+    fetchGetUsersDataWithRefreshToken();
+    fetchGetUserDomainWithRefreshToken();
   }, []);
 
   // End of: Handle Get Users and Get ID Users.
 
   // Start of: Refresh Token
 
-  const getRefreshToken = async () => {
-    try {
-      const res = await fetch(`${APIKEY}refresh-token`, {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          Authorization: "app_secret!!!",
-        },
-      });
+  // const getRefreshToken = async () => {
+  //   try {
+  //     const res = await fetch(`${APIKEY}refresh-token`, {
+  //       method: "POST",
+  //       credentials: "include",
+  //       headers: {
+  //         Authorization: "app_secret!!!",
+  //       },
+  //     });
 
-      console.log("refresh token res: ", res);
+  //     console.log("refresh token res: ", res);
 
-      if (res.status === 401 || res.status === 403 || res.status === 400) {
-        setSessionExpired(true);
-        setTimeout(() => {
-          setSessionExpired(false);
-          DeleteCookies();
-          router.push("/auth/login");
-        }, 7000);
-      }
+  //     if (res.status === 401 || res.status === 403 || res.status === 400) {
+  //       setSessionExpired(true);
+  //       setTimeout(() => {
+  //         setSessionExpired(false);
+  //         DeleteCookies();
+  //         router.push("/auth/login");
+  //       }, 7000);
+  //     }
 
-      const data = await res.json();
+  //     const data = await res.json();
 
-      deleteCookie("access_token");
-      setCookie("access_token", data.data.access_token);
+  //     deleteCookie("access_token");
+  //     setCookie("access_token", data.data.access_token);
 
-      console.log("refresh token data: ", data);
-    } catch (error) {
-    } finally {
-    }
-  };
+  //     console.log("refresh token data: ", data);
+  //   } catch (error) {
+  //   } finally {
+  //   }
+  // };
 
-  useEffect(() => {
-    const IntervalId = setInterval(() => {
-      getRefreshToken();
-    }, 15 * 60 * 1000);
+  // Commented because the mechanism is change to every request
+  // useEffect(() => {
+  //   const IntervalId = setInterval(() => {
+  //     getRefreshToken();
+  //   }, 15 * 60 * 1000);
 
-    return () => clearInterval(IntervalId);
-  }, []);
+  //   return () => clearInterval(IntervalId);
+  // }, []);
 
   // End of: Refresh Token
 
   useEffect(() => {
     if (
-      !CredentialsEmail ||
-      !CredentialsAccess_Token ||
-      !CredentialsRefresh_Token
+      !getCookie("email_credentials") ||
+      !getCookie("access_token") ||
+      !getCookie("refresh_token")
     ) {
       return redirect("/auth/login");
     }
@@ -667,6 +788,92 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
+          freeTrialPopupStatus ? "visible" : "hidden"
+        )}
+      >
+        <div
+          className={clsx("rounded-lg bg-white p-[28px] w-[28%] text-center ")}
+        >
+          <div className="m-auto mb-6">
+            <Image
+              alt={"icon"}
+              src={`/images/popup_free_trial.svg`}
+              width={165}
+              height={136}
+              className="m-auto"
+            />
+          </div>
+          <h1 className="text-LG-strong mb-4">
+            Keep getting the best from SectorOne
+          </h1>
+          <p className="mb-10 text-text-description  text-Base-normal">
+            Upgrade your account to access all SectorOne dashboard features.
+            Contact us at{" "}
+            <span className="text-Base-strong text-black">
+              support@sector.co.id
+            </span>
+          </p>
+          <div className="flex justify-end">
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg mr-2"
+              onClick={() => dispatch(setFreeTrialStatusToFalse())}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={() => dispatch(setFreeTrialStatusToFalse())}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
+          documentationSectorOneStatus ? "visible" : "hidden"
+        )}
+      >
+        <div
+          className={clsx("rounded-lg bg-white p-[28px] w-[28%] text-center ")}
+        >
+          <div className="m-auto mb-6">
+            <Image
+              alt={"icon"}
+              src={`/images/Icon_Documentation.svg`}
+              width={165}
+              height={136}
+              className="m-auto"
+            />
+          </div>
+          <h1 className="text-LG-strong mb-4">Intregration with Sector API</h1>
+          <p className="mb-10 text-text-description  text-Base-normal">
+            Please contact us at{" "}
+            <span className="text-Base-strong text-black">
+              support@sector.co.id
+            </span>{" "}
+            to connect with Sector API.
+          </p>
+          <div className="flex justify-end">
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg mr-2"
+              onClick={handleDocumentationSectorOneStatus}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleDocumentationSectorOneStatus}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
@@ -894,8 +1101,20 @@ export default function DashboardLayout({ children }) {
             </div>
             <div className="mt-8">
               <h1 className="text-LG-strong">Url</h1>
-              <h2 className="text-text-description text-LG-normal mt-1">
-                {detailsCompromisedData.url ?? "-"}
+              <h2
+                className="text-text-description text-LG-normal mt-1"
+                style={{
+                  maxWidth: "450px",
+                  wordWrap: "break-word",
+                }}
+              >
+                <a
+                  href={`${detailsCompromisedData.url ?? "-"}`}
+                  target="_blank"
+                  className="underline"
+                >
+                  {detailsCompromisedData.url ?? "-"}
+                </a>
               </h2>
             </div>
             <div className="mt-8">
@@ -1111,7 +1330,7 @@ export default function DashboardLayout({ children }) {
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-black w-full z-50 flex items-center justify-center",
-          sessionExpired ? "visible" : "hidden"
+          sessionExpiredRefreshToken ? "visible" : "hidden"
         )}
       >
         <div className="bg-white p-[32px] rounded-lg w-[30%]">
@@ -1137,12 +1356,24 @@ export default function DashboardLayout({ children }) {
       </div>
       <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white border-b-2 border-b-input-border">
         <Image
-          src={"/images/sector_logo.png"}
+          src={"/images/SectorOne.png"}
           alt="Logo Sector"
           width={92}
           height={38}
         />
         <div className="flex items-center">
+          {getCookie("user_status") === "true" && (
+            <div
+              className={clsx(
+                "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1 px-2.5 mr-8 flex items-center"
+                // getCookie("user_status") === "true" ? "visible" : "hidden"
+              )}
+              onClick={() => dispatch(setFreeTrialStatusToTrue())}
+            >
+              <LockTwoTone twoToneColor={"#FF6F1E"} />
+              <p className="text-SM-normal text-[#FF6F1E] ml-3 ">Free trial</p>
+            </div>
+          )}
           <div className="cursor-pointer">
             <Image
               src={"/images/sector_notification.svg"}
@@ -1150,7 +1381,10 @@ export default function DashboardLayout({ children }) {
               width={22}
               height={22}
               className="mr-5"
+              onMouseEnter={handleMouseEnter}
+              onMouseLeave={handleMouseLeave}
             />
+            <Tooltip isActive={isHovered} right={0} top={"10px"} />
           </div>
           <div className="cursor-pointer" onClick={toggleAccount}>
             <Image
@@ -1168,7 +1402,10 @@ export default function DashboardLayout({ children }) {
           >
             <p className="text-heading-4"> {usersData && usersData} </p>
             <div className="w-full h-[1px] bg-input-border my-[24px]"></div>
-            <div className="flex items-center cursor-pointer" onClick={Logout}>
+            <div
+              className="flex items-center cursor-pointer"
+              onClick={fetchLogoutFunctionWithRefreshToken}
+            >
               <div>
                 <Image
                   src={"/images/image_logout.svg"}
@@ -1177,7 +1414,7 @@ export default function DashboardLayout({ children }) {
                   height={24}
                 />
               </div>
-              <p className="text-primary-base ml-[8px]">Log out of account</p>
+              <p className="text-[#FF4D4F] ml-[8px]">Log out of account</p>
             </div>
           </div>
         </div>
