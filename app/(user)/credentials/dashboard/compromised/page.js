@@ -2761,8 +2761,8 @@ export default function CompromisedDashboard() {
                     }}
                     // disabled={handleDisableExportButton() === null}
                     // readOnly={handleDisableExportButton() === null}
-                    disabled={getCookie("user_status") === "true"}
-                    readOnly={getCookie("user_status") === "true"}
+                    // disabled={getCookie("user_status") === "true"}
+                    // readOnly={getCookie("user_status") === "true"}
                   />
                   <div
                     className="px-3 cursor-pointer"
@@ -2776,7 +2776,7 @@ export default function CompromisedDashboard() {
                     />
                   </div>
                 </div>
-                <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} />
+                {/* <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} /> */}
                 <div>
                   <ConfigProvider
                     theme={{
@@ -2805,17 +2805,17 @@ export default function CompromisedDashboard() {
                       size="large"
                       // disabled={handleDisableExportButton() === null}
                       // readOnly={handleDisableExportButton() === null}
-                      disabled={getCookie("user_status") === "true"}
-                      readOnly={getCookie("user_status") === "true"}
+                      // disabled={getCookie("user_status") === "true"}
+                      // readOnly={getCookie("user_status") === "true"}
                       onMouseEnter={handleMouseEnterRangeDate}
                       onMouseLeave={handleMouseLeaveRangeDate}
                     />
                   </ConfigProvider>
-                  <Tooltip
+                  {/* <Tooltip
                     isActive={isHoveredRangeDate}
                     right={"0"}
                     bottom={"50px"}
-                  />
+                  /> */}
                 </div>
                 <div className="ml-auto ">
                   {checkIsBookmarkSection() === "no-bookmark" ? (

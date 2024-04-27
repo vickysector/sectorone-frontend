@@ -1374,7 +1374,7 @@ export default function DashboardLayout({ children }) {
               <p className="text-SM-normal text-[#FF6F1E] ml-3 ">Free trial</p>
             </div>
           )}
-          <div className="cursor-pointer">
+          {/* <div className="cursor-pointer">
             <Image
               src={"/images/sector_notification.svg"}
               alt="Notif"
@@ -1385,7 +1385,7 @@ export default function DashboardLayout({ children }) {
               onMouseLeave={handleMouseLeave}
             />
             <Tooltip isActive={isHovered} right={0} top={"10px"} />
-          </div>
+          </div> */}
           <div className="cursor-pointer" onClick={toggleAccount}>
             <Image
               src={"/images/sector_avatar.svg"}
