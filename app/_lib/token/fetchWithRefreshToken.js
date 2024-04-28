@@ -11,7 +11,7 @@ export const fetchWithRefreshToken = async (
   try {
     // await fetchFunction(...args);
     let success = await fetchFunction(...args);
-    console.log("succes breaches: ", success.status);
+    // console.log("succes breaches: ", success.status);
     if (success.status === 401 || success.status === 403) {
       throw success;
     }
@@ -24,17 +24,17 @@ export const fetchWithRefreshToken = async (
         // await fetchFunction(...args);
         let success = await getRefreshToken();
 
-        console.log("success refresh token: ", success);
+        // console.log("success refresh token: ", success);
 
         if (success.status !== 200) {
           throw new Error("");
         }
 
         let success_run_again = await fetchFunction(...args);
-        console.log(
-          "running again... succes breaches: ",
-          success_run_again.status
-        );
+        // console.log(
+        //   "running again... succes breaches: ",
+        //   success_run_again.status
+        // );
       } catch (refreshError) {
         console.error("Refresh token failed:", refreshError);
         // Handle refresh token failure (e.g., logout, redirect to login)

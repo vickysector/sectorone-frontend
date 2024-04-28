@@ -203,7 +203,7 @@ export default function CompromisedDashboard() {
 
   // End of: Handle Page
 
-  console.log("select validasi: ", selectValidasi);
+  // console.log("select validasi: ", selectValidasi);
 
   // Start of: Tooptips in notifications
 
@@ -554,6 +554,9 @@ export default function CompromisedDashboard() {
   );
 
   // End of:  Checkbox Validated Functionality
+
+  // console.log("bookmark status data: ", statusStateMultipleBookmark);
+  // console.log("validate status data: ", statusStateMultipleValidated);
 
   const loadingCompromisedData = useSelector(
     (state) => state.compromised.status

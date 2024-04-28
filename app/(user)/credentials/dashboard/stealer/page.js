@@ -398,7 +398,7 @@ export default function StealerUserPage() {
 
       const data = await res.json();
 
-      console.log("data : ", data);
+      // console.log("data : ", data);
 
       setUrlBreaches(data.data.name_domain);
       setIconBreaches(data.data.icon_domain);
