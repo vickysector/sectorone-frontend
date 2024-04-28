@@ -2747,11 +2747,11 @@ export default function CompromisedDashboard() {
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
                       // handleDisableExportButton() === null &&
                       //   "cursor-not-allowed"
-                      getCookie("user_status") === "true" &&
-                        "cursor-not-allowed"
+                      // getCookie("user_status") === "true" &&
+                      //   "cursor-not-allowed"
                     )}
                     placeholder={
                       selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES

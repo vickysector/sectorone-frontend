@@ -851,9 +851,9 @@ export default function StealerUserPage() {
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
-                      getCookie("user_status") === "true" &&
-                        "cursor-not-allowed"
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
+                      // getCookie("user_status") === "true" &&
+                      //   "cursor-not-allowed"
                     )}
                     placeholder={"Search by Malware/Devices name"}
                     onChange={handleSearchKeyword}
