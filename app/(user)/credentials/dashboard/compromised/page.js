@@ -203,6 +203,8 @@ export default function CompromisedDashboard() {
 
   // End of: Handle Page
 
+  console.log("select validasi: ", selectValidasi);
+
   // Start of: Tooptips in notifications
 
   const [isHovered, setIsHovered] = useState(false);
@@ -2467,6 +2469,7 @@ export default function CompromisedDashboard() {
   useEffect(() => {
     // fetchEmployeeData();
     setInitialCheckboxState(false);
+    setSelectValidasi(null);
     dispatch(clearIds());
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
