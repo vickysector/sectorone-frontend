@@ -28,7 +28,7 @@ export const getRefreshToken = async () => {
     deleteCookie("access_token");
     setCookie("access_token", data.data.access_token);
 
-    console.log("refresh token data: ", data);
+    // console.log("refresh token data: ", data);
 
     return res;
   } catch (error) {
