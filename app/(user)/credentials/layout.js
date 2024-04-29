@@ -180,7 +180,9 @@ export default function DashboardLayout({ children }) {
   const CredentialsAccess_Token = getCookie("access_token");
   const CredentialsRefresh_Token = getCookie("refresh_token");
 
-  console.log("cookie get user_status", getCookie("user_status") == "true");
+  // console.log("cookie get user_status", getCookie("user_status") == "true");
+
+  // console.log("loading compromised data: ", loadingCompromisedData);
 
   // End of: Checking Users Credentials
 

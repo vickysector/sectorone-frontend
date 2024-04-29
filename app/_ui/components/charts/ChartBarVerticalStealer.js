@@ -57,7 +57,7 @@ const options = {
 export default function ChartBarVerticalStealer(props) {
   const { stealerData } = props;
 
-  console.log("stealer data: ", stealerData);
+  // console.log("stealer data: ", stealerData);
 
   const labels = [
     "January",

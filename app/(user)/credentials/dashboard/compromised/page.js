@@ -89,6 +89,7 @@ import {
 import dynamic from "next/dynamic";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
+import dayjs from "dayjs";
 
 // const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
 //   ssr: false, // Ensure ApexCharts is not imported during SSR
@@ -202,6 +203,8 @@ export default function CompromisedDashboard() {
   };
 
   // End of: Handle Page
+
+  // console.log("select validasi: ", selectValidasi);
 
   // Start of: Tooptips in notifications
 
@@ -553,6 +556,9 @@ export default function CompromisedDashboard() {
 
   // End of:  Checkbox Validated Functionality
 
+  // console.log("bookmark status data: ", statusStateMultipleBookmark);
+  // console.log("validate status data: ", statusStateMultipleValidated);
+
   const loadingCompromisedData = useSelector(
     (state) => state.compromised.status
   );
@@ -673,54 +679,61 @@ export default function CompromisedDashboard() {
   const handleRangePicker = (date, datestring) => {
     // console.log("date : ", date);
     // console.log("datestring: ", datestring);
-    setStartDate(datestring[0]);
-    setEndDate(datestring[1]);
-    switch (selectedButton) {
-      case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
-        setPage(1);
-
-        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          setPageEmployeeBookmark(1);
-        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-          setPageEmployeeValidate(1);
-        } else {
+    if (date) {
+      // setStartDate(datestring[0]);
+      // setEndDate(datestring[1]);
+      setStartDate(date[0].format("YYYY-MM-DD"));
+      setEndDate(date[1].format("YYYY-MM-DD"));
+      switch (selectedButton) {
+        case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
           setPage(1);
-        }
-        break;
-      case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
-        setPageDevices(1);
 
-        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          setPageDevicesBookmark(1);
-        } else {
+          if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+            setPageEmployeeBookmark(1);
+          } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+            setPageEmployeeValidate(1);
+          } else {
+            setPage(1);
+          }
+          break;
+        case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
           setPageDevices(1);
-        }
-        break;
-      // Add more cases for other buttons if needed
-      case DETAIL_COMPROMISED_COMPROMISE_USERS:
-        setPageUsers(1);
 
-        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          setPageUserBookmark(1);
-        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-          setPageUsersValidate(1);
-        } else {
+          if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+            setPageDevicesBookmark(1);
+          } else {
+            setPageDevices(1);
+          }
+          break;
+        // Add more cases for other buttons if needed
+        case DETAIL_COMPROMISED_COMPROMISE_USERS:
           setPageUsers(1);
-        }
-        break;
-      case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
-        setPageThirdParty(1);
 
-        if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          setPageThirdPartyBookmark(1);
-        } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
-          setPageThirdPartyValidate(1);
-        } else {
+          if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+            setPageUserBookmark(1);
+          } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+            setPageUsersValidate(1);
+          } else {
+            setPageUsers(1);
+          }
+          break;
+        case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
           setPageThirdParty(1);
-        }
-        break;
-      default:
-        break;
+
+          if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
+            setPageThirdPartyBookmark(1);
+          } else if (selectedOutlineButton === DETAIL_COMPROMISED_TESTING) {
+            setPageThirdPartyValidate(1);
+          } else {
+            setPageThirdParty(1);
+          }
+          break;
+        default:
+          break;
+      }
+    } else {
+      setStartDate("");
+      setEndDate("");
     }
   };
 
@@ -2467,6 +2480,7 @@ export default function CompromisedDashboard() {
   useEffect(() => {
     // fetchEmployeeData();
     setInitialCheckboxState(false);
+    setSelectValidasi(null);
     dispatch(clearIds());
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
@@ -2741,11 +2755,11 @@ export default function CompromisedDashboard() {
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
                       // handleDisableExportButton() === null &&
                       //   "cursor-not-allowed"
-                      getCookie("user_status") === "true" &&
-                        "cursor-not-allowed"
+                      // getCookie("user_status") === "true" &&
+                      //   "cursor-not-allowed"
                     )}
                     placeholder={
                       selectedButton === DETAIL_COMPROMISED_COMPROMISE_DEVICES
@@ -2809,6 +2823,10 @@ export default function CompromisedDashboard() {
                       // readOnly={getCookie("user_status") === "true"}
                       onMouseEnter={handleMouseEnterRangeDate}
                       onMouseLeave={handleMouseLeaveRangeDate}
+                      value={[
+                        startDate ? dayjs(startDate) : "",
+                        endDate ? dayjs(endDate) : "",
+                      ]}
                     />
                   </ConfigProvider>
                   {/* <Tooltip

@@ -64,6 +64,7 @@ import {
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { useRouter, redirect } from "next/navigation";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
+import dayjs from "dayjs";
 
 const { RangePicker } = DatePicker;
 
@@ -88,6 +89,8 @@ export default function StealerUserPage() {
   const [endDate, setEndDate] = useState("");
   const [inputSearch, setInputSearch] = useState();
   const [yearSelect, setYearSelect] = useState("2024");
+
+  const [filterApplied, setFilterApplied] = useState(false); // state for make sure data after search and rangedate is running once
 
   // Start of: Tooptips in notifications
 
@@ -214,19 +217,26 @@ export default function StealerUserPage() {
   };
 
   const handleRangePicker = (date, datestring) => {
-    setStartDate(datestring[0]);
-    setEndDate(datestring[1]);
-    switch (selectSection) {
-      case "stealer":
-        setPage(1);
-        setExportToCvPage(1);
-        break;
-      case "bookmark-stealer":
-        setBookmarkPage(1);
-        setExportToCsvBookmarkPage(1);
-        break;
-      default:
-        break;
+    // setStartDate(datestring[0]);
+    // setEndDate(datestring[1]);
+    if (date) {
+      setStartDate(date[0].format("YYYY-MM-DD"));
+      setEndDate(date[1].format("YYYY-MM-DD"));
+      switch (selectSection) {
+        case "stealer":
+          setPage(1);
+          setExportToCvPage(1);
+          break;
+        case "bookmark-stealer":
+          setBookmarkPage(1);
+          setExportToCsvBookmarkPage(1);
+          break;
+        default:
+          break;
+      }
+    } else {
+      setStartDate("");
+      setEndDate("");
     }
   };
 
@@ -398,7 +408,7 @@ export default function StealerUserPage() {
 
       const data = await res.json();
 
-      console.log("data : ", data);
+      // console.log("data : ", data);
 
       setUrlBreaches(data.data.name_domain);
       setIconBreaches(data.data.icon_domain);
@@ -418,8 +428,9 @@ export default function StealerUserPage() {
       dispatch(setLoadingStealerState(true));
       dispatch(setBookmarkStatusData(null));
       dispatch(setUnBookmarkStatusData(null));
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -475,8 +486,9 @@ export default function StealerUserPage() {
       dispatch(setBookmarkStatusData(null));
       dispatch(setUnBookmarkStatusData(null));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setBookmarkPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -536,8 +548,9 @@ export default function StealerUserPage() {
     try {
       dispatch(setLoadingStealerState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setExportToCvPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -594,8 +607,9 @@ export default function StealerUserPage() {
     try {
       dispatch(setLoadingStealerState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setExportToCsvBookmarkPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -851,9 +865,9 @@ export default function StealerUserPage() {
                   <input
                     type="email"
                     className={clsx(
-                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  ",
-                      getCookie("user_status") === "true" &&
-                        "cursor-not-allowed"
+                      " bg-transparent  py-1.5 px-3  border-r-2  text-Base-normal w-full  "
+                      // getCookie("user_status") === "true" &&
+                      //   "cursor-not-allowed"
                     )}
                     placeholder={"Search by Malware/Devices name"}
                     onChange={handleSearchKeyword}
@@ -921,6 +935,11 @@ export default function StealerUserPage() {
                       // readOnly={getCookie("user_status") === "true"}
                       onMouseEnter={handleMouseEnterRangeDate}
                       onMouseLeave={handleMouseLeaveRangeDate}
+                      value={[
+                        startDate ? dayjs(startDate) : "",
+                        endDate ? dayjs(endDate) : "",
+                      ]}
+                      allowClear={true}
                     />
                   </ConfigProvider>
                   {/* <Tooltip
