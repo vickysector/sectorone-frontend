@@ -90,6 +90,8 @@ export default function StealerUserPage() {
   const [inputSearch, setInputSearch] = useState();
   const [yearSelect, setYearSelect] = useState("2024");
 
+  const [filterApplied, setFilterApplied] = useState(false); // state for make sure data after search and rangedate is running once
+
   // Start of: Tooptips in notifications
 
   const [isHovered, setIsHovered] = useState(false);
@@ -426,8 +428,9 @@ export default function StealerUserPage() {
       dispatch(setLoadingStealerState(true));
       dispatch(setBookmarkStatusData(null));
       dispatch(setUnBookmarkStatusData(null));
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -483,8 +486,9 @@ export default function StealerUserPage() {
       dispatch(setBookmarkStatusData(null));
       dispatch(setUnBookmarkStatusData(null));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setBookmarkPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -544,8 +548,9 @@ export default function StealerUserPage() {
     try {
       dispatch(setLoadingStealerState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setExportToCvPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
@@ -602,8 +607,9 @@ export default function StealerUserPage() {
     try {
       dispatch(setLoadingStealerState(true));
 
-      if (keyword || startDate || endDate) {
+      if (!filterApplied && (keyword || startDate || endDate)) {
         setExportToCsvBookmarkPage(1);
+        setFilterApplied(true);
       }
 
       const res = await fetch(
