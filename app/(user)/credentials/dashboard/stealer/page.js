@@ -64,6 +64,7 @@ import {
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { useRouter, redirect } from "next/navigation";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
+import dayjs from "dayjs";
 
 const { RangePicker } = DatePicker;
 
@@ -214,19 +215,26 @@ export default function StealerUserPage() {
   };
 
   const handleRangePicker = (date, datestring) => {
-    setStartDate(datestring[0]);
-    setEndDate(datestring[1]);
-    switch (selectSection) {
-      case "stealer":
-        setPage(1);
-        setExportToCvPage(1);
-        break;
-      case "bookmark-stealer":
-        setBookmarkPage(1);
-        setExportToCsvBookmarkPage(1);
-        break;
-      default:
-        break;
+    // setStartDate(datestring[0]);
+    // setEndDate(datestring[1]);
+    if (date) {
+      setStartDate(date[0].format("YYYY-MM-DD"));
+      setEndDate(date[1].format("YYYY-MM-DD"));
+      switch (selectSection) {
+        case "stealer":
+          setPage(1);
+          setExportToCvPage(1);
+          break;
+        case "bookmark-stealer":
+          setBookmarkPage(1);
+          setExportToCsvBookmarkPage(1);
+          break;
+        default:
+          break;
+      }
+    } else {
+      setStartDate("");
+      setEndDate("");
     }
   };
 
@@ -921,6 +929,11 @@ export default function StealerUserPage() {
                       // readOnly={getCookie("user_status") === "true"}
                       onMouseEnter={handleMouseEnterRangeDate}
                       onMouseLeave={handleMouseLeaveRangeDate}
+                      value={[
+                        startDate ? dayjs(startDate) : "",
+                        endDate ? dayjs(endDate) : "",
+                      ]}
+                      allowClear={true}
                     />
                   </ConfigProvider>
                   {/* <Tooltip
