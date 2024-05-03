@@ -25,6 +25,8 @@ export default function ActivityLogUserPage() {
   const [keywordSearch, setKeywordSearch] = useState("");
   const [page, setPage] = useState(1);
 
+  const [filterApplied, setFilterApplied] = useState(false); // state for make sure data after search and rangedate is running once
+
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -49,8 +51,9 @@ export default function ActivityLogUserPage() {
   const fetchLogActivity = async (keyword = "") => {
     try {
       dispatch(setLoadingLogState(true));
-      if (keyword) {
+      if (!filterApplied && keyword) {
         setPage(1);
+        setFilterApplied(true);
       }
       const res = await fetch(
         `${APIDATAV1}setting/activity?page=${page}&limit=10&search=${keyword}`,
