@@ -145,6 +145,12 @@ export default function CompromisedDashboard() {
   const [lastUpdate, setLastUpdate] = useState();
   const [domainUsers, setDomainUsers] = useState();
 
+  // Start of: Timer
+  const [currentTime, setCurrentTime] = useState(dayjs());
+  const [intervalRef, setIntervalRef] = useState(null);
+
+  // End of: Timer
+
   // Start of: Handle Page
   const [page, setPage] = useState(1);
   const [pageEmployeeValidate, setPageEmployeeValidate] = useState(1);
@@ -2477,6 +2483,22 @@ export default function CompromisedDashboard() {
   //   }
   // }, [selectedButton]);
 
+  // Start of: Timer
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(dayjs());
+    }, 1000); // Update every second
+
+    setIntervalRef(interval);
+
+    return () => {
+      clearInterval(interval); // Clean up the interval on unmount
+    };
+  }, []);
+
+  // End of: Timer
+
   useEffect(() => {
     // fetchEmployeeData();
     setInitialCheckboxState(false);
@@ -2588,9 +2610,16 @@ export default function CompromisedDashboard() {
               </h1>
             </div>
             <div className="">
-              <h2 className="text-LG-normal text-text-description mt-2">
+              {/* <h2 className="text-LG-normal text-text-description mt-2">
                 Last update: {lastUpdate && lastUpdate}
-              </h2>
+              </h2> */}
+              <p className="text-LG-normal text-text-description mt-2">
+                This Company is scanned by SectorOne per{" "}
+                <span className="text-primary-base">
+                  {" "}
+                  {currentTime.format("DD MMMM YYYY HH:mm:ss")}
+                </span>{" "}
+              </p>
             </div>
           </div>
           <div className="flex flex-grow justify-end items-center">
