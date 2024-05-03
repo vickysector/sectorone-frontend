@@ -53,6 +53,8 @@ import { getRefreshToken } from "@/app/_lib/token/getRefreshToken";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 // import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 
+import dayjs from "dayjs";
+
 export default function UserDashboardPage() {
   const [yearSelect, setYearSelect] = useState(
     TOTAL_COMPROMISED_OVERVIEW_SELECT_YEAR_2024
@@ -62,6 +64,12 @@ export default function UserDashboardPage() {
   );
   const [loadingBreaches, setLoadingBreaches] = useState(false);
   const [loadingTopCompromised, setLoadingTopCompromised] = useState(false);
+
+  // Start of: Timer
+  const [currentTime, setCurrentTime] = useState(dayjs());
+  const [intervalRef, setIntervalRef] = useState(null);
+
+  // End of: Timer
 
   // Start of: Breaches Data
   // const [breachesAll, setBreachesAll] = useState();
@@ -202,6 +210,22 @@ export default function UserDashboardPage() {
     // fetchBreachesDataWithRefreshToken();
     fetchDataBreachesWithRefreshToken();
   }, [yearSelect]);
+
+  // Start of: Timer
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(dayjs());
+    }, 1000); // Update every second
+
+    setIntervalRef(interval);
+
+    return () => {
+      clearInterval(interval); // Clean up the interval on unmount
+    };
+  }, []);
+
+  // End of: Timer
 
   // Start of: Change URL - Get Domain USERS
 
@@ -435,9 +459,16 @@ export default function UserDashboardPage() {
                 </h1>
               </div>
               <div className="">
-                <h2 className="text-LG-normal text-text-description mt-2">
+                {/* <h2 className="text-LG-normal text-text-description mt-2">
                   Last update: {lastUpdate && lastUpdate}
-                </h2>
+                </h2> */}
+                <p className="text-LG-normal text-text-description mt-2">
+                  This Company is scanned by SectorOne per{" "}
+                  <span className="text-primary-base">
+                    {" "}
+                    {currentTime.format("DD MMMM YYYY HH:mm:ss")}
+                  </span>{" "}
+                </p>
               </div>
             </div>
             <div className="flex flex-grow justify-end items-center">
