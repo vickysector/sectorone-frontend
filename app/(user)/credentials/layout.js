@@ -56,6 +56,7 @@ import {
   setFreeTrialStatusToTrue,
 } from "@/app/_lib/store/features/Accounts/FreetrialSlices";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
+import { setIsScanNow } from "@/app/_lib/store/features/ExecutiveProtections/ScanEmailSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -108,6 +109,9 @@ export default function DashboardLayout({ children }) {
   const sessionExpiredRefreshToken = useSelector(
     (state) => state.refreshTokenExpired.status
   );
+
+  const isScanEmailNow = useSelector((state) => state.scanEmail.isScanNow);
+  const scannedEmail = useSelector((state) => state.scanEmail.scannedEmail);
 
   const bookmarkCompromisedState = useSelector(
     (state) => state.bookmarkCompromise.status
@@ -185,6 +189,11 @@ export default function DashboardLayout({ children }) {
   // console.log("loading compromised data: ", loadingCompromisedData);
 
   // End of: Checking Users Credentials
+
+  const handleIsScanEmailNow = () => {
+    // dispatch()
+    dispatch(setIsScanNow(false));
+  };
 
   const toggleHideIcon = () => {
     setHide((prevState) => !prevState);
@@ -1226,6 +1235,40 @@ export default function DashboardLayout({ children }) {
       {/* End = Overview */}
 
       {/* End of: Loading State Cards */}
+
+      {/* Start of: Executive Protections - Send OTP */}
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center",
+          isScanEmailNow ? "visible" : "hidden"
+        )}
+      >
+        <div className="bg-white p-[32px] rounded-lg w-[30%]">
+          <h1 className="text-LG-strong ">OTP code submission</h1>
+          <p className="text-Base-normal text-text-description mt-[12px]">
+            To view the details page verify that this is your email account and
+            we will send you an OTP code:
+          </p>
+          <h2 className="text-Base-strong text-black mt-3">{scannedEmail}</h2>
+          <p className="text-Base-normal text-text-description mt-2">
+            This aims to protect the confidentiality of users personal data.
+          </p>
+          <div className="mt-8 flex justify-end items-center ">
+            <button
+              className="bg-white border-[1px] border-input-border py-1.5 px-3 rounded-lg ml-4 text-primary-base text-Base-normal mr-4"
+              // onClick={handleUrlListCancel}
+              onClick={handleIsScanEmailNow}
+            >
+              Cancel
+            </button>
+            <div>
+              <PrimaryButton value={"Send OTP"} href={"/auth/login"} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* End of: Executive Protections - Send OTP */}
 
       <div
         className={clsx(

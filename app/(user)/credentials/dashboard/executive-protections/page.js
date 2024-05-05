@@ -1,9 +1,17 @@
+"use client";
+
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
 import { ExecutiveProtectionInfo } from "@/app/_ui/components/cards/ExecutiveProtectionInfo";
 import WebAssetIcon from "@mui/icons-material/WebAsset";
 import CoronavirusIcon from "@mui/icons-material/Coronavirus";
 import ReportGmailerrorredIcon from "@mui/icons-material/ReportGmailerrorred";
 import PasswordIcon from "@mui/icons-material/Password";
+import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setIsScanNow,
+  setScannedEmail,
+} from "@/app/_lib/store/features/ExecutiveProtections/ScanEmailSlices";
 
 const informations = [
   {
@@ -34,6 +42,18 @@ const informations = [
 ];
 
 export default function ExecutiveProtections() {
+  const [email, setEmail] = useState("");
+
+  const canSend = email;
+  const dispatch = useDispatch();
+
+  const handleScanNow = () => {
+    if (canSend) {
+      dispatch(setIsScanNow(true));
+      dispatch(setScannedEmail(email));
+    }
+  };
+
   return (
     <main>
       <section className="flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] ">
@@ -51,9 +71,15 @@ export default function ExecutiveProtections() {
               type="text"
               className="rounded-md px-3 py-[5px] border-input-border border-2 w-[50%] text-LG-normal text-black"
               placeholder="name@mail.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <div className="ml-4">
-              <AuthButton value={"Scan now"} />
+              <AuthButton
+                value={"Scan now"}
+                agreements={canSend}
+                onClick={handleScanNow}
+              />
             </div>
           </div>
         </div>
