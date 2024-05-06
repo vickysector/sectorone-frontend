@@ -6,4 +6,6 @@ export function DeleteCookies() {
   deleteCookie("refresh_token");
   deleteCookie("user_identifier");
   deleteCookie("user_status");
+  deleteCookie("scanned_user");
+  deleteCookie("scanned_email");
 }
