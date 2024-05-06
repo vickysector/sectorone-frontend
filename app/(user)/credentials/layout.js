@@ -113,6 +113,10 @@ export default function DashboardLayout({ children }) {
   const isScanEmailNow = useSelector((state) => state.scanEmail.isScanNow);
   const scannedEmail = useSelector((state) => state.scanEmail.scannedEmail);
 
+  const callScannedSendOtpFunctions = useSelector(
+    (state) => state.scanEmail.callScannedEmailFunctions
+  );
+
   const bookmarkCompromisedState = useSelector(
     (state) => state.bookmarkCompromise.status
   );
@@ -192,6 +196,11 @@ export default function DashboardLayout({ children }) {
 
   const handleIsScanEmailNow = () => {
     // dispatch()
+    dispatch(setIsScanNow(false));
+  };
+
+  const handleConfirmSendOtp = () => {
+    callScannedSendOtpFunctions();
     dispatch(setIsScanNow(false));
   };
 
@@ -1262,7 +1271,13 @@ export default function DashboardLayout({ children }) {
               Cancel
             </button>
             <div>
-              <PrimaryButton value={"Send OTP"} href={"/auth/login"} />
+              <button
+                className="cursor-pointer w-full  py-1.5 px-3  rounded-lg text-Base-normal bg-primary-base border-2 border-primary-base text-white"
+                // onClick={handleUrlListCancel}
+                onClick={handleConfirmSendOtp}
+              >
+                Send Otp
+              </button>
             </div>
           </div>
         </div>
