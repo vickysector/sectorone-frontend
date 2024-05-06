@@ -20,6 +20,7 @@ import { useRouter, redirect } from "next/navigation";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import dayjs from "dayjs";
 import { Alert, Space } from "antd";
 
 export default function ResetPasswordPage() {
@@ -31,8 +32,46 @@ export default function ResetPasswordPage() {
   const [isSuccessResendCode, setIsSuccessResendCode] = useState(false);
   const [isErrorResendCode, setIsErrorResendCode] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
+  const [isWaitResendCode, setIsWaitResendCode] = useState(false);
 
-  const scannedEmail = useSelector((state) => state.scanEmail.scannedEmail);
+  // const [countdown, setCountdown] = useState(dayjs().add(1, "minute"));
+  // const [remaining, setRemaining] = useState(60);
+
+  // console.log("countdown: ", dayjs().add(1, "minute").minute());
+  // console.log("countdown back: ", dayjs().minute());
+  // console.log(
+  //   "diff: ",
+  //   dayjs().add(1, "minute").diff(dayjs().minute(), "second")
+  // );
+  // console.log(
+  //   "different: ",
+  //   dayjs(dayjs().add(1, "minute").diff(dayjs().minute(), "second")).format(
+  //     "ss"
+  //   )
+  // );
+  // // console.log(
+  // //   "different: ",
+  // //   dayjs(dayjs().add(1, "minute").diff(dayjs().minute(), "second")).format(
+  // //     "mm:ss"
+  // //   )
+  // // );
+
+  // useEffect(() => {
+  //   if (isWaitResendCode) {
+  //     const timer = setInterval(() => {
+  //       const newRemaining = countdown.diff(dayjs(), "seconds");
+  //       setRemaining(newRemaining);
+
+  //       if (newRemaining <= 0) {
+  //         clearInterval(timer);
+  //         // Add any additional logic for when the countdown reaches 0
+  //         // setRemaining(60);
+  //       }
+  //     }, 1000);
+
+  //     return () => clearInterval(timer);
+  //   }
+  // }, []);
 
   const handleOtp = (e) => {
     setEmail(e.target.value);
@@ -115,11 +154,6 @@ export default function ResetPasswordPage() {
     try {
       setLoading(true);
 
-      //   if (!filterApplied && (keyword || startDate || endDate)) {
-      //     setPage(1);
-      //     setFilterApplied(true);
-      //   }
-
       const res = await fetch(`${APIDATAV1}code/protection`, {
         method: "POST",
         credentials: "include",
@@ -146,6 +180,7 @@ export default function ResetPasswordPage() {
 
       if (data.success) {
         setIsSuccessResendCode(true);
+        setIsWaitResendCode(true);
         return res;
       }
     } catch (error) {
@@ -163,6 +198,16 @@ export default function ResetPasswordPage() {
   const callResendOtpScannedEmail = async () => {
     await fetchWithRefreshToken(fetchResendOtpScannedEmail, router, dispatch);
   };
+
+  console.log("is waiting: ", isWaitResendCode);
+
+  useEffect(() => {
+    if (isWaitResendCode) {
+      setTimeout(() => {
+        setIsWaitResendCode(false);
+      }, 5000);
+    }
+  }, [isWaitResendCode]);
 
   useEffect(() => {
     if (!getCookie("access_token") || !getCookie("refresh_token")) {
@@ -290,7 +335,12 @@ export default function ResetPasswordPage() {
             />
           </div>
           <div>
-            <p className="text-LG-normal text-text-description">
+            <p
+              className={clsx(
+                "text-LG-normal text-text-description",
+                !isWaitResendCode ? "visible" : "hidden"
+              )}
+            >
               Did not get the code?{" "}
               <button
                 className="underline cursor-pointer text-text-description text-LG-normal"
@@ -298,6 +348,14 @@ export default function ResetPasswordPage() {
               >
                 Resend Code
               </button>
+            </p>
+            <p
+              className={clsx(
+                "text-LG-normal text-text-description",
+                isWaitResendCode ? "visible" : "hidden"
+              )}
+            >
+              You can only Resend code after ....
             </p>
           </div>
         </div>
