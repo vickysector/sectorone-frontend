@@ -8,4 +8,5 @@ export function DeleteCookies() {
   deleteCookie("user_status");
   deleteCookie("scanned_user");
   deleteCookie("scanned_email");
+  deleteCookie("scanned_verified");
 }
