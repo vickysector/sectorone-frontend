@@ -30,6 +30,7 @@ export default function ResetPasswordPage() {
   const [loading, setLoading] = useState(false);
   const [isSuccessResendCode, setIsSuccessResendCode] = useState(false);
   const [isErrorResendCode, setIsErrorResendCode] = useState(false);
+  const [showOtp, setShowOtp] = useState(false);
 
   const scannedEmail = useSelector((state) => state.scanEmail.scannedEmail);
 
@@ -46,6 +47,10 @@ export default function ResetPasswordPage() {
 
   const handleResendCode = () => {
     callResendOtpScannedEmail();
+  };
+
+  const toggleShowOtpVisibility = () => {
+    setShowOtp((prevPass) => !prevPass);
   };
 
   const fetchSendOtpScannedEmail = async () => {
@@ -246,7 +251,7 @@ export default function ResetPasswordPage() {
           </p>
           <div className="w-full">
             <div className="bg-input-container w-full relative ">
-              <input
+              {/* <input
                 type="password"
                 className={clsx(
                   " w-full bg-input-container py-1.5 px-3  border-2 rounded-lg text-Base-normal ",
@@ -255,6 +260,16 @@ export default function ResetPasswordPage() {
                 placeholder={"Input OTP"}
                 value={email}
                 onChange={handleOtp}
+              /> */}
+              <Password
+                placeholder={"Input OTP"}
+                hasTooltip={false}
+                value={email}
+                onChange={handleOtp}
+                showPassword={showOtp}
+                toggleShowIcon={toggleShowOtpVisibility}
+                passwordMatchError={error}
+                max={4}
               />
             </div>
             <p
@@ -277,12 +292,12 @@ export default function ResetPasswordPage() {
           <div>
             <p className="text-LG-normal text-text-description">
               Did not get the code?{" "}
-              <span
-                className="underline cursor-pointer"
+              <button
+                className="underline cursor-pointer text-text-description text-LG-normal"
                 onClick={handleResendCode}
               >
                 Resend Code
-              </span>
+              </button>
             </p>
           </div>
         </div>
