@@ -5,6 +5,8 @@ const ScanEmailSlice = createSlice({
   initialState: {
     isScanNow: false,
     scannedEmail: "",
+    scannedId: "",
+    callScannedEmailFunctions: null,
   },
   reducers: {
     setIsScanNow(state, action) {
@@ -13,9 +15,20 @@ const ScanEmailSlice = createSlice({
     setScannedEmail(state, action) {
       state.scannedEmail = action.payload;
     },
+    setScannedId(state, action) {
+      state.scannedId = action.payload;
+    },
+    setCallScannedEmailFunctions(state, action) {
+      state.callScannedEmailFunctions = action.payload;
+    },
   },
 });
 
-export const { setIsScanNow, setScannedEmail } = ScanEmailSlice.actions;
+export const {
+  setIsScanNow,
+  setScannedEmail,
+  setScannedId,
+  setCallScannedEmailFunctions,
+} = ScanEmailSlice.actions;
 
 export default ScanEmailSlice.reducer;
