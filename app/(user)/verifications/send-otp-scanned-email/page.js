@@ -20,6 +20,7 @@ import { useRouter, redirect } from "next/navigation";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import { Alert, Space } from "antd";
 
 export default function ResetPasswordPage() {
   const [agreements, setAgreements] = useState(false);
@@ -27,7 +28,8 @@ export default function ResetPasswordPage() {
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
-  const [emailFound, setEmailFound] = useState(false);
+  const [isSuccessResendCode, setIsSuccessResendCode] = useState(false);
+  const [isErrorResendCode, setIsErrorResendCode] = useState(false);
 
   const scannedEmail = useSelector((state) => state.scanEmail.scannedEmail);
 
@@ -40,6 +42,10 @@ export default function ResetPasswordPage() {
 
   const handleSubmitOtp = () => {
     callSendOtpScannedEmail();
+  };
+
+  const handleResendCode = () => {
+    callResendOtpScannedEmail();
   };
 
   const fetchSendOtpScannedEmail = async () => {
@@ -71,7 +77,6 @@ export default function ResetPasswordPage() {
       }
 
       const data = await res.json();
-      console.log("data send otp: ", data);
 
       if (data.data === null) {
         throw res;
@@ -80,10 +85,10 @@ export default function ResetPasswordPage() {
       if (data.data) {
         // dispatch(setScannedId(data.data.id));
         // dispatch(setScannedEmail(data.data.search));
-        // setCookie("scanned_user", data.data.id);
-        // setCookie("scanned_email", data.data.search);
-        deleteCookie("scanned_user");
-        deleteCookie("scanned_email");
+        setCookie("scanned_user", data.data.id);
+        setCookie("scanned_email", data.data.search);
+        // deleteCookie("scanned_user");
+        // deleteCookie("scanned_email");
         router.push("/credentials/dashboard/executive-protections");
 
         return res;
@@ -99,6 +104,59 @@ export default function ResetPasswordPage() {
 
   const callSendOtpScannedEmail = async () => {
     await fetchWithRefreshToken(fetchSendOtpScannedEmail, router, dispatch);
+  };
+
+  const fetchResendOtpScannedEmail = async () => {
+    try {
+      setLoading(true);
+
+      //   if (!filterApplied && (keyword || startDate || endDate)) {
+      //     setPage(1);
+      //     setFilterApplied(true);
+      //   }
+
+      const res = await fetch(`${APIDATAV1}code/protection`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: getCookie("scanned_user"),
+        }),
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const data = await res.json();
+
+      // if (data.data === null) {
+      //   throw res;
+      // }
+
+      if (data.success) {
+        setIsSuccessResendCode(true);
+        return res;
+      }
+    } catch (error) {
+      setIsErrorResendCode(true);
+      return error;
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setIsSuccessResendCode(false);
+        setIsErrorResendCode(false);
+      }, 4000);
+    }
+  };
+
+  const callResendOtpScannedEmail = async () => {
+    await fetchWithRefreshToken(fetchResendOtpScannedEmail, router, dispatch);
   };
 
   useEffect(() => {
@@ -136,7 +194,33 @@ export default function ResetPasswordPage() {
         </div>
       </div> */}
       <div className="bg-white w-[50%] py-[40px] px-[110px]">
-        <div className="text-center flex items-center justify-center flex-col w-[80%] mx-auto">
+        <div className="text-center flex items-center justify-center flex-col w-[80%] mx-auto relative">
+          <Alert
+            message={`Success Resend code`}
+            type="success"
+            style={{
+              position: "absolute",
+              top: "-64px",
+              left: "32px",
+              right: "32px",
+              textAlign: "left",
+            }}
+            showIcon
+            className={clsx(isSuccessResendCode ? "visible" : "hidden")}
+          />
+          <Alert
+            message={`Something wrong when Resend code`}
+            type="error"
+            style={{
+              position: "absolute",
+              top: "-64px",
+              left: "32px",
+              right: "32px",
+              textAlign: "left",
+            }}
+            showIcon
+            className={clsx(isErrorResendCode ? "visible" : "hidden")}
+          />
           <Image
             src={"/images/SectorOne.png"}
             alt="Logo Sector"
@@ -189,6 +273,17 @@ export default function ResetPasswordPage() {
               agreements={email}
               onClick={handleSubmitOtp}
             />
+          </div>
+          <div>
+            <p className="text-LG-normal text-text-description">
+              Did not get the code?{" "}
+              <span
+                className="underline cursor-pointer"
+                onClick={handleResendCode}
+              >
+                Resend Code
+              </span>
+            </p>
           </div>
         </div>
       </div>
