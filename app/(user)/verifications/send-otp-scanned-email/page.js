@@ -22,6 +22,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import dayjs from "dayjs";
 import { Alert, Space } from "antd";
+import {
+  setEmailIsVerified,
+  setEmailScannedData,
+  setLeakedData,
+} from "@/app/_lib/store/features/ExecutiveProtections/LeakedDataSlices";
 
 export default function ResetPasswordPage() {
   const [agreements, setAgreements] = useState(false);
@@ -131,6 +136,9 @@ export default function ResetPasswordPage() {
         // dispatch(setScannedEmail(data.data.search));
         setCookie("scanned_user", data.data.id);
         setCookie("scanned_email", data.data.search);
+        setCookie("scanned_verified", data.data.verified);
+        dispatch(setEmailScannedData(data.data.search));
+        dispatch(setEmailIsVerified(true));
         // deleteCookie("scanned_user");
         // deleteCookie("scanned_email");
         router.push("/credentials/dashboard/executive-protections");
