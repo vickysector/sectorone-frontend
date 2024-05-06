@@ -16,6 +16,7 @@ import RefreshTokenSlice from "./features/RefreshToken/RefreshTokenSlice";
 import DocumentationSlices from "./features/Accounts/DocumentationSlices";
 import FreetrialSlices from "./features/Accounts/FreetrialSlices";
 import ScanEmailSlices from "./features/ExecutiveProtections/ScanEmailSlices";
+import LeakedDataSlices from "./features/ExecutiveProtections/LeakedDataSlices";
 
 export const store = configureStore({
   reducer: {
@@ -36,5 +37,6 @@ export const store = configureStore({
     documentationSectorOne: DocumentationSlices,
     freeTrialPopup: FreetrialSlices,
     scanEmail: ScanEmailSlices,
+    executiveProtections: LeakedDataSlices,
   },
 });
