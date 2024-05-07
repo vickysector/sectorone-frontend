@@ -19,10 +19,13 @@ import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
-import { Alert, Space } from "antd";
+import { Alert, ConfigProvider, Pagination, Space } from "antd";
 import clsx from "clsx";
 import Image from "next/image";
-import { setLeakedData } from "@/app/_lib/store/features/ExecutiveProtections/LeakedDataSlices";
+import {
+  setLeakedData,
+  setTotalExposures,
+} from "@/app/_lib/store/features/ExecutiveProtections/LeakedDataSlices";
 
 const informations = [
   {
@@ -71,6 +74,12 @@ export default function ExecutiveProtections() {
   const dataLeaked = useSelector(
     (state) => state.executiveProtections.leakedData
   );
+
+  const totalExposures = useSelector(
+    (state) => state.executiveProtections.totalExposures
+  );
+
+  console.log("leaked data in redux: ", dataLeaked);
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -188,10 +197,13 @@ export default function ExecutiveProtections() {
       //   return res;
       // }
 
-      if (data.List["No results found"].Data.length === 0) {
-        dispatch(setLeakedData([]));
+      if ("No results found" in data.List) {
+        dispatch(setLeakedData(null));
         return res;
       } else {
+        let totalItems = Object.keys(data.List).length;
+        dispatch(setLeakedData(data));
+        dispatch(setTotalExposures(totalItems));
         return res;
       }
     } catch (error) {
@@ -204,6 +216,16 @@ export default function ExecutiveProtections() {
   const callGetDetailLeakedData = async () => {
     await fetchWithRefreshToken(fetchGetDetailLeakedData, router, dispatch);
   };
+
+  const MapLeakedData =
+    dataLeaked &&
+    Object.entries(dataLeaked.List).map(([website, data]) => {
+      let leakedKeys = [];
+      if (data.Data && data.Data.length > 0) {
+        leakedKeys = Object.keys(data.Data[0]);
+      }
+      return { website, leakedKeys };
+    });
 
   // useEffect(() => {
   //   callGetDetailLeakedData();
@@ -300,7 +322,7 @@ export default function ExecutiveProtections() {
           //   getCookie("scanned_verified") === "true"
           //   ? "visible"
           //   : "hidden"
-          isEmailVerified && dataLeaked.length !== 0 ? "visible" : "hidden"
+          isEmailVerified && dataLeaked !== null ? "visible" : "hidden"
         )}
       >
         <h1 className="text-heading-4 text-black">Results of your data leak</h1>
@@ -308,6 +330,80 @@ export default function ExecutiveProtections() {
           Get details on data breaches that leak your info on the dark web. See
           how you can become more secure based on each result.
         </h2>
+
+        <Alert
+          message={`We found ${totalExposures} exposures of your data.`}
+          type="warning"
+          showIcon
+          closable
+        />
+
+        <div className="border-2 rounded-xl border-input-border">
+          <table className="bg-white  w-full rounded-xl">
+            <thead className="text-black text-Base-strong bg-[#00000005]">
+              <tr className="border-b-[1px] border-[#D5D5D5]">
+                <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                  No
+                </td>
+                <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                  Website Name
+                </td>
+                <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                  Leaked Data
+                </td>
+                <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                  Actions
+                </td>
+              </tr>
+            </thead>
+            <tbody className="text-Base-normal text-text-description">
+              {MapLeakedData &&
+                MapLeakedData.map((data, index) => (
+                  <tr className="border-b-[2px] border-[#D5D5D5]" key={index}>
+                    <td className="py-[19px] px-[16px]"> {index + 1} </td>
+                    <td className="py-[19px] px-[16px]">{data.website}</td>
+                    <td className="py-[19px] px-[16px]">{data.leakedKeys}</td>
+                    <td className="py-[19px] px-[16px]">
+                      {" "}
+                      {/* {data.computer_name}{" "} */}
+                    </td>
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+          <div className="flex items-center justify-between my-[19px] mx-[16px]">
+            <p className="text-Base-normal text-[#676767] ">
+              {/* Showing {mapStealerBookmarkData.size} to{" "}
+              {mapStealerBookmarkData.count} entries */}
+            </p>
+            <div>
+              <ConfigProvider
+                theme={{
+                  components: {
+                    Pagination: {
+                      itemActiveBg: "#FF6F1E",
+                      itemLinkBg: "#fff",
+                      itemInputBg: "#fff",
+                    },
+                  },
+                  token: {
+                    colorPrimary: "white",
+                  },
+                }}
+              >
+                <Pagination
+                  type="primary"
+                  defaultCurrent={1}
+                  // total={mapStealerBookmarkData && mapStealerBookmarkData.count}
+                  // showSizeChanger={false}
+                  // style={{ color: "#FF6F1E" }}
+                  // current={bookmarkPage}
+                  // onChange={handleSetBookmarkPage}
+                />
+              </ConfigProvider>
+            </div>
+          </div>
+        </div>
       </section>
       <section
         className={clsx(
@@ -316,7 +412,7 @@ export default function ExecutiveProtections() {
           //   getCookie("scanned_verified") === "true"
           //   ? "visible"
           //   : "hidden"
-          isEmailVerified && dataLeaked.length === 0 ? "visible" : "hidden"
+          isEmailVerified && dataLeaked === null ? "visible" : "hidden"
         )}
       >
         <div>
