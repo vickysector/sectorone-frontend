@@ -58,6 +58,7 @@ const informations = [
 export default function ExecutiveProtections() {
   const [email, setEmail] = useState("");
   const [isErrorEmail, setIsErrorEmail] = useState(false);
+  const [allRecentSearch, setAllRecentSearch] = useState();
   // const [isEmailVerified, setIsEmailVerified] = useState(
   //   hasCookie("scanned_verified")
   // );
@@ -217,6 +218,56 @@ export default function ExecutiveProtections() {
     await fetchWithRefreshToken(fetchGetDetailLeakedData, router, dispatch);
   };
 
+  const fetchRecentSearchData = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(`${APIDATAV1}protection`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 400) {
+        deleteCookie("scanned_user");
+        deleteCookie("scanned_email");
+        deleteCookie("scanned_verified");
+        return res;
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw res;
+      }
+
+      // if (data.data) {
+      //   dispatch(setScannedId(data.data.id));
+      //   dispatch(setScannedEmail(data.data.search));
+      //   setCookie("scanned_user", data.data.id);
+      //   setCookie("scanned_email", data.data.search);
+      //   router.push("/verifications/send-otp-scanned-email");
+      //   return res;
+      // }
+      setAllRecentSearch(data.data);
+      return res;
+    } catch (error) {
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const callRecentSearchData = async () => {
+    await fetchWithRefreshToken(fetchRecentSearchData, router, dispatch);
+  };
+
   const MapLeakedData =
     dataLeaked &&
     Object.entries(dataLeaked.List).map(([website, data]) => {
@@ -230,6 +281,10 @@ export default function ExecutiveProtections() {
   // useEffect(() => {
   //   callGetDetailLeakedData();
   // }, [isEmailVerified]);
+
+  useEffect(() => {
+    callRecentSearchData();
+  }, []);
 
   useEffect(() => {
     if (isEmailVerified) {
@@ -270,7 +325,7 @@ export default function ExecutiveProtections() {
           </h2>
         </div>
         <div className="mt-[32px] w-full">
-          <div className="flex text-center justify-center items-center">
+          <div className="flex text-center justify-center items-center relative">
             <input
               type="text"
               className="rounded-md px-3 py-[5px] border-input-border border-2 w-[50%] text-LG-normal text-black"
@@ -278,6 +333,45 @@ export default function ExecutiveProtections() {
               value={email}
               onChange={handleChangeEmail}
             />
+            <div className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll">
+              <div className="flex items-center justify-between">
+                <h1 className="text-Base-strong text-black">Recent search</h1>
+                <button className="text-primary-base text-Base-normal">
+                  Clear
+                </button>
+              </div>
+              <div className="mt-5">
+                {allRecentSearch &&
+                  allRecentSearch.map((data) => (
+                    <div
+                      key={data.id}
+                      className="mt-4 flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] px-1.5 py-1 rounded-md"
+                    >
+                      <div className="flex items-center">
+                        <div>
+                          <Image
+                            src={"/images/recent_search_logo.svg"}
+                            alt="search icon"
+                            width={18}
+                            height={18}
+                          />
+                        </div>
+                        <h1 className="text-Base-normal text-black ml-3">
+                          {data.search}
+                        </h1>
+                      </div>
+                      <div className="cursor pointer">
+                        <Image
+                          src={"/images/close_recent_search_logo.svg"}
+                          alt="search icon"
+                          width={9}
+                          height={9}
+                        />
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </div>
             <div className="ml-4">
               <AuthButton
                 value={"Scan now"}
