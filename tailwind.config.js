@@ -110,6 +110,14 @@ module.exports = {
             letterSpacing: "1px",
           },
         ],
+        "SM-strong": [
+          "12px",
+          {
+            lineHeight: "20px",
+            fontWeight: "600",
+            letterSpacing: "1px",
+          },
+        ],
 
         "Base-normal": [
           "14px",
