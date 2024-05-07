@@ -4,9 +4,10 @@ const LeakedDataSlice = createSlice({
   name: "Leaked Data Slices",
   initialState: {
     email: "",
-    leakedData: null,
+    leakedData: "",
     totalExposures: "",
     isVerified: false,
+    errorLeakedData: false,
   },
   reducers: {
     setEmailScannedData(state, action) {
@@ -21,6 +22,9 @@ const LeakedDataSlice = createSlice({
     setEmailIsVerified(state, action) {
       state.isVerified = action.payload;
     },
+    setErrorLeakedData(state, action) {
+      state.errorLeakedData = action.payload;
+    },
   },
 });
 
@@ -29,6 +33,7 @@ export const {
   setLeakedData,
   setTotalExposures,
   setEmailIsVerified,
+  setErrorLeakedData,
 } = LeakedDataSlice.actions;
 
 export default LeakedDataSlice.reducer;
