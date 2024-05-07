@@ -23,6 +23,7 @@ import { Alert, ConfigProvider, Pagination, Space } from "antd";
 import clsx from "clsx";
 import Image from "next/image";
 import {
+  setErrorLeakedData,
   setLeakedData,
   setTotalExposures,
 } from "@/app/_lib/store/features/ExecutiveProtections/LeakedDataSlices";
@@ -61,6 +62,8 @@ export default function ExecutiveProtections() {
   const [allRecentSearch, setAllRecentSearch] = useState();
   const [isEmailFocused, setIsEmailFocused] = useState(false);
 
+  console.log("isemail focused: ", isEmailFocused);
+
   const canSend = email;
   const dispatch = useDispatch();
   const router = useRouter();
@@ -72,6 +75,10 @@ export default function ExecutiveProtections() {
 
   const dataLeaked = useSelector(
     (state) => state.executiveProtections.leakedData
+  );
+
+  const errorDataLeaked = useSelector(
+    (state) => state.executiveProtections.errorLeakedData
   );
 
   const totalExposures = useSelector(
@@ -195,6 +202,11 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       console.log("data executive: ", data);
+
+      if (data.error) {
+        dispatch(setErrorLeakedData(true));
+        return res;
+      }
 
       if (data.data === null) {
         throw res;
@@ -422,10 +434,14 @@ export default function ExecutiveProtections() {
               value={email}
               onChange={handleChangeEmail}
               onFocus={handleIsEmailFocusTrue}
-              onBlur={handleIsEmailFotusFalse}
+              // onBlur={handleIsEmailFotusFalse}
             />
             {isEmailFocused && (
-              <div className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll">
+              <div
+                className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll pointer-events-auto z-10"
+                onMouseEnter={handleIsEmailFocusTrue}
+                onMouseLeave={handleIsEmailFotusFalse}
+              >
                 <div className="flex items-center justify-between">
                   <h1 className="text-Base-strong text-black">Recent search</h1>
                   <button
@@ -489,7 +505,9 @@ export default function ExecutiveProtections() {
           //   getCookie("scanned_verified") === "true"
           //   ? "hidden"
           //   : "visible"
-          !isEmailVerified && !scannedEmail ? "visible" : "hidden"
+          !isEmailVerified && !scannedEmail && !errorDataLeaked
+            ? "visible"
+            : "hidden"
         )}
       >
         <h1 className="text-heading-4 text-black">Looking to learn more?</h1>
@@ -516,7 +534,9 @@ export default function ExecutiveProtections() {
           //   getCookie("scanned_verified") === "true"
           //   ? "visible"
           //   : "hidden"
-          isEmailVerified && dataLeaked !== null ? "visible" : "hidden"
+          isEmailVerified && !errorDataLeaked && dataLeaked !== null
+            ? "visible"
+            : "hidden"
         )}
       >
         <h1 className="text-heading-4 text-black">Results of your data leak</h1>
@@ -525,14 +545,19 @@ export default function ExecutiveProtections() {
           how you can become more secure based on each result.
         </h2>
 
-        <Alert
-          message={`We found ${totalExposures} exposures of your data.`}
-          type="warning"
-          showIcon
-          closable
-        />
+        <div className="my-6 w-full">
+          <Alert
+            message={`We found ${totalExposures} exposures of your data.`}
+            type="warning"
+            showIcon
+            closable
+            style={{
+              textAlign: "left",
+            }}
+          />
+        </div>
 
-        <div className="border-2 rounded-xl border-input-border">
+        <div className="border-2 rounded-xl border-input-border w-full">
           <table className="bg-white  w-full rounded-xl">
             <thead className="text-black text-Base-strong bg-[#00000005]">
               <tr className="border-b-[1px] border-[#D5D5D5]">
@@ -556,7 +581,9 @@ export default function ExecutiveProtections() {
                   <tr className="border-b-[2px] border-[#D5D5D5]" key={index}>
                     <td className="py-[19px] px-[16px]"> {index + 1} </td>
                     <td className="py-[19px] px-[16px]">{data.website}</td>
-                    <td className="py-[19px] px-[16px]">{data.leakedKeys}</td>
+                    <td className="py-[19px] px-[16px]">
+                      {data.leakedKeys.join(" ")}
+                    </td>
                     <td className="py-[19px] px-[16px]">
                       {" "}
                       {/* {data.computer_name}{" "} */}
@@ -567,8 +594,7 @@ export default function ExecutiveProtections() {
           </table>
           <div className="flex items-center justify-between my-[19px] mx-[16px]">
             <p className="text-Base-normal text-[#676767] ">
-              {/* Showing {mapStealerBookmarkData.size} to{" "}
-              {mapStealerBookmarkData.count} entries */}
+              Showing {totalExposures} to {totalExposures} entries
             </p>
             <div>
               <ConfigProvider
@@ -588,9 +614,9 @@ export default function ExecutiveProtections() {
                 <Pagination
                   type="primary"
                   defaultCurrent={1}
-                  // total={mapStealerBookmarkData && mapStealerBookmarkData.count}
-                  // showSizeChanger={false}
-                  // style={{ color: "#FF6F1E" }}
+                  total={totalExposures}
+                  showSizeChanger={false}
+                  style={{ color: "#FF6F1E" }}
                   // current={bookmarkPage}
                   // onChange={handleSetBookmarkPage}
                 />
@@ -606,7 +632,9 @@ export default function ExecutiveProtections() {
           //   getCookie("scanned_verified") === "true"
           //   ? "visible"
           //   : "hidden"
-          isEmailVerified && dataLeaked === null ? "visible" : "hidden"
+          isEmailVerified && !errorDataLeaked && dataLeaked === null
+            ? "visible"
+            : "hidden"
         )}
       >
         <div>
@@ -622,6 +650,32 @@ export default function ExecutiveProtections() {
         </h1>
         <h2 className="text-LG-normal text-text-description mt-3 max-w-[450px]">
           Nothing was found after scanning your email address.
+        </h2>
+      </section>
+
+      <section
+        className={clsx(
+          "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+          // hasCookie("scanned_verified") &&
+          //   getCookie("scanned_verified") === "true"
+          //   ? "visible"
+          //   : "hidden"
+          isEmailVerified && errorDataLeaked ? "visible" : "hidden"
+        )}
+      >
+        {/* <div>
+          <Image
+            src={"/images/sector_confirmation_created_password_success.svg"}
+            alt="search icon"
+            width={129}
+            height={121}
+          />
+        </div> */}
+        <h1 className="text-heading-4 text-black">
+          Oopss.. Something went wrong
+        </h1>
+        <h2 className="text-LG-normal text-text-description mt-3 max-w-[450px]">
+          There are something trouble on server
         </h2>
       </section>
     </main>
