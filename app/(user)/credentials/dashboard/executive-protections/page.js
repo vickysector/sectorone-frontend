@@ -59,9 +59,7 @@ export default function ExecutiveProtections() {
   const [email, setEmail] = useState("");
   const [isErrorEmail, setIsErrorEmail] = useState(false);
   const [allRecentSearch, setAllRecentSearch] = useState();
-  // const [isEmailVerified, setIsEmailVerified] = useState(
-  //   hasCookie("scanned_verified")
-  // );
+  const [isEmailFocused, setIsEmailFocused] = useState(false);
 
   const canSend = email;
   const dispatch = useDispatch();
@@ -92,6 +90,22 @@ export default function ExecutiveProtections() {
       dispatch(setScannedEmail(email));
       dispatch(setCallScannedEmailFunctions(callSendOtpScannedEmail));
     }
+  };
+
+  const handleDeleteIndividual = (id) => {
+    deleteRecentSearchData(id);
+  };
+
+  const handleDeleteAll = () => {
+    deleteAllRecentSearchData();
+  };
+
+  const handleIsEmailFocusTrue = () => {
+    setIsEmailFocused(true);
+  };
+
+  const handleIsEmailFotusFalse = () => {
+    setIsEmailFocused(false);
   };
 
   const fetchSendOtpScannedEmail = async () => {
@@ -171,9 +185,6 @@ export default function ExecutiveProtections() {
       );
 
       if (res.status === 400) {
-        deleteCookie("scanned_user");
-        deleteCookie("scanned_email");
-        deleteCookie("scanned_verified");
         return res;
       }
 
@@ -231,9 +242,6 @@ export default function ExecutiveProtections() {
       });
 
       if (res.status === 400) {
-        deleteCookie("scanned_user");
-        deleteCookie("scanned_email");
-        deleteCookie("scanned_verified");
         return res;
       }
 
@@ -266,6 +274,87 @@ export default function ExecutiveProtections() {
 
   const callRecentSearchData = async () => {
     await fetchWithRefreshToken(fetchRecentSearchData, router, dispatch);
+  };
+
+  const DeleteRecentSearchData = async (deleteId = "") => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(`${APIDATAV1}protection`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: deleteId,
+        }),
+      });
+
+      if (res.status === 400) {
+        return res;
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw res;
+      }
+
+      return res;
+    } catch (error) {
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const deleteRecentSearchData = async (id) => {
+    await fetchWithRefreshToken(DeleteRecentSearchData, router, dispatch, id);
+  };
+
+  const DeleteAllRecentSearchData = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(`${APIDATAV1}protection`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (res.status === 400) {
+        return res;
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        throw res;
+      }
+
+      return res;
+    } catch (error) {
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const deleteAllRecentSearchData = async () => {
+    await fetchWithRefreshToken(DeleteAllRecentSearchData, router, dispatch);
   };
 
   const MapLeakedData =
@@ -332,46 +421,57 @@ export default function ExecutiveProtections() {
               placeholder="name@mail.com"
               value={email}
               onChange={handleChangeEmail}
+              onFocus={handleIsEmailFocusTrue}
+              onBlur={handleIsEmailFotusFalse}
             />
-            <div className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll">
-              <div className="flex items-center justify-between">
-                <h1 className="text-Base-strong text-black">Recent search</h1>
-                <button className="text-primary-base text-Base-normal">
-                  Clear
-                </button>
-              </div>
-              <div className="mt-5">
-                {allRecentSearch &&
-                  allRecentSearch.map((data) => (
-                    <div
-                      key={data.id}
-                      className="mt-4 flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] px-1.5 py-1 rounded-md"
-                    >
-                      <div className="flex items-center">
-                        <div>
+            {isEmailFocused && (
+              <div className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll">
+                <div className="flex items-center justify-between">
+                  <h1 className="text-Base-strong text-black">Recent search</h1>
+                  <button
+                    className="text-primary-base text-Base-normal"
+                    onClick={handleDeleteAll}
+                  >
+                    Clear
+                  </button>
+                </div>
+                <div className="mt-5">
+                  {allRecentSearch &&
+                    allRecentSearch.map((data) => (
+                      <div
+                        key={data.id}
+                        className="mt-4 flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] px-1.5 py-1 rounded-md"
+                      >
+                        <div className="flex items-center">
+                          <div>
+                            <Image
+                              src={"/images/recent_search_logo.svg"}
+                              alt="search icon"
+                              width={18}
+                              height={18}
+                            />
+                          </div>
+                          <h1
+                            className="text-Base-normal text-black ml-3"
+                            onClick={() => setEmail(data.search)}
+                          >
+                            {data.search}
+                          </h1>
+                        </div>
+                        <div className="cursor pointer">
                           <Image
-                            src={"/images/recent_search_logo.svg"}
+                            src={"/images/close_recent_search_logo.svg"}
                             alt="search icon"
-                            width={18}
-                            height={18}
+                            width={9}
+                            height={9}
+                            onClick={() => handleDeleteIndividual(data.id)}
                           />
                         </div>
-                        <h1 className="text-Base-normal text-black ml-3">
-                          {data.search}
-                        </h1>
                       </div>
-                      <div className="cursor pointer">
-                        <Image
-                          src={"/images/close_recent_search_logo.svg"}
-                          alt="search icon"
-                          width={9}
-                          height={9}
-                        />
-                      </div>
-                    </div>
-                  ))}
+                    ))}
+                </div>
               </div>
-            </div>
+            )}
             <div className="ml-4">
               <AuthButton
                 value={"Scan now"}
