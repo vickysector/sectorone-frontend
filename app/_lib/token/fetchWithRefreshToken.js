@@ -44,6 +44,7 @@ export const fetchWithRefreshToken = async (
         setTimeout(() => {
           dispatch(setStatusRefreshTokenExpired(false));
           router.push("/auth/login");
+          window.location.reload();
         }, 8000);
       }
     } else {
@@ -52,6 +53,7 @@ export const fetchWithRefreshToken = async (
       DeleteCookies();
       // Handle other errors
       router.push("/auth/login");
+      window.location.reload();
     }
   }
 };

@@ -77,6 +77,14 @@ module.exports = {
             letterSpacing: "1px",
           },
         ],
+        "heading-5": [
+          "16px",
+          {
+            lineHeight: "24px",
+            fontWeight: "600",
+            letterSpacing: "1px",
+          },
+        ],
         "LG-normal": [
           "16px",
           {
@@ -99,6 +107,14 @@ module.exports = {
           {
             lineHeight: "20px",
             fontWeight: "400",
+            letterSpacing: "1px",
+          },
+        ],
+        "SM-strong": [
+          "12px",
+          {
+            lineHeight: "20px",
+            fontWeight: "600",
             letterSpacing: "1px",
           },
         ],

@@ -24,7 +24,10 @@ import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
 import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 import { useSelector, useDispatch } from "react-redux";
 import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
-import { setDetailState } from "@/app/_lib/store/features/Compromised/DetailSlices";
+import {
+  setDetailExecutiveState,
+  setDetailState,
+} from "@/app/_lib/store/features/Compromised/DetailSlices";
 import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import copy from "copy-to-clipboard";
 import {
@@ -56,6 +59,11 @@ import {
   setFreeTrialStatusToTrue,
 } from "@/app/_lib/store/features/Accounts/FreetrialSlices";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
+import { setIsScanNow } from "@/app/_lib/store/features/ExecutiveProtections/ScanEmailSlices";
+import {
+  setIsAddedKeyword,
+  setIsDetailActive,
+} from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -104,9 +112,34 @@ export default function DashboardLayout({ children }) {
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
   );
+  const detailsExecutiveProtectionsState = useSelector(
+    (state) => state.detailComrpomise.statusExecutive
+  );
+  const detailsExecutiveProtectionsKeysData = useSelector(
+    (state) => state.detailComrpomise.dataExecutiveKeys
+  );
+  const detailsExecutiveProtectionsValuesData = useSelector(
+    (state) => state.detailComrpomise.dataExecutiveValues
+  );
+
+  console.log(
+    "executive protections keys: ",
+    detailsExecutiveProtectionsKeysData
+  );
+  console.log(
+    "executive protections values: ",
+    detailsExecutiveProtectionsValuesData
+  );
 
   const sessionExpiredRefreshToken = useSelector(
     (state) => state.refreshTokenExpired.status
+  );
+
+  const isScanEmailNow = useSelector((state) => state.scanEmail.isScanNow);
+  const scannedEmail = useSelector((state) => state.scanEmail.scannedEmail);
+
+  const callScannedSendOtpFunctions = useSelector(
+    (state) => state.scanEmail.callScannedEmailFunctions
   );
 
   const bookmarkCompromisedState = useSelector(
@@ -161,9 +194,25 @@ export default function DashboardLayout({ children }) {
     (state) => state.documentationSectorOne.documentationStatus
   );
 
+  const isAddKeywordButtonIsCalled = useSelector(
+    (state) => state.keywordSearch.isAddedKeyword
+  );
+
+  const callAddKeywordFunction = useSelector(
+    (state) => state.keywordSearch.callAddKeywordFunctions
+  );
+
   const freeTrialPopupStatus = useSelector(
     (state) => state.freeTrialPopup.status
   );
+
+  const detailKeywordSearchActive = useSelector(
+    (state) => state.keywordSearch.isDetailActive
+  );
+
+  const handleDetailKeywordSearchYesOrNo = () => {
+    dispatch(setIsDetailActive(false));
+  };
 
   const handleDocumentationSectorOneStatus = () => {
     dispatch(setDocumentationSectorApiStatus(false));
@@ -185,6 +234,25 @@ export default function DashboardLayout({ children }) {
   // console.log("loading compromised data: ", loadingCompromisedData);
 
   // End of: Checking Users Credentials
+
+  const handleYesAddButtonKeywordSearch = () => {
+    callAddKeywordFunction();
+    dispatch(setIsAddedKeyword(false));
+  };
+
+  const handleNoAddButtonKeywordSearch = () => {
+    dispatch(setIsAddedKeyword(false));
+  };
+
+  const handleIsScanEmailNow = () => {
+    // dispatch()
+    dispatch(setIsScanNow(false));
+  };
+
+  const handleConfirmSendOtp = () => {
+    callScannedSendOtpFunctions();
+    dispatch(setIsScanNow(false));
+  };
 
   const toggleHideIcon = () => {
     setHide((prevState) => !prevState);
@@ -455,6 +523,10 @@ export default function DashboardLayout({ children }) {
     dispatch(setDetailState(false));
   };
 
+  const handleDetailExecutiveProtectionsState = () => {
+    dispatch(setDetailExecutiveState(false));
+  };
+
   const copyToClipboard = (text) => {
     copy(text);
     setCopied(true);
@@ -644,6 +716,7 @@ export default function DashboardLayout({ children }) {
       if (data.success) {
         DeleteCookies();
         router.push("/auth/login");
+        window.location.reload();
         return res;
       }
     } catch (error) {
@@ -793,6 +866,49 @@ export default function DashboardLayout({ children }) {
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
+          detailKeywordSearchActive ? "visible" : "hidden"
+        )}
+      >
+        <div
+          className={clsx("rounded-lg bg-white p-[28px] w-[28%] text-center ")}
+        >
+          <div className="m-auto mb-6">
+            <Image
+              alt={"icon"}
+              src={`/images/popup_free_trial.svg`}
+              width={165}
+              height={136}
+              className="m-auto"
+            />
+          </div>
+          <h1 className="text-LG-strong mb-4">
+            Keep getting the best from SectorOne
+          </h1>
+          <p className="mb-10 text-text-description  text-Base-normal">
+            Upgrade your account to access all SectorOne dashboard features.{" "}
+            <span className="text-Base-normal underline text-primary-base">
+              Contact us
+            </span>
+          </p>
+          <div className="flex justify-end">
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg mr-2"
+              onClick={handleDetailKeywordSearchYesOrNo}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleDetailKeywordSearchYesOrNo}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
           freeTrialPopupStatus ? "visible" : "hidden"
         )}
       >
@@ -872,6 +988,35 @@ export default function DashboardLayout({ children }) {
               onClick={handleDocumentationSectorOneStatus}
             >
               Done
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          isAddKeywordButtonIsCalled ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            Are you sure you want to Add this Keyword?
+          </h1>
+          <p className="mb-6 text-text-description ">
+            This action is permanent and it will reduce your credits.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleYesAddButtonKeywordSearch}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleNoAddButtonKeywordSearch}
+            >
+              Cancel
             </button>
           </div>
         </div>
@@ -1209,6 +1354,122 @@ export default function DashboardLayout({ children }) {
           </div>
         </div>
       </div>
+
+      {/* Start of: details Executive protections */}
+
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-40 flex items-center justify-center text-black ",
+          detailsExecutiveProtectionsState ? "visible" : "hidden"
+        )}
+      >
+        <div className="w-[30%] bg-white rounded-lg p-[32px]  overflow-y-scroll h-[650px] relative">
+          <div
+            className={clsx(
+              "fixed right-[50%] translate-x-[50%] top-[50%]  bg-white p-2 border-2 border-input-border rounded-lg ",
+              copied ? "visible" : "hidden"
+            )}
+          >
+            <p className="text-Base-normal text-text-description">Copied!</p>
+          </div>
+          <div className="flex justify-between border-b-[1px] pb-6 border-[#D5D5D5] ">
+            <h1 className="text-LG-strong">Details</h1>
+            <CloseOutlined
+              style={{ color: "#676767" }}
+              onClick={handleDetailExecutiveProtectionsState}
+            />
+          </div>
+          <div className="mt-6">
+            {detailsExecutiveProtectionsKeysData.map((key) => (
+              <div className="mt-8" key={key}>
+                <h1 className="text-LG-strong">{key}</h1>
+                <h2
+                  className="text-text-description text-LG-normal mt-1"
+                  style={{
+                    maxWidth: "450px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  {/* <a href={``} target="_blank" className="underline">
+                    {detailsExecutiveProtectionsKeysData}
+                  </a> */}
+                  {detailsExecutiveProtectionsValuesData[key]}
+                </h2>
+              </div>
+            ))}
+            {/* <div className="mt-8">
+              <h1 className="text-LG-strong">Url</h1>
+              <h2
+                className="text-text-description text-LG-normal mt-1"
+                style={{
+                  maxWidth: "450px",
+                  wordWrap: "break-word",
+                }}
+              >
+                <a href={``} target="_blank" className="underline">
+                  {detailsExecutiveProtectionsKeysData}
+                </a>
+              </h2>
+            </div> */}
+            {/* <div className="mt-8">
+              <h1 className="text-LG-strong">Url 2</h1>
+              <h2
+                className="text-text-description text-LG-normal mt-1"
+                style={{
+                  maxWidth: "450px",
+                  wordWrap: "break-word",
+                }}
+              >
+                <a href={``} target="_blank" className="underline">
+                  {detailsExecutiveProtectionsValuesData}
+                </a>
+              </h2>
+            </div> */}
+            {/* <div className="mt-8">
+              <h1 className="text-LG-strong">Login</h1>
+              <h2 className="text-text-description text-LG-normal mt-1">
+                {detailsCompromisedData.login ?? "-"}
+              </h2>
+            </div> */}
+
+            {/* <div className="mt-8">
+              <h1 className="text-LG-strong">Machine ID</h1>
+
+              <div className="flex justify-between items-center mt-1">
+                <h2 className="text-text-description text-LG-normal mt-1">
+                  {detailsCompromisedData.machine_id ?? "-"}
+                </h2>
+                <CopyOutlined
+                  style={{ fontSize: "21px", color: "#FF6F1E" }}
+                  className="mr-2 ml-3 cursor-pointer"
+                  onClick={() =>
+                    copyToClipboard(detailsCompromisedData.machine_id ?? "-")
+                  }
+                />
+              </div>
+            </div>
+            <div className="mt-8">
+              <h1 className="text-LG-strong">Path</h1>
+
+              <div className="flex justify-between items-center mt-1">
+                <h2 className="text-text-description text-LG-normal mt-1">
+                  {detailsCompromisedData.path ?? "-"}
+                </h2>
+                <CopyOutlined
+                  style={{ fontSize: "21px", color: "#FF6F1E" }}
+                  className="mr-2 ml-3 cursor-pointer"
+                  onClick={() =>
+                    copyToClipboard(detailsCompromisedData.path ?? "-")
+                  }
+                />
+              </div>
+            </div> */}
+          </div>
+        </div>
+      </div>
+
+      {/* End of: Details Executive protections */}
+
       {/* Start of: Loading State Cards */}
 
       <LoadingStateCard loading={loadingStealerData} />
@@ -1226,6 +1487,46 @@ export default function DashboardLayout({ children }) {
       {/* End = Overview */}
 
       {/* End of: Loading State Cards */}
+
+      {/* Start of: Executive Protections - Send OTP */}
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center",
+          isScanEmailNow ? "visible" : "hidden"
+        )}
+      >
+        <div className="bg-white p-[32px] rounded-lg w-[30%]">
+          <h1 className="text-LG-strong ">OTP code submission</h1>
+          <p className="text-Base-normal text-text-description mt-[12px]">
+            To view the details page verify that this is your email account and
+            we will send you an OTP code:
+          </p>
+          <h2 className="text-Base-strong text-black mt-3">{scannedEmail}</h2>
+          <p className="text-Base-normal text-text-description mt-2">
+            This aims to protect the confidentiality of users personal data.
+          </p>
+          <div className="mt-8 flex justify-end items-center ">
+            <button
+              className="bg-white border-[1px] border-input-border py-1.5 px-3 rounded-lg ml-4 text-primary-base text-Base-normal mr-4"
+              // onClick={handleUrlListCancel}
+              onClick={handleIsScanEmailNow}
+            >
+              Cancel
+            </button>
+            <div>
+              <button
+                className="cursor-pointer w-full  py-1.5 px-3  rounded-lg text-Base-normal bg-primary-base border-2 border-primary-base text-white"
+                // onClick={handleUrlListCancel}
+                onClick={handleConfirmSendOtp}
+              >
+                Send Otp
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* End of: Executive Protections - Send OTP */}
 
       <div
         className={clsx(
