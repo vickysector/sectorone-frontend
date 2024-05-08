@@ -92,6 +92,12 @@ export default function StealerUserPage() {
 
   const [filterApplied, setFilterApplied] = useState(false); // state for make sure data after search and rangedate is running once
 
+  // Start of: Timer
+  const [currentTime, setCurrentTime] = useState(dayjs());
+  const [intervalRef, setIntervalRef] = useState(null);
+
+  // End of: Timer
+
   // Start of: Tooptips in notifications
 
   const [isHovered, setIsHovered] = useState(false);
@@ -669,6 +675,22 @@ export default function StealerUserPage() {
     );
   };
 
+  // Start of: Timer
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(dayjs());
+    }, 1000); // Update every second
+
+    setIntervalRef(interval);
+
+    return () => {
+      clearInterval(interval); // Clean up the interval on unmount
+    };
+  }, []);
+
+  // End of: Timer
+
   useEffect(() => {
     // getListDomainUsers();
     // getBreachesData();
@@ -732,9 +754,16 @@ export default function StealerUserPage() {
                 </h1>
               </div>
               <div className="">
-                <h2 className="text-LG-normal text-text-description mt-2">
+                {/* <h2 className="text-LG-normal text-text-description mt-2">
                   Last update: {lastUpdate && lastUpdate}
-                </h2>
+                </h2> */}
+                <p className="text-LG-normal text-text-description mt-2">
+                  This Company is scanned by SectorOne per{" "}
+                  <span className="text-primary-base">
+                    {" "}
+                    {currentTime.format("DD MMMM YYYY HH:mm:ss")}
+                  </span>{" "}
+                </p>
               </div>
             </div>
             <div className="flex flex-grow justify-end items-center">

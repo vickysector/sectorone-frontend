@@ -5,6 +5,9 @@ const DetailSlice = createSlice({
   initialState: {
     status: false,
     data: {},
+    statusExecutive: false,
+    dataExecutiveKeys: [],
+    dataExecutiveValues: {},
   },
   reducers: {
     setDetailState(state, action) {
@@ -13,9 +16,24 @@ const DetailSlice = createSlice({
     setDataDetails(state, action) {
       state.data = action.payload;
     },
+    setDetailExecutiveState(state, action) {
+      state.statusExecutive = action.payload;
+    },
+    setDataExecutiveKeysDetails(state, action) {
+      state.dataExecutiveKeys = action.payload;
+    },
+    setDataExecutiveValuesDetails(state, action) {
+      state.dataExecutiveValues = action.payload;
+    },
   },
 });
 
-export const { setDetailState, setDataDetails } = DetailSlice.actions;
+export const {
+  setDetailState,
+  setDataDetails,
+  setDetailExecutiveState,
+  setDataExecutiveKeysDetails,
+  setDataExecutiveValuesDetails,
+} = DetailSlice.actions;
 
 export default DetailSlice.reducer;
