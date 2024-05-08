@@ -21,7 +21,7 @@ export default function SearchByKeyword() {
   const [categories, setCategories] = useState();
   const [selectedCategory, setSelectedCategory] = useState("1");
   const [keyword, setKeyword] = useState("");
-  const [allKeywordsUser, setAllKeywordsUser] = useState();
+  const [allKeywordsUser, setAllKeywordsUser] = useState([]);
   const [triggerChange, setTriggerChange] = useState(false);
 
   console.log("all keywords: ", allKeywordsUser);
@@ -159,7 +159,7 @@ export default function SearchByKeyword() {
       console.log("data keyword users: ", data);
 
       if (data.data === null) {
-        setAllKeywordsUser(null);
+        setAllKeywordsUser([]);
         throw res;
       }
 
@@ -208,7 +208,7 @@ export default function SearchByKeyword() {
       const data = await res.json();
 
       if (data.data === null) {
-        setAllKeywordsUser(null);
+        setAllKeywordsUser([]);
         throw res;
       }
 
@@ -299,7 +299,7 @@ export default function SearchByKeyword() {
           <section
             className={clsx(
               "bg-white rounded-lg shadow-sm py-8 px-14 text-center mt-8",
-              allKeywordsUser === null ? "visible" : "hidden"
+              allKeywordsUser.length === 0 ? "visible" : "hidden"
             )}
           >
             <div>
@@ -322,7 +322,7 @@ export default function SearchByKeyword() {
           <section
             className={clsx(
               "bg-white rounded-lg shadow-sm py-8 px-14 text-center mt-8",
-              allKeywordsUser && allKeywordsUser !== null ? "visible" : "hidden"
+              allKeywordsUser.length > 0 ? "visible" : "hidden"
             )}
           >
             <div className="border-2 rounded-xl border-input-border w-full">
@@ -347,7 +347,7 @@ export default function SearchByKeyword() {
                   </tr>
                 </thead>
                 <tbody className="text-Base-normal text-text-description">
-                  {allKeywordsUser &&
+                  {allKeywordsUser.length > 0 &&
                     allKeywordsUser.map((data, index) => {
                       return (
                         <tr
@@ -393,7 +393,8 @@ export default function SearchByKeyword() {
               </table>
               <div className="flex items-center justify-between my-[19px] mx-[16px]">
                 <p className="text-Base-normal text-[#676767] ">
-                  Showing {allKeywordsUser && allKeywordsUser.length} entries
+                  Showing {allKeywordsUser.length > 0 && allKeywordsUser.length}{" "}
+                  entries
                 </p>
               </div>
             </div>
