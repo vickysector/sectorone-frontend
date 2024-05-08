@@ -687,6 +687,7 @@ export default function DashboardLayout({ children }) {
       if (data.success) {
         DeleteCookies();
         router.push("/auth/login");
+        window.location.reload();
         return res;
       }
     } catch (error) {
