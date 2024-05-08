@@ -19,12 +19,13 @@ import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
-import { Alert, ConfigProvider, Pagination, Space } from "antd";
+import { Alert, Checkbox, ConfigProvider, Pagination, Space } from "antd";
 import clsx from "clsx";
 import Image from "next/image";
 import {
   setErrorLeakedData,
   setIsUsersDontShowAgain,
+  setIsUsersDontShowAgainTemp,
   setLeakedData,
   setTotalExposures,
   setUsersCredit,
@@ -34,6 +35,12 @@ import {
   setDataExecutiveValuesDetails,
   setDetailExecutiveState,
 } from "@/app/_lib/store/features/Compromised/DetailSlices";
+import { ExecutiveProtectionsFirstAccess } from "@/app/_ui/components/cards/ExecutiveProtectionsFirstAccess";
+import DocumentScannerIcon from "@mui/icons-material/DocumentScanner";
+import LockIcon from "@mui/icons-material/Lock";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 
 const informations = [
   {
@@ -63,11 +70,34 @@ const informations = [
   },
 ];
 
+const informationsDontShowAgain = [
+  {
+    id: 1,
+    icon: DocumentScannerIcon,
+    title: "Scan your email for data leaks",
+    descriptions:
+      "Run a one-time scan to see if your email address is on the dark web.",
+  },
+  {
+    id: 2,
+    icon: LockOutlinedIcon,
+    title: "Take action to protect your account",
+    descriptions: `Take preemptive action based on the guidance on what to do if your data leak info is discovered.`,
+  },
+  {
+    id: 3,
+    icon: CheckCircleOutlinedIcon,
+    title: "Data security recommendations",
+    descriptions: `Get recommendations to secure your account from data leaks.`,
+  },
+];
+
 export default function ExecutiveProtections() {
   const [email, setEmail] = useState("");
   const [isErrorEmail, setIsErrorEmail] = useState(false);
   const [allRecentSearch, setAllRecentSearch] = useState();
   const [isEmailFocused, setIsEmailFocused] = useState(false);
+  const [isCheckDontShowAgain, setIsCheckDontShowAgain] = useState(false);
 
   console.log("isemail focused: ", isEmailFocused);
 
@@ -98,9 +128,26 @@ export default function ExecutiveProtections() {
   const usersDontShowAgain = useSelector(
     (state) => state.executiveProtections.isUsersDontShowAgain
   );
+  const usersDontShowAgainTemp = useSelector(
+    (state) => state.executiveProtections.isUsersDontShowAgainTemp
+  );
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
+  };
+
+  const handleDontShowAgaoinCheck = (e) => {
+    setIsCheckDontShowAgain(e.target.checked);
+  };
+
+  console.log("dont show again: ", isCheckDontShowAgain);
+
+  const handleButtonDontShowAgain = () => {
+    if (isCheckDontShowAgain) {
+      callPatchUsersStatusCredit();
+    } else {
+      dispatch(setIsUsersDontShowAgainTemp(true));
+    }
   };
 
   const handleScanNow = () => {
@@ -310,6 +357,61 @@ export default function ExecutiveProtections() {
     await fetchWithRefreshToken(fetchGetUsersStatus, router, dispatch);
   };
 
+  const patchGetUsersStatus = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      //   if (!filterApplied && (keyword || startDate || endDate)) {
+      //     setPage(1);
+      //     setFilterApplied(true);
+      //   }
+
+      const res = await fetch(`${APIDATAV1}information/protection`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          is_protection: isCheckDontShowAgain,
+        }),
+      });
+
+      if (res.status === 400) {
+        return res;
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (data.error) {
+        return res;
+      }
+
+      if (data.data === null) {
+        throw res;
+      }
+
+      if (data.data) {
+        dispatch(setUsersCredit(data.data));
+        dispatch(setIsUsersDontShowAgain(data.data.is_protection));
+        return res;
+      }
+    } catch (error) {
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const callPatchUsersStatusCredit = async () => {
+    await fetchWithRefreshToken(patchGetUsersStatus, router, dispatch);
+  };
+
   const fetchRecentSearchData = async () => {
     try {
       dispatch(setLoadingState(true));
@@ -472,302 +574,369 @@ export default function ExecutiveProtections() {
   }, [isErrorEmail]);
 
   return (
-    <main>
-      <section className="flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[96px] relative ">
-        <Alert
-          message="Email is not valid"
-          type="error"
-          showIcon
-          closable={true}
-          style={{
-            position: "absolute",
-            top: "32px",
-            left: "32px",
-            right: "32px",
-            textAlign: "left",
-          }}
-          className={clsx(isErrorEmail ? "visible" : "hidden")}
-        />
-        <div>
-          <h1 className="text-heading-3 text-black">
-            Has your personal data been exposed?
-          </h1>
-          <h2 className="text-Base-normal text-text-description mt-[12px]">
-            Scan your primary email to see your digital footprint.
-          </h2>
+    <>
+      <main
+        className={clsx(
+          "bg-white rounded-lg shadow-md py-8 px-[120px] text-center",
+          !usersDontShowAgain && !usersDontShowAgainTemp ? "visible" : "hidden"
+        )}
+      >
+        <div className="mx-auto">
+          <Image
+            src={"/images/image_loadingState.svg"}
+            alt="search icon"
+            width={250}
+            height={250}
+            className="text-center mx-auto"
+          />
         </div>
-        <div className="mt-[32px] w-full">
-          <div className="flex text-center justify-center items-center relative">
-            <input
-              type="text"
-              className="rounded-md px-3 py-[5px] border-input-border border-2 w-[50%] text-LG-normal text-black"
-              placeholder="name@mail.com"
-              value={email}
-              onChange={handleChangeEmail}
-              onFocus={handleIsEmailFocusTrue}
-              // onBlur={handleIsEmailFotusFalse}
-            />
-            {isEmailFocused && (
-              <div
-                className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll pointer-events-auto z-10"
-                onMouseEnter={handleIsEmailFocusTrue}
-                onMouseLeave={handleIsEmailFotusFalse}
-              >
-                <div className="flex items-center justify-between">
-                  <h1 className="text-Base-strong text-black">Recent search</h1>
-                  <button
-                    className="text-primary-base text-Base-normal"
-                    onClick={handleDeleteAll}
-                  >
-                    Clear
-                  </button>
-                </div>
-                <div className="mt-5">
-                  {allRecentSearch &&
-                    allRecentSearch.map((data) => (
-                      <div
-                        key={data.id}
-                        className="mt-4 flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] px-1.5 py-1 rounded-md"
-                      >
-                        <div className="flex items-center">
-                          <div>
-                            <Image
-                              src={"/images/recent_search_logo.svg"}
-                              alt="search icon"
-                              width={18}
-                              height={18}
-                            />
-                          </div>
-                          <h1
-                            className="text-Base-normal text-black ml-3"
-                            onClick={() => setEmail(data.search)}
-                          >
-                            {data.search}
-                          </h1>
-                        </div>
-                        <div className="cursor pointer">
-                          <Image
-                            src={"/images/close_recent_search_logo.svg"}
-                            alt="search icon"
-                            width={9}
-                            height={9}
-                            onClick={() => handleDeleteIndividual(data.id)}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                </div>
-              </div>
-            )}
-            <div className="ml-4">
-              <AuthButton
-                value={"Scan now"}
-                agreements={canSend}
-                onClick={handleScanNow}
+        <h1 className="my-7 text-heading-3 text-black">
+          See if your email address is on the dark web
+        </h1>
+        {informationsDontShowAgain.map((data) => {
+          const Icon = data.icon;
+
+          return (
+            <div key={data.id} className="mt-5">
+              <ExecutiveProtectionsFirstAccess
+                Icon={Icon}
+                title={data.title}
+                descriptions={data.descriptions}
               />
             </div>
-          </div>
-          <p className="text-SM-normal text-[#00000082] text-center mt-4 ml-[-25%]">
-            You can only search a maximum of 10 searches.{" "}
-            <span className="text-SM-strong text-primary-base">
-              {usersCredit.credit}
-            </span>{" "}
-            Credits
-          </p>
+          );
+        })}
+        <div className="flex justify-between items-center mt-10">
+          <ConfigProvider
+            theme={{
+              token: {
+                colorPrimary: "#FF6F1E",
+              },
+            }}
+          >
+            <Checkbox
+              onChange={handleDontShowAgaoinCheck}
+              checked={isCheckDontShowAgain}
+            >
+              Dont show this again
+            </Checkbox>
+          </ConfigProvider>
+
+          <button
+            className="rounded-md bg-primary-base text-white text-LG-normal py-1.5 px-3"
+            onClick={handleButtonDontShowAgain}
+          >
+            Next
+          </button>
         </div>
-      </section>
-      <section
+      </main>
+      <main
         className={clsx(
-          "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
-          // hasCookie("scanned_verified") &&
-          //   getCookie("scanned_verified") === "true"
-          //   ? "hidden"
-          //   : "visible"
-          !isEmailVerified && !scannedEmail && !errorDataLeaked
-            ? "visible"
-            : "hidden"
+          usersDontShowAgain || usersDontShowAgainTemp ? "visible" : "hidden"
         )}
       >
-        <h1 className="text-heading-4 text-black">Looking to learn more?</h1>
-        <div className="mt-6 grid grid-cols-2 gap-4">
-          {informations.map((data) => {
-            const Icon = data.icon;
-
-            return (
-              <div key={data.id}>
-                <ExecutiveProtectionInfo
-                  Icon={Icon}
-                  title={data.title}
-                  descriptions={data.descriptions}
-                />
-              </div>
-            );
-          })}
-        </div>
-      </section>
-      <section
-        className={clsx(
-          "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
-          // hasCookie("scanned_verified") &&
-          //   getCookie("scanned_verified") === "true"
-          //   ? "visible"
-          //   : "hidden"
-          isEmailVerified && !errorDataLeaked && dataLeaked !== null
-            ? "visible"
-            : "hidden"
-        )}
-      >
-        <h1 className="text-heading-4 text-black">Results of your data leak</h1>
-        <h2 className="text-Base-normal text-text-description mt-3 max-w-[450px]">
-          Get details on data breaches that leak your info on the dark web. See
-          how you can become more secure based on each result.
-        </h2>
-
-        <div className="my-6 w-full">
+        <section className="flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[96px] relative ">
           <Alert
-            message={`We found ${totalExposures} exposures of your data.`}
-            type="warning"
+            message="Email is not valid"
+            type="error"
             showIcon
-            closable
+            closable={true}
             style={{
+              position: "absolute",
+              top: "32px",
+              left: "32px",
+              right: "32px",
               textAlign: "left",
             }}
+            className={clsx(isErrorEmail ? "visible" : "hidden")}
           />
-        </div>
-
-        <div className="border-2 rounded-xl border-input-border w-full">
-          <table className="bg-white  w-full rounded-xl">
-            <thead className="text-black text-Base-strong bg-[#00000005]">
-              <tr className="border-b-[1px] border-[#D5D5D5]">
-                <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
-                  No
-                </td>
-                <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                  Website Name
-                </td>
-                <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                  Leaked Data
-                </td>
-                <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
-                  Actions
-                </td>
-              </tr>
-            </thead>
-            <tbody className="text-Base-normal text-text-description">
-              {MapLeakedData &&
-                MapLeakedData.map((data, index) => {
-                  console.log("data leaked keys ", data.leakedKeys);
-                  console.log(
-                    "data leaked value ",
-                    dataLeaked.List[data.website].Data[0]
-                  );
-
-                  return (
-                    <tr className="border-b-[2px] border-[#D5D5D5]" key={index}>
-                      <td className="py-[19px] px-[16px]"> {index + 1} </td>
-                      <td className="py-[19px] px-[16px]">{data.website}</td>
-                      <td className="py-[19px] px-[16px] w-[45%]">
-                        {data.leakedKeys.map((key) => (
-                          <>
-                            <span
-                              className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2"
-                              key={key}
-                            >
-                              {key}
-                            </span>
-                          </>
-                        ))}
-                      </td>
-                      <td className="py-[19px] px-[16px]">
-                        <button
-                          className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4"
-                          onClick={() =>
-                            handleDetails(
-                              data.leakedKeys,
-                              dataLeaked.List[data.website].Data[0]
-                            )
-                          }
+          <div>
+            <h1 className="text-heading-3 text-black">
+              Has your personal data been exposed?
+            </h1>
+            <h2 className="text-Base-normal text-text-description mt-[12px]">
+              Scan your primary email to see your digital footprint.
+            </h2>
+          </div>
+          <div className="mt-[32px] w-full">
+            <div className="flex text-center justify-center items-center relative">
+              <input
+                type="text"
+                className="rounded-md px-3 py-[5px] border-input-border border-2 w-[50%] text-LG-normal text-black"
+                placeholder="name@mail.com"
+                value={email}
+                onChange={handleChangeEmail}
+                onFocus={handleIsEmailFocusTrue}
+                // onBlur={handleIsEmailFotusFalse}
+              />
+              {isEmailFocused && (
+                <div
+                  className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll pointer-events-auto z-10"
+                  onMouseEnter={handleIsEmailFocusTrue}
+                  onMouseLeave={handleIsEmailFotusFalse}
+                >
+                  <div className="flex items-center justify-between">
+                    <h1 className="text-Base-strong text-black">
+                      Recent search
+                    </h1>
+                    <button
+                      className="text-primary-base text-Base-normal"
+                      onClick={handleDeleteAll}
+                    >
+                      Clear
+                    </button>
+                  </div>
+                  <div className="mt-5">
+                    {allRecentSearch &&
+                      allRecentSearch.map((data) => (
+                        <div
+                          key={data.id}
+                          className="mt-4 flex items-center justify-between cursor-pointer hover:bg-[#FFEBD4] px-1.5 py-1 rounded-md"
                         >
-                          Details
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-            </tbody>
-          </table>
-          <div className="flex items-center justify-between my-[19px] mx-[16px]">
-            <p className="text-Base-normal text-[#676767] ">
-              Showing {totalExposures} to {totalExposures} entries
-            </p>
-            <div>
-              <ConfigProvider
-                theme={{
-                  components: {
-                    Pagination: {
-                      itemActiveBg: "#FF6F1E",
-                      itemLinkBg: "#fff",
-                      itemInputBg: "#fff",
-                    },
-                  },
-                  token: {
-                    colorPrimary: "white",
-                  },
-                }}
-              >
-                <Pagination
-                  type="primary"
-                  defaultCurrent={1}
-                  total={totalExposures}
-                  showSizeChanger={false}
-                  style={{ color: "#FF6F1E" }}
-                  // current={bookmarkPage}
-                  // onChange={handleSetBookmarkPage}
+                          <div className="flex items-center">
+                            <div>
+                              <Image
+                                src={"/images/recent_search_logo.svg"}
+                                alt="search icon"
+                                width={18}
+                                height={18}
+                              />
+                            </div>
+                            <h1
+                              className="text-Base-normal text-black ml-3"
+                              onClick={() => setEmail(data.search)}
+                            >
+                              {data.search}
+                            </h1>
+                          </div>
+                          <div className="cursor pointer">
+                            <Image
+                              src={"/images/close_recent_search_logo.svg"}
+                              alt="search icon"
+                              width={9}
+                              height={9}
+                              onClick={() => handleDeleteIndividual(data.id)}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                </div>
+              )}
+              <div className="ml-4">
+                <AuthButton
+                  value={"Scan now"}
+                  agreements={canSend}
+                  onClick={handleScanNow}
                 />
-              </ConfigProvider>
+              </div>
+            </div>
+            <p className="text-SM-normal text-[#00000082] text-center mt-4 ml-[-25%]">
+              You can only search a maximum of 10 searches.{" "}
+              <span className="text-SM-strong text-primary-base">
+                {usersCredit.credit}
+              </span>{" "}
+              Credits
+            </p>
+          </div>
+        </section>
+        <section
+          className={clsx(
+            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            // hasCookie("scanned_verified") &&
+            //   getCookie("scanned_verified") === "true"
+            //   ? "hidden"
+            //   : "visible"
+            !isEmailVerified && !scannedEmail && !errorDataLeaked
+              ? "visible"
+              : "hidden"
+          )}
+        >
+          <h1 className="text-heading-4 text-black">Looking to learn more?</h1>
+          <div className="mt-6 grid grid-cols-2 gap-4">
+            {informations.map((data) => {
+              const Icon = data.icon;
+
+              return (
+                <div key={data.id}>
+                  <ExecutiveProtectionInfo
+                    Icon={Icon}
+                    title={data.title}
+                    descriptions={data.descriptions}
+                  />
+                </div>
+              );
+            })}
+          </div>
+        </section>
+        <section
+          className={clsx(
+            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            // hasCookie("scanned_verified") &&
+            //   getCookie("scanned_verified") === "true"
+            //   ? "visible"
+            //   : "hidden"
+            isEmailVerified && !errorDataLeaked && dataLeaked !== null
+              ? "visible"
+              : "hidden"
+          )}
+        >
+          <h1 className="text-heading-4 text-black">
+            Results of your data leak
+          </h1>
+          <h2 className="text-Base-normal text-text-description mt-3 max-w-[450px]">
+            Get details on data breaches that leak your info on the dark web.
+            See how you can become more secure based on each result.
+          </h2>
+
+          <div className="my-6 w-full">
+            <Alert
+              message={`We found ${totalExposures} exposures of your data.`}
+              type="warning"
+              showIcon
+              closable
+              style={{
+                textAlign: "left",
+              }}
+            />
+          </div>
+
+          <div className="border-2 rounded-xl border-input-border w-full">
+            <table className="bg-white  w-full rounded-xl">
+              <thead className="text-black text-Base-strong bg-[#00000005]">
+                <tr className="border-b-[1px] border-[#D5D5D5]">
+                  <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                    No
+                  </td>
+                  <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                    Website Name
+                  </td>
+                  <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                    Leaked Data
+                  </td>
+                  <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                    Actions
+                  </td>
+                </tr>
+              </thead>
+              <tbody className="text-Base-normal text-text-description">
+                {MapLeakedData &&
+                  MapLeakedData.map((data, index) => {
+                    console.log("data leaked keys ", data.leakedKeys);
+                    console.log(
+                      "data leaked value ",
+                      dataLeaked.List[data.website].Data[0]
+                    );
+
+                    return (
+                      <tr
+                        className="border-b-[2px] border-[#D5D5D5]"
+                        key={index}
+                      >
+                        <td className="py-[19px] px-[16px]"> {index + 1} </td>
+                        <td className="py-[19px] px-[16px]">{data.website}</td>
+                        <td className="py-[19px] px-[16px] w-[45%]">
+                          {data.leakedKeys.map((key) => (
+                            <>
+                              <span
+                                className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2"
+                                key={key}
+                              >
+                                {key}
+                              </span>
+                            </>
+                          ))}
+                        </td>
+                        <td className="py-[19px] px-[16px]">
+                          <button
+                            className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4"
+                            onClick={() =>
+                              handleDetails(
+                                data.leakedKeys,
+                                dataLeaked.List[data.website].Data[0]
+                              )
+                            }
+                          >
+                            Details
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+              </tbody>
+            </table>
+            <div className="flex items-center justify-between my-[19px] mx-[16px]">
+              <p className="text-Base-normal text-[#676767] ">
+                Showing {totalExposures} to {totalExposures} entries
+              </p>
+              <div>
+                <ConfigProvider
+                  theme={{
+                    components: {
+                      Pagination: {
+                        itemActiveBg: "#FF6F1E",
+                        itemLinkBg: "#fff",
+                        itemInputBg: "#fff",
+                      },
+                    },
+                    token: {
+                      colorPrimary: "white",
+                    },
+                  }}
+                >
+                  <Pagination
+                    type="primary"
+                    defaultCurrent={1}
+                    total={totalExposures}
+                    showSizeChanger={false}
+                    style={{ color: "#FF6F1E" }}
+                    // current={bookmarkPage}
+                    // onChange={handleSetBookmarkPage}
+                  />
+                </ConfigProvider>
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-      <section
-        className={clsx(
-          "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
-          // hasCookie("scanned_verified") &&
-          //   getCookie("scanned_verified") === "true"
-          //   ? "visible"
-          //   : "hidden"
-          isEmailVerified && !errorDataLeaked && dataLeaked === null
-            ? "visible"
-            : "hidden"
-        )}
-      >
-        <div>
-          <Image
-            src={"/images/sector_confirmation_created_password_success.svg"}
-            alt="search icon"
-            width={129}
-            height={121}
-          />
-        </div>
-        <h1 className="text-heading-4 text-black">
-          Your email account is safe!
-        </h1>
-        <h2 className="text-LG-normal text-text-description mt-3 max-w-[450px]">
-          Nothing was found after scanning your email address.
-        </h2>
-      </section>
+        </section>
+        <section
+          className={clsx(
+            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            // hasCookie("scanned_verified") &&
+            //   getCookie("scanned_verified") === "true"
+            //   ? "visible"
+            //   : "hidden"
+            isEmailVerified && !errorDataLeaked && dataLeaked === null
+              ? "visible"
+              : "hidden"
+          )}
+        >
+          <div>
+            <Image
+              src={"/images/sector_confirmation_created_password_success.svg"}
+              alt="search icon"
+              width={129}
+              height={121}
+            />
+          </div>
+          <h1 className="text-heading-4 text-black">
+            Your email account is safe!
+          </h1>
+          <h2 className="text-LG-normal text-text-description mt-3 max-w-[450px]">
+            Nothing was found after scanning your email address.
+          </h2>
+        </section>
 
-      <section
-        className={clsx(
-          "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
-          // hasCookie("scanned_verified") &&
-          //   getCookie("scanned_verified") === "true"
-          //   ? "visible"
-          //   : "hidden"
-          isEmailVerified && errorDataLeaked ? "visible" : "hidden"
-        )}
-      >
-        {/* <div>
+        <section
+          className={clsx(
+            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            // hasCookie("scanned_verified") &&
+            //   getCookie("scanned_verified") === "true"
+            //   ? "visible"
+            //   : "hidden"
+            isEmailVerified && errorDataLeaked ? "visible" : "hidden"
+          )}
+        >
+          {/* <div>
           <Image
             src={"/images/sector_confirmation_created_password_success.svg"}
             alt="search icon"
@@ -775,13 +944,14 @@ export default function ExecutiveProtections() {
             height={121}
           />
         </div> */}
-        <h1 className="text-heading-4 text-black">
-          Oopss.. Something went wrong
-        </h1>
-        <h2 className="text-LG-normal text-text-description mt-3 max-w-[450px]">
-          There are something trouble on server
-        </h2>
-      </section>
-    </main>
+          <h1 className="text-heading-4 text-black">
+            Oopss.. Something went wrong
+          </h1>
+          <h2 className="text-LG-normal text-text-description mt-3 max-w-[450px]">
+            There are something trouble on server
+          </h2>
+        </section>
+      </main>
+    </>
   );
 }

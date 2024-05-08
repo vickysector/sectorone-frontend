@@ -9,6 +9,7 @@ const LeakedDataSlice = createSlice({
     isVerified: false,
     errorLeakedData: false,
     isUsersDontShowAgain: false,
+    isUsersDontShowAgainTemp: false,
     usersCredit: 0,
   },
   reducers: {
@@ -30,6 +31,9 @@ const LeakedDataSlice = createSlice({
     setIsUsersDontShowAgain(state, action) {
       state.isUsersDontShowAgain = action.payload;
     },
+    setIsUsersDontShowAgainTemp(state, action) {
+      state.isUsersDontShowAgainTemp = action.payload;
+    },
     setUsersCredit(state, action) {
       state.usersCredit = action.payload;
     },
@@ -43,6 +47,7 @@ export const {
   setEmailIsVerified,
   setErrorLeakedData,
   setIsUsersDontShowAgain,
+  setIsUsersDontShowAgainTemp,
   setUsersCredit,
 } = LeakedDataSlice.actions;
 
