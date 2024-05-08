@@ -2,7 +2,7 @@
 
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
-import { Select } from "antd";
+import { ConfigProvider, Pagination, Select } from "antd";
 import clsx from "clsx";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
@@ -325,10 +325,78 @@ export default function SearchByKeyword() {
               allKeywordsUser && allKeywordsUser !== null ? "visible" : "hidden"
             )}
           >
-            <h3 className="text-heading-4 text-black mt-6">Keywords ada loh</h3>
-            <p className="text-LG-normal text-text-description mt-4">
-              There are no keywords that you have added yet.
-            </p>
+            <div className="border-2 rounded-xl border-input-border w-full">
+              <table className="bg-white  w-full rounded-xl text-left">
+                <thead className="text-black text-Base-strong bg-[#00000005]">
+                  <tr className="border-b-[1px] border-[#D5D5D5]">
+                    <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
+                      No
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      Keyword
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      Leaked Data
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      Total Leakage
+                    </td>
+                    <td className="py-[19px] px-[16px] border-r-[1px] border-input-border border-dashed">
+                      Actions
+                    </td>
+                  </tr>
+                </thead>
+                <tbody className="text-Base-normal text-text-description">
+                  {allKeywordsUser &&
+                    allKeywordsUser.map((data, index) => {
+                      return (
+                        <tr
+                          className="border-b-[2px] border-[#D5D5D5]"
+                          key={data.id}
+                        >
+                          <td className="py-[19px] px-[16px]"> {index + 1} </td>
+                          <td className="py-[19px] px-[16px]">
+                            {data.keyword}
+                          </td>
+                          <td className="py-[19px] px-[16px] w-[45%]">
+                            {data.data_leak.map((key) => (
+                              <>
+                                <span
+                                  className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2"
+                                  key={key}
+                                >
+                                  {key}
+                                </span>
+                              </>
+                            ))}
+                          </td>
+                          <td className="py-[19px] px-[16px]">
+                            {data.count_data}
+                          </td>
+                          <td className="py-[19px] px-[16px]">
+                            <button
+                              className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4"
+                              // onClick={() =>
+                              //   handleDetails(
+                              //     data.leakedKeys,
+                              //     dataLeaked.List[data.website].Data[0]
+                              //   )
+                              // }
+                            >
+                              Details
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                </tbody>
+              </table>
+              <div className="flex items-center justify-between my-[19px] mx-[16px]">
+                <p className="text-Base-normal text-[#676767] ">
+                  Showing {allKeywordsUser && allKeywordsUser.length} entries
+                </p>
+              </div>
+            </div>
           </section>
         </section>
       </main>
