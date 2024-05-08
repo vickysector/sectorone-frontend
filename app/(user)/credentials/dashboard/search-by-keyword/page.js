@@ -14,7 +14,13 @@ import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import {
   setCallAddKeywordFunctions,
   setIsAddedKeyword,
+  setIsDetailActive,
 } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
+import {
+  EyeOutlined,
+  EyeInvisibleOutlined,
+  LockOutlined,
+} from "@ant-design/icons";
 
 export default function SearchByKeyword() {
   const [usersCredit, setUsersCredit] = useState();
@@ -39,6 +45,10 @@ export default function SearchByKeyword() {
   const handleAddKeywordButton = () => {
     dispatch(setIsAddedKeyword(true));
     dispatch(setCallAddKeywordFunctions(callPostAddKeywordSearch));
+  };
+
+  const handleDetailActive = () => {
+    dispatch(setIsDetailActive(true));
   };
 
   const dispatch = useDispatch();
@@ -275,7 +285,7 @@ export default function SearchByKeyword() {
                 onChange={handleChangeKeyword}
               />
             </div>
-            <p className="text-SM-normal text-[#00000082] text-left mt-4">
+            <p className="text-SM-normal text-[#00000082] text-justify mt-4">
               You can only search a maximum of 10 searches.{" "}
               <span className="text-SM-strong text-primary-base">
                 {usersCredit && usersCredit.credit}
@@ -376,13 +386,11 @@ export default function SearchByKeyword() {
                           <td className="py-[19px] px-[16px]">
                             <button
                               className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4"
-                              // onClick={() =>
-                              //   handleDetails(
-                              //     data.leakedKeys,
-                              //     dataLeaked.List[data.website].Data[0]
-                              //   )
-                              // }
+                              onClick={handleDetailActive}
                             >
+                              <span className="mr-2">
+                                <LockOutlined style={{ color: "#FF6F1E" }} />
+                              </span>
                               Details
                             </button>
                           </td>

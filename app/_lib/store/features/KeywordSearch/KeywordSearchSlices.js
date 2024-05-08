@@ -6,6 +6,7 @@ const KeywordSearchSlice = createSlice({
     callAddKeywordFunctions: null,
     isAddedKeyword: false,
     idCategory: "",
+    isDetailActive: false,
   },
   reducers: {
     setCallAddKeywordFunctions(state, action) {
@@ -17,10 +18,17 @@ const KeywordSearchSlice = createSlice({
     setIdCategory(state, action) {
       state.idCategory = action.payload;
     },
+    setIsDetailActive(state, action) {
+      state.isDetailActive = action.payload;
+    },
   },
 });
 
-export const { setCallAddKeywordFunctions, setIsAddedKeyword, setIdCategory } =
-  KeywordSearchSlice.actions;
+export const {
+  setCallAddKeywordFunctions,
+  setIsAddedKeyword,
+  setIdCategory,
+  setIsDetailActive,
+} = KeywordSearchSlice.actions;
 
 export default KeywordSearchSlice.reducer;

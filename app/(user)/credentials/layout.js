@@ -60,7 +60,10 @@ import {
 } from "@/app/_lib/store/features/Accounts/FreetrialSlices";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 import { setIsScanNow } from "@/app/_lib/store/features/ExecutiveProtections/ScanEmailSlices";
-import { setIsAddedKeyword } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
+import {
+  setIsAddedKeyword,
+  setIsDetailActive,
+} from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -202,6 +205,14 @@ export default function DashboardLayout({ children }) {
   const freeTrialPopupStatus = useSelector(
     (state) => state.freeTrialPopup.status
   );
+
+  const detailKeywordSearchActive = useSelector(
+    (state) => state.keywordSearch.isDetailActive
+  );
+
+  const handleDetailKeywordSearchYesOrNo = () => {
+    dispatch(setIsDetailActive(false));
+  };
 
   const handleDocumentationSectorOneStatus = () => {
     dispatch(setDocumentationSectorApiStatus(false));
@@ -852,6 +863,49 @@ export default function DashboardLayout({ children }) {
 
   return (
     <main className="relative bg-input-container">
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
+          detailKeywordSearchActive ? "visible" : "hidden"
+        )}
+      >
+        <div
+          className={clsx("rounded-lg bg-white p-[28px] w-[28%] text-center ")}
+        >
+          <div className="m-auto mb-6">
+            <Image
+              alt={"icon"}
+              src={`/images/popup_free_trial.svg`}
+              width={165}
+              height={136}
+              className="m-auto"
+            />
+          </div>
+          <h1 className="text-LG-strong mb-4">
+            Keep getting the best from SectorOne
+          </h1>
+          <p className="mb-10 text-text-description  text-Base-normal">
+            Upgrade your account to access all SectorOne dashboard features.{" "}
+            <span className="text-Base-normal underline text-primary-base">
+              Contact us
+            </span>
+          </p>
+          <div className="flex justify-end">
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg mr-2"
+              onClick={handleDetailKeywordSearchYesOrNo}
+            >
+              Cancel
+            </button>
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleDetailKeywordSearchYesOrNo}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black text-center",
