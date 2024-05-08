@@ -24,7 +24,10 @@ import { DeleteCookies } from "@/app/_lib/helpers/DeleteCookies";
 import { RedirectToLogin } from "@/app/_lib/helpers/RedirectToLogin";
 import { useSelector, useDispatch } from "react-redux";
 import { setChangeUrl } from "@/app/_lib/store/features/Home/ChangeUrlSlice";
-import { setDetailState } from "@/app/_lib/store/features/Compromised/DetailSlices";
+import {
+  setDetailExecutiveState,
+  setDetailState,
+} from "@/app/_lib/store/features/Compromised/DetailSlices";
 import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import copy from "copy-to-clipboard";
 import {
@@ -104,6 +107,24 @@ export default function DashboardLayout({ children }) {
   );
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
+  );
+  const detailsExecutiveProtectionsState = useSelector(
+    (state) => state.detailComrpomise.statusExecutive
+  );
+  const detailsExecutiveProtectionsKeysData = useSelector(
+    (state) => state.detailComrpomise.dataExecutiveKeys
+  );
+  const detailsExecutiveProtectionsValuesData = useSelector(
+    (state) => state.detailComrpomise.dataExecutiveValues
+  );
+
+  console.log(
+    "executive protections keys: ",
+    detailsExecutiveProtectionsKeysData
+  );
+  console.log(
+    "executive protections values: ",
+    detailsExecutiveProtectionsValuesData
   );
 
   const sessionExpiredRefreshToken = useSelector(
@@ -471,6 +492,10 @@ export default function DashboardLayout({ children }) {
 
   const handleDetailCompromisedState = () => {
     dispatch(setDetailState(false));
+  };
+
+  const handleDetailExecutiveProtectionsState = () => {
+    dispatch(setDetailExecutiveState(false));
   };
 
   const copyToClipboard = (text) => {
@@ -1227,6 +1252,122 @@ export default function DashboardLayout({ children }) {
           </div>
         </div>
       </div>
+
+      {/* Start of: details Executive protections */}
+
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-40 flex items-center justify-center text-black ",
+          detailsExecutiveProtectionsState ? "visible" : "hidden"
+        )}
+      >
+        <div className="w-[30%] bg-white rounded-lg p-[32px]  overflow-y-scroll h-[650px] relative">
+          <div
+            className={clsx(
+              "fixed right-[50%] translate-x-[50%] top-[50%]  bg-white p-2 border-2 border-input-border rounded-lg ",
+              copied ? "visible" : "hidden"
+            )}
+          >
+            <p className="text-Base-normal text-text-description">Copied!</p>
+          </div>
+          <div className="flex justify-between border-b-[1px] pb-6 border-[#D5D5D5] ">
+            <h1 className="text-LG-strong">Details</h1>
+            <CloseOutlined
+              style={{ color: "#676767" }}
+              onClick={handleDetailExecutiveProtectionsState}
+            />
+          </div>
+          <div className="mt-6">
+            {detailsExecutiveProtectionsKeysData.map((key) => (
+              <div className="mt-8" key={key}>
+                <h1 className="text-LG-strong">{key}</h1>
+                <h2
+                  className="text-text-description text-LG-normal mt-1"
+                  style={{
+                    maxWidth: "450px",
+                    wordWrap: "break-word",
+                  }}
+                >
+                  {/* <a href={``} target="_blank" className="underline">
+                    {detailsExecutiveProtectionsKeysData}
+                  </a> */}
+                  {detailsExecutiveProtectionsValuesData[key]}
+                </h2>
+              </div>
+            ))}
+            {/* <div className="mt-8">
+              <h1 className="text-LG-strong">Url</h1>
+              <h2
+                className="text-text-description text-LG-normal mt-1"
+                style={{
+                  maxWidth: "450px",
+                  wordWrap: "break-word",
+                }}
+              >
+                <a href={``} target="_blank" className="underline">
+                  {detailsExecutiveProtectionsKeysData}
+                </a>
+              </h2>
+            </div> */}
+            {/* <div className="mt-8">
+              <h1 className="text-LG-strong">Url 2</h1>
+              <h2
+                className="text-text-description text-LG-normal mt-1"
+                style={{
+                  maxWidth: "450px",
+                  wordWrap: "break-word",
+                }}
+              >
+                <a href={``} target="_blank" className="underline">
+                  {detailsExecutiveProtectionsValuesData}
+                </a>
+              </h2>
+            </div> */}
+            {/* <div className="mt-8">
+              <h1 className="text-LG-strong">Login</h1>
+              <h2 className="text-text-description text-LG-normal mt-1">
+                {detailsCompromisedData.login ?? "-"}
+              </h2>
+            </div> */}
+
+            {/* <div className="mt-8">
+              <h1 className="text-LG-strong">Machine ID</h1>
+
+              <div className="flex justify-between items-center mt-1">
+                <h2 className="text-text-description text-LG-normal mt-1">
+                  {detailsCompromisedData.machine_id ?? "-"}
+                </h2>
+                <CopyOutlined
+                  style={{ fontSize: "21px", color: "#FF6F1E" }}
+                  className="mr-2 ml-3 cursor-pointer"
+                  onClick={() =>
+                    copyToClipboard(detailsCompromisedData.machine_id ?? "-")
+                  }
+                />
+              </div>
+            </div>
+            <div className="mt-8">
+              <h1 className="text-LG-strong">Path</h1>
+
+              <div className="flex justify-between items-center mt-1">
+                <h2 className="text-text-description text-LG-normal mt-1">
+                  {detailsCompromisedData.path ?? "-"}
+                </h2>
+                <CopyOutlined
+                  style={{ fontSize: "21px", color: "#FF6F1E" }}
+                  className="mr-2 ml-3 cursor-pointer"
+                  onClick={() =>
+                    copyToClipboard(detailsCompromisedData.path ?? "-")
+                  }
+                />
+              </div>
+            </div> */}
+          </div>
+        </div>
+      </div>
+
+      {/* End of: Details Executive protections */}
+
       {/* Start of: Loading State Cards */}
 
       <LoadingStateCard loading={loadingStealerData} />

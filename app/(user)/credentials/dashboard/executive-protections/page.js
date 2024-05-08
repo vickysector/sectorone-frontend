@@ -27,6 +27,11 @@ import {
   setLeakedData,
   setTotalExposures,
 } from "@/app/_lib/store/features/ExecutiveProtections/LeakedDataSlices";
+import {
+  setDataExecutiveKeysDetails,
+  setDataExecutiveValuesDetails,
+  setDetailExecutiveState,
+} from "@/app/_lib/store/features/Compromised/DetailSlices";
 
 const informations = [
   {
@@ -113,6 +118,12 @@ export default function ExecutiveProtections() {
 
   const handleIsEmailFotusFalse = () => {
     setIsEmailFocused(false);
+  };
+
+  const handleDetails = (keys, values) => {
+    dispatch(setDetailExecutiveState(true));
+    dispatch(setDataExecutiveKeysDetails(keys));
+    dispatch(setDataExecutiveValuesDetails(values));
   };
 
   const fetchSendOtpScannedEmail = async () => {
@@ -577,19 +588,45 @@ export default function ExecutiveProtections() {
             </thead>
             <tbody className="text-Base-normal text-text-description">
               {MapLeakedData &&
-                MapLeakedData.map((data, index) => (
-                  <tr className="border-b-[2px] border-[#D5D5D5]" key={index}>
-                    <td className="py-[19px] px-[16px]"> {index + 1} </td>
-                    <td className="py-[19px] px-[16px]">{data.website}</td>
-                    <td className="py-[19px] px-[16px]">
-                      {data.leakedKeys.join(" ")}
-                    </td>
-                    <td className="py-[19px] px-[16px]">
-                      {" "}
-                      {/* {data.computer_name}{" "} */}
-                    </td>
-                  </tr>
-                ))}
+                MapLeakedData.map((data, index) => {
+                  console.log("data leaked keys ", data.leakedKeys);
+                  console.log(
+                    "data leaked value ",
+                    dataLeaked.List[data.website].Data[0]
+                  );
+
+                  return (
+                    <tr className="border-b-[2px] border-[#D5D5D5]" key={index}>
+                      <td className="py-[19px] px-[16px]"> {index + 1} </td>
+                      <td className="py-[19px] px-[16px]">{data.website}</td>
+                      <td className="py-[19px] px-[16px] w-[45%]">
+                        {data.leakedKeys.map((key) => (
+                          <>
+                            <span
+                              className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2"
+                              key={key}
+                            >
+                              {key}
+                            </span>
+                          </>
+                        ))}
+                      </td>
+                      <td className="py-[19px] px-[16px]">
+                        <button
+                          className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4"
+                          onClick={() =>
+                            handleDetails(
+                              data.leakedKeys,
+                              dataLeaked.List[data.website].Data[0]
+                            )
+                          }
+                        >
+                          Details
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
           <div className="flex items-center justify-between my-[19px] mx-[16px]">
