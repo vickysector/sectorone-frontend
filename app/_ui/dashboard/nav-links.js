@@ -13,6 +13,7 @@ import {
   SettingOutlined,
 } from "@ant-design/icons";
 import SecurityIcon from "@mui/icons-material/Security";
+import ManageSearchOutlinedIcon from "@mui/icons-material/ManageSearchOutlined";
 
 const links = [
   {
@@ -34,6 +35,11 @@ const links = [
     name: "Executive protection",
     href: "/credentials/dashboard/executive-protections",
     icon: SecurityIcon,
+  },
+  {
+    name: "Search by keyword",
+    href: "/credentials/dashboard/search-by-keyword",
+    icon: ManageSearchOutlinedIcon,
   },
   {
     name: "Activity Log",

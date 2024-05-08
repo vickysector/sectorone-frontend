@@ -60,6 +60,7 @@ import {
 } from "@/app/_lib/store/features/Accounts/FreetrialSlices";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 import { setIsScanNow } from "@/app/_lib/store/features/ExecutiveProtections/ScanEmailSlices";
+import { setIsAddedKeyword } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -190,6 +191,14 @@ export default function DashboardLayout({ children }) {
     (state) => state.documentationSectorOne.documentationStatus
   );
 
+  const isAddKeywordButtonIsCalled = useSelector(
+    (state) => state.keywordSearch.isAddedKeyword
+  );
+
+  const callAddKeywordFunction = useSelector(
+    (state) => state.keywordSearch.callAddKeywordFunctions
+  );
+
   const freeTrialPopupStatus = useSelector(
     (state) => state.freeTrialPopup.status
   );
@@ -214,6 +223,15 @@ export default function DashboardLayout({ children }) {
   // console.log("loading compromised data: ", loadingCompromisedData);
 
   // End of: Checking Users Credentials
+
+  const handleYesAddButtonKeywordSearch = () => {
+    callAddKeywordFunction();
+    dispatch(setIsAddedKeyword(false));
+  };
+
+  const handleNoAddButtonKeywordSearch = () => {
+    dispatch(setIsAddedKeyword(false));
+  };
 
   const handleIsScanEmailNow = () => {
     // dispatch()
@@ -916,6 +934,35 @@ export default function DashboardLayout({ children }) {
               onClick={handleDocumentationSectorOneStatus}
             >
               Done
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          isAddKeywordButtonIsCalled ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            Are you sure you want to Add this Keyword?
+          </h1>
+          <p className="mb-6 text-text-description ">
+            This action is permanent and it will reduce your credits.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleYesAddButtonKeywordSearch}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleNoAddButtonKeywordSearch}
+            >
+              Cancel
             </button>
           </div>
         </div>
