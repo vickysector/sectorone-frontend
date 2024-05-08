@@ -24,8 +24,10 @@ import clsx from "clsx";
 import Image from "next/image";
 import {
   setErrorLeakedData,
+  setIsUsersDontShowAgain,
   setLeakedData,
   setTotalExposures,
+  setUsersCredit,
 } from "@/app/_lib/store/features/ExecutiveProtections/LeakedDataSlices";
 import {
   setDataExecutiveKeysDetails,
@@ -90,7 +92,12 @@ export default function ExecutiveProtections() {
     (state) => state.executiveProtections.totalExposures
   );
 
-  console.log("leaked data in redux: ", dataLeaked);
+  const usersCredit = useSelector(
+    (state) => state.executiveProtections.usersCredit
+  );
+  const usersDontShowAgain = useSelector(
+    (state) => state.executiveProtections.isUsersDontShowAgain
+  );
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
@@ -252,6 +259,57 @@ export default function ExecutiveProtections() {
     await fetchWithRefreshToken(fetchGetDetailLeakedData, router, dispatch);
   };
 
+  const fetchGetUsersStatus = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      //   if (!filterApplied && (keyword || startDate || endDate)) {
+      //     setPage(1);
+      //     setFilterApplied(true);
+      //   }
+
+      const res = await fetch(`${APIDATAV1}information/protection`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 400) {
+        return res;
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (data.error) {
+        return res;
+      }
+
+      if (data.data === null) {
+        throw res;
+      }
+
+      if (data.data) {
+        dispatch(setUsersCredit(data.data));
+        dispatch(setIsUsersDontShowAgain(data.data.is_protection));
+        return res;
+      }
+    } catch (error) {
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const callGetUsersStatusCredit = async () => {
+    await fetchWithRefreshToken(fetchGetUsersStatus, router, dispatch);
+  };
+
   const fetchRecentSearchData = async () => {
     try {
       dispatch(setLoadingState(true));
@@ -396,12 +454,14 @@ export default function ExecutiveProtections() {
 
   useEffect(() => {
     callRecentSearchData();
+    callGetUsersStatusCredit();
   }, []);
 
   useEffect(() => {
     if (isEmailVerified) {
       callGetDetailLeakedData();
       setEmail(scannedEmail);
+      callGetUsersStatusCredit();
     }
   }, []);
 
@@ -507,6 +567,13 @@ export default function ExecutiveProtections() {
               />
             </div>
           </div>
+          <p className="text-SM-normal text-[#00000082] text-center mt-4 ml-[-25%]">
+            You can only search a maximum of 10 searches.{" "}
+            <span className="text-SM-strong text-primary-base">
+              {usersCredit.credit}
+            </span>{" "}
+            Credits
+          </p>
         </div>
       </section>
       <section

@@ -6,7 +6,7 @@ const DetailSlice = createSlice({
     status: false,
     data: {},
     statusExecutive: false,
-    dataExecutiveKeys: {},
+    dataExecutiveKeys: [],
     dataExecutiveValues: {},
   },
   reducers: {
