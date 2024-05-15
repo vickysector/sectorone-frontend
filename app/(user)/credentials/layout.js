@@ -1704,18 +1704,18 @@ export default function DashboardLayout({ children }) {
       <div className={clsx(logoutLoading ? "visible" : "hidden")}>
         <LoadingSpin />
       </div>
-      <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white border-b-2 border-b-input-border">
+      <nav className="py-3 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white border-b-2 border-b-input-border">
         <Image
           src={"/images/SectorOne.png"}
           alt="Logo Sector"
-          width={92}
+          width={120}
           height={38}
         />
         <div className="flex items-center">
           {getCookie("user_status") === "true" && (
             <div
               className={clsx(
-                "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1 px-2.5 mr-8 flex items-center"
+                "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1 px-2.5 mr-4 flex items-center"
                 // getCookie("user_status") === "true" ? "visible" : "hidden"
               )}
               onClick={() => dispatch(setFreeTrialStatusToTrue())}
@@ -1746,12 +1746,12 @@ export default function DashboardLayout({ children }) {
           </div>
           <div
             className={clsx(
-              "fixed right-[48px] top-[50px] bg-white p-[32px] shadow-xl rounded-2xl transition-all ",
+              "fixed right-[48px] top-[50px] bg-white p-[16px] shadow-xl rounded-2xl transition-all ",
               accountShow ? "visible" : "hidden"
             )}
           >
-            <p className="text-heading-4"> {usersData && usersData} </p>
-            <div className="w-full h-[1px] bg-input-border my-[24px]"></div>
+            <p className="text-heading-5"> {usersData && usersData} </p>
+            <div className="w-full h-[1px] bg-input-border my-[16px]"></div>
             <div
               className="flex items-center cursor-pointer"
               onClick={fetchLogoutFunctionWithRefreshToken}
@@ -1760,11 +1760,13 @@ export default function DashboardLayout({ children }) {
                 <Image
                   src={"/images/image_logout.svg"}
                   alt="Avatar Profile"
-                  width={24}
-                  height={24}
+                  width={16}
+                  height={16}
                 />
               </div>
-              <p className="text-[#FF4D4F] ml-[8px]">Log out of account</p>
+              <p className="text-[#FF4D4F] ml-[8px] text-Base-normal">
+                Log out of account
+              </p>
             </div>
           </div>
         </div>
@@ -1782,7 +1784,7 @@ export default function DashboardLayout({ children }) {
         </div>
         <aside
           className={clsx(
-            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border border-t-2 border-t-input-border ",
+            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-t-2 border-t-input-border shadow-lg ",
             hide ? "w-[102px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
           )}
         >
@@ -1807,17 +1809,17 @@ export default function DashboardLayout({ children }) {
           <Sidenav />
           <div
             className={clsx(
-              "bg-white border-2 border-input-border w-[38px] h-[38px] rounded-full fixed top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer",
+              "bg-white  w-[32px] h-[32px] rounded-full fixed top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer shadow-lg",
               hide ? "left-[87px]" : "left-[240px]"
             )}
             onClick={toggleHideIcon}
           >
             <LeftOutlined
-              style={{ fontSize: "16px" }}
+              style={{ fontSize: "12px" }}
               className={clsx("cursor-pointer", hide ? "hidden" : "visible")}
             />
             <RightOutlined
-              style={{ fontSize: "16px" }}
+              style={{ fontSize: "12px" }}
               className={clsx("cursor-pointer", hide ? "visible" : "hidden")}
             />
           </div>
