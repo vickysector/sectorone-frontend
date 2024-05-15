@@ -66,7 +66,7 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex items-center mb-4 py-3 px-5 text-center hover:bg-primary-base text-text-description hover:text-white overflow-hidden rounded-lg",
+              "flex items-center mb-4 py-1.5 px-2 text-center hover:bg-primary-base text-text-description hover:text-white overflow-hidden rounded-lg",
               {
                 "bg-primary-base text-white": pathname === link.href,
               }
@@ -75,13 +75,13 @@ export default function NavLinks() {
             <LinkIcon
               className="link-icon"
               style={{
-                fontSize: "20px",
+                fontSize: "18px",
                 color: pathname === link.href && "#fff",
               }}
             />
             <p
               className={clsx(
-                "ml-5  text-LG-normal hover:text-white text-left flex-grow text-nowrap",
+                "ml-3  text-LG-normal hover:text-white text-left flex-grow text-nowrap",
                 {
                   "text-white text-LG-strong": pathname === link.href,
                 }
