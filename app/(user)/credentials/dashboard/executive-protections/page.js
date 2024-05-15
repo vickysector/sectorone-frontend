@@ -96,6 +96,7 @@ const informationsDontShowAgain = [
 export default function ExecutiveProtections() {
   const [email, setEmail] = useState("");
   const [isErrorEmail, setIsErrorEmail] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [allRecentSearch, setAllRecentSearch] = useState();
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isCheckDontShowAgain, setIsCheckDontShowAgain] = useState(false);
@@ -200,10 +201,12 @@ export default function ExecutiveProtections() {
         }
       );
 
-      if (res.status === 400) {
-        setIsErrorEmail(true);
-        return res;
-      }
+      // if (res.status === 400) {
+      //   setIsErrorEmail(true);
+      //   console.log("error bunggg  di 400....", res);
+
+      //   return res;
+      // }
 
       if (res.status === 401 || res.status === 403) {
         // DeleteCookies();
@@ -214,6 +217,8 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       if (data.data === null) {
+        setIsErrorEmail(true);
+        setErrorMessage(data.message);
         throw res;
       }
 
@@ -659,7 +664,7 @@ export default function ExecutiveProtections() {
       >
         <section className="flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[96px] relative ">
           <Alert
-            message="Email is not valid"
+            message={errorMessage ? errorMessage : "Email is not valid"}
             type="error"
             showIcon
             closable={true}
