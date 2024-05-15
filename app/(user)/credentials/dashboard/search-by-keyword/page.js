@@ -464,14 +464,14 @@ export default function SearchByKeyword() {
                           key={data.id}
                         >
                           <td className="py-[19px] px-[16px]"> {index + 1} </td>
-                          <td className="py-[19px] px-[16px]">
+                          <td className="py-[19px] px-[16px] max-w-[175px]">
                             {data.keyword}
                           </td>
-                          <td className="py-[19px] px-[16px] w-[45%]">
+                          <td className="py-[19px] px-[16px] w-[20%] max-w-[500px]">
                             {data.data_leak.map((key) => (
                               <>
                                 <span
-                                  className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2"
+                                  className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2 mt-2"
                                   key={key}
                                 >
                                   {key}
@@ -482,7 +482,7 @@ export default function SearchByKeyword() {
                           <td className="py-[19px] px-[16px]">
                             {data.count_data}
                           </td>
-                          <td className="py-[19px] px-[16px]">
+                          <td className="py-[19px] px-[16px] ">
                             <DeleteOutlineIcon
                               className="cursor-pointer"
                               onClick={() => handleDeleteKeywordButton(data.id)}
