@@ -23,6 +23,7 @@ import { Alert, Checkbox, ConfigProvider, Pagination, Space } from "antd";
 import clsx from "clsx";
 import Image from "next/image";
 import {
+  setEmailIsVerified,
   setErrorLeakedData,
   setIsUsersDontShowAgain,
   setIsUsersDontShowAgainTemp,
@@ -98,8 +99,9 @@ export default function ExecutiveProtections() {
   const [allRecentSearch, setAllRecentSearch] = useState();
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isCheckDontShowAgain, setIsCheckDontShowAgain] = useState(false);
-
-  console.log("isemail focused: ", isEmailFocused);
+  const [triggerChange, setTriggerChange] = useState(false);
+  const [triggerTrueVerified, setTriggerTrueVerified] = useState(false);
+  const [localUsersCredit, setLocalUsersCredit] = useState(0);
 
   const canSend = email;
   const dispatch = useDispatch();
@@ -139,8 +141,6 @@ export default function ExecutiveProtections() {
   const handleDontShowAgaoinCheck = (e) => {
     setIsCheckDontShowAgain(e.target.checked);
   };
-
-  console.log("dont show again: ", isCheckDontShowAgain);
 
   const handleButtonDontShowAgain = () => {
     if (isCheckDontShowAgain) {
@@ -240,6 +240,8 @@ export default function ExecutiveProtections() {
     try {
       dispatch(setLoadingState(true));
 
+      setTriggerTrueVerified(false);
+
       //   if (!filterApplied && (keyword || startDate || endDate)) {
       //     setPage(1);
       //     setFilterApplied(true);
@@ -293,6 +295,7 @@ export default function ExecutiveProtections() {
         let totalItems = Object.keys(data.List).length;
         dispatch(setLeakedData(data));
         dispatch(setTotalExposures(totalItems));
+        setTriggerTrueVerified(true);
         return res;
       }
     } catch (error) {
@@ -342,7 +345,8 @@ export default function ExecutiveProtections() {
       }
 
       if (data.data) {
-        dispatch(setUsersCredit(data.data));
+        // dispatch(setUsersCredit(data.data));
+        setLocalUsersCredit(data.data);
         dispatch(setIsUsersDontShowAgain(data.data.is_protection));
         return res;
       }
@@ -397,7 +401,7 @@ export default function ExecutiveProtections() {
       }
 
       if (data.data) {
-        dispatch(setUsersCredit(data.data));
+        // dispatch(setUsersCredit(data.data));
         dispatch(setIsUsersDontShowAgain(data.data.is_protection));
         return res;
       }
@@ -435,6 +439,7 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       if (data.data === null) {
+        setAllRecentSearch();
         throw res;
       }
 
@@ -463,6 +468,8 @@ export default function ExecutiveProtections() {
     try {
       dispatch(setLoadingState(true));
 
+      setTriggerChange(false);
+
       const res = await fetch(`${APIDATAV1}protection`, {
         method: "DELETE",
         credentials: "include",
@@ -486,10 +493,11 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       if (data.data === null) {
+        setTriggerChange(true);
         throw res;
       }
 
-      return res;
+      // return res;
     } catch (error) {
       return error;
     } finally {
@@ -504,6 +512,8 @@ export default function ExecutiveProtections() {
   const DeleteAllRecentSearchData = async () => {
     try {
       dispatch(setLoadingState(true));
+
+      setTriggerChange(false);
 
       const res = await fetch(`${APIDATAV1}protection`, {
         method: "DELETE",
@@ -525,10 +535,11 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       if (data.data === null) {
+        setTriggerChange(true);
         throw res;
       }
 
-      return res;
+      // return res;
     } catch (error) {
       return error;
     } finally {
@@ -555,17 +566,28 @@ export default function ExecutiveProtections() {
   // }, [isEmailVerified]);
 
   useEffect(() => {
+    setTriggerChange(false);
+    callRecentSearchData();
+  }, [triggerChange]);
+
+  useEffect(() => {
     callRecentSearchData();
     callGetUsersStatusCredit();
   }, []);
 
   useEffect(() => {
     if (isEmailVerified) {
+      console.log("running is email verified");
       callGetDetailLeakedData();
       setEmail(scannedEmail);
       callGetUsersStatusCredit();
     }
   }, []);
+
+  useEffect(() => {
+    setTriggerTrueVerified(false);
+    callGetUsersStatusCredit();
+  }, [triggerTrueVerified]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -669,7 +691,7 @@ export default function ExecutiveProtections() {
                 onFocus={handleIsEmailFocusTrue}
                 // onBlur={handleIsEmailFotusFalse}
               />
-              {isEmailFocused && (
+              {isEmailFocused && allRecentSearch && (
                 <div
                   className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll pointer-events-auto z-10"
                   onMouseEnter={handleIsEmailFocusTrue}
@@ -734,7 +756,7 @@ export default function ExecutiveProtections() {
             <p className="text-SM-normal text-[#00000082] text-center mt-4 ml-[-25%]">
               You can only search a maximum of 10 searches.{" "}
               <span className="text-SM-strong text-primary-base">
-                {usersCredit.credit}
+                {localUsersCredit.credit}
               </span>{" "}
               Credits
             </p>
