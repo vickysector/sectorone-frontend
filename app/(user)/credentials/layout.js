@@ -1785,7 +1785,7 @@ export default function DashboardLayout({ children }) {
         <aside
           className={clsx(
             " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-t-2 border-t-input-border shadow-lg ",
-            hide ? "w-[102px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
+            hide ? "w-[76px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
           )}
         >
           {/* <div className="mt-2 flex justify-end mr-5">
@@ -1810,7 +1810,7 @@ export default function DashboardLayout({ children }) {
           <div
             className={clsx(
               "bg-white  w-[32px] h-[32px] rounded-full fixed top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer shadow-lg",
-              hide ? "left-[87px]" : "left-[240px]"
+              hide ? "left-[61px]" : "left-[240px]"
             )}
             onClick={toggleHideIcon}
           >
@@ -1827,7 +1827,7 @@ export default function DashboardLayout({ children }) {
         <div
           className={clsx(
             "flex-grow min-h-screen h-full  min-w-screen w-full fixed bg-input-container left-0 right-0 overflow-y-auto  pt-[75px] transition-all pr-[32px] pb-[64px]",
-            hide ? "pl-[130px]" : "pl-[290px]"
+            hide ? "pl-[104px]" : "pl-[290px]"
           )}
         >
           {children}
