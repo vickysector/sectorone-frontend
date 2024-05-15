@@ -356,7 +356,7 @@ export default function SearchByKeyword() {
             <h2 className="text-black text-heading-4">Add keyword</h2>
             <p className="mt-2 text-Base-normal text-text-description">
               Find data leaks based on the keywords you enter. You can only
-              enter a maximum of 5 keywords.
+              enter a maximum of 10 keywords.
             </p>
 
             <div className="mt-10 flex">
@@ -373,15 +373,28 @@ export default function SearchByKeyword() {
                     label: category.category_search,
                   }))
                 }
+                disabled={
+                  usersCredit && usersCredit.credit === 0 ? true : false
+                }
               />
               <input
                 type="text"
                 className={clsx(
-                  "py-3 px-5 text-Base-normal text-[#000000E0] rounded-md border-[1px] border-input-border bg-[#F7F7F7] basis-4/5 ml-6 h-[40px]"
+                  "py-3 px-5 text-Base-normal text-[#000000E0] rounded-md border-[1px] border-input-border bg-[#F7F7F7] basis-4/5 ml-6 h-[40px]",
+                  usersCredit && usersCredit.credit === 0
+                    ? "cursor-not-allowed"
+                    : "cursor-default"
                 )}
-                placeholder="Type here..."
+                placeholder={
+                  usersCredit && usersCredit.credit === 0
+                    ? "Insufficient Balance"
+                    : "Type here..."
+                }
                 value={keyword}
                 onChange={handleChangeKeyword}
+                disabled={
+                  usersCredit && usersCredit.credit === 0 ? true : false
+                }
               />
             </div>
             <p className="text-SM-normal text-[#00000082] text-justify mt-4">

@@ -829,7 +829,7 @@ export default function ExecutiveProtections() {
           </div>
 
           <div className="border-2 rounded-xl border-input-border w-full">
-            <table className="bg-white  w-full rounded-xl">
+            <table className="bg-white  w-full rounded-xl text-left">
               <thead className="text-black text-Base-strong bg-[#00000005]">
                 <tr className="border-b-[1px] border-[#D5D5D5]">
                   <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
@@ -866,7 +866,7 @@ export default function ExecutiveProtections() {
                           {data.leakedKeys.map((key) => (
                             <>
                               <span
-                                className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2"
+                                className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2 mt-2"
                                 key={key}
                               >
                                 {key}
