@@ -62,6 +62,7 @@ import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 import { setIsScanNow } from "@/app/_lib/store/features/ExecutiveProtections/ScanEmailSlices";
 import {
   setIsAddedKeyword,
+  setIsDeleteKeyword,
   setIsDetailActive,
 } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 
@@ -202,6 +203,14 @@ export default function DashboardLayout({ children }) {
     (state) => state.keywordSearch.callAddKeywordFunctions
   );
 
+  const isDeleteKeywordButtonIsCalled = useSelector(
+    (state) => state.keywordSearch.isDeleteKeyword
+  );
+
+  const callDeleteKeywordFunction = useSelector(
+    (state) => state.keywordSearch.callDeleteKeywordFunction
+  );
+
   const freeTrialPopupStatus = useSelector(
     (state) => state.freeTrialPopup.status
   );
@@ -242,6 +251,15 @@ export default function DashboardLayout({ children }) {
 
   const handleNoAddButtonKeywordSearch = () => {
     dispatch(setIsAddedKeyword(false));
+  };
+
+  const handleYesDeleteButtonKeywordSearch = () => {
+    callDeleteKeywordFunction();
+    dispatch(setIsDeleteKeyword(false));
+  };
+
+  const handleNoDeleteButtonKeywordSearch = () => {
+    dispatch(setIsDeleteKeyword(false));
   };
 
   const handleIsScanEmailNow = () => {
@@ -1015,6 +1033,35 @@ export default function DashboardLayout({ children }) {
             <button
               className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
               onClick={handleNoAddButtonKeywordSearch}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          isDeleteKeywordButtonIsCalled ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            Are you sure you want to Delete this Keyword?
+          </h1>
+          <p className="mb-6 text-text-description ">
+            This action is permanent and cannot be undone.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleYesDeleteButtonKeywordSearch}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleNoDeleteButtonKeywordSearch}
             >
               Cancel
             </button>

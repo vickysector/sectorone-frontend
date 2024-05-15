@@ -13,7 +13,9 @@ import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import {
   setCallAddKeywordFunctions,
+  setCallDeleteKeywordFunction,
   setIsAddedKeyword,
+  setIsDeleteKeyword,
   setIsDetailActive,
 } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 import {
@@ -21,6 +23,7 @@ import {
   EyeInvisibleOutlined,
   LockOutlined,
 } from "@ant-design/icons";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 export default function SearchByKeyword() {
   const [usersCredit, setUsersCredit] = useState();
@@ -45,6 +48,13 @@ export default function SearchByKeyword() {
   const handleAddKeywordButton = () => {
     dispatch(setIsAddedKeyword(true));
     dispatch(setCallAddKeywordFunctions(callPostAddKeywordSearch));
+  };
+
+  const handleDeleteKeywordButton = (id) => {
+    dispatch(setIsDeleteKeyword(true));
+    dispatch(
+      setCallDeleteKeywordFunction(() => callDeleteRemoveKeywordSearch(id))
+    );
   };
 
   const handleDetailActive = () => {
@@ -240,6 +250,50 @@ export default function SearchByKeyword() {
     await fetchWithRefreshToken(postKeywordSearch, router, dispatch);
   };
 
+  const deleteKeywordSearch = async (id) => {
+    try {
+      dispatch(setLoadingState(true));
+
+      setTriggerChange(false);
+
+      const res = await fetch(`${APIDATAV1}keyword`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+        }),
+      });
+
+      if (res.status === 400) {
+        return res;
+      }
+
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (data.data === null) {
+        setTriggerChange(true);
+        throw res;
+      }
+    } catch (error) {
+      console.log("error Delete keyword: ", error);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const callDeleteRemoveKeywordSearch = async (id) => {
+    await fetchWithRefreshToken(deleteKeywordSearch, router, dispatch, id);
+  };
+
   useEffect(() => {
     setTriggerChange(false);
     callPatchUsersStatusCredit();
@@ -384,8 +438,16 @@ export default function SearchByKeyword() {
                             {data.count_data}
                           </td>
                           <td className="py-[19px] px-[16px]">
+                            <DeleteOutlineIcon
+                              className="cursor-pointer"
+                              onClick={() => handleDeleteKeywordButton(data.id)}
+                              style={{
+                                color: "#00000040",
+                                fontSize: "20px",
+                              }}
+                            />
                             <button
-                              className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4"
+                              className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4 ml-4"
                               onClick={handleDetailActive}
                             >
                               <span className="mr-2">
