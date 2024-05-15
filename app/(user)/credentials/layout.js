@@ -65,6 +65,7 @@ import {
   setIsDeleteKeyword,
   setIsDetailActive,
 } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -1737,11 +1738,8 @@ export default function DashboardLayout({ children }) {
             <Tooltip isActive={isHovered} right={0} top={"10px"} />
           </div> */}
           <div className="cursor-pointer" onClick={toggleAccount}>
-            <Image
-              src={"/images/sector_avatar.svg"}
-              alt="Avatar Profile"
-              width={28}
-              height={28}
+            <AccountCircleOutlinedIcon
+              style={{ fontSize: "28px", color: "#676767" }}
             />
           </div>
           <div
