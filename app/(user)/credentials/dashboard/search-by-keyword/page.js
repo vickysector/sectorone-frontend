@@ -2,7 +2,7 @@
 
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
-import { ConfigProvider, Pagination, Select } from "antd";
+import { ConfigProvider, Pagination, Select, Alert } from "antd";
 import clsx from "clsx";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
@@ -32,6 +32,10 @@ export default function SearchByKeyword() {
   const [keyword, setKeyword] = useState("");
   const [allKeywordsUser, setAllKeywordsUser] = useState([]);
   const [triggerChange, setTriggerChange] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   console.log("all keywords: ", allKeywordsUser);
 
@@ -217,15 +221,18 @@ export default function SearchByKeyword() {
         }),
       });
 
-      if (res.status === 400) {
-        return res;
-      }
-
       if (res.status === 401 || res.status === 403) {
         return res;
       }
 
       const data = await res.json();
+
+      if (!data.success) {
+        setIsError(true);
+        setErrorMessage(data.message);
+
+        return res;
+      }
 
       if (data.data === null) {
         setAllKeywordsUser([]);
@@ -236,6 +243,8 @@ export default function SearchByKeyword() {
         setAllKeywordsUser(data.data);
         setKeyword("");
         setTriggerChange(true);
+        setIsSuccess(true);
+        setSuccessMessage("Add Keyword Success!");
         return res;
       }
     } catch (error) {
@@ -243,6 +252,12 @@ export default function SearchByKeyword() {
       return error;
     } finally {
       dispatch(setLoadingState(false));
+      setTimeout(() => {
+        setIsSuccess(false);
+        setSuccessMessage("");
+        setIsError(false);
+        setErrorMessage("");
+      }, 4000);
     }
   };
 
@@ -307,7 +322,37 @@ export default function SearchByKeyword() {
         <section>
           <h1 className="text-black text-heading-2">Search by keyword</h1>
 
-          <section className="bg-white rounded-lg shadow-sm p-10 mt-8">
+          <section className="bg-white rounded-lg shadow-sm p-10 mt-8 relative">
+            <Alert
+              message={successMessage}
+              type="success"
+              showIcon
+              closable={true}
+              style={{
+                position: "absolute",
+                top: "-16px",
+                left: "50%",
+                right: "32px",
+                textAlign: "left",
+                transform: "translateX(-50%)",
+              }}
+              className={clsx(isSuccess ? "visible" : "hidden")}
+            />
+            <Alert
+              message={errorMessage}
+              type="error"
+              showIcon
+              closable={true}
+              style={{
+                position: "absolute",
+                top: "-16px",
+                left: "50%",
+                right: "32px",
+                textAlign: "left",
+                transform: "translateX(-50%)",
+              }}
+              className={clsx(isError ? "visible" : "hidden")}
+            />
             <h2 className="text-black text-heading-4">Add keyword</h2>
             <p className="mt-2 text-Base-normal text-text-description">
               Find data leaks based on the keywords you enter. You can only
