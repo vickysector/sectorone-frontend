@@ -60,7 +60,7 @@ export default function PieChartCard({ compromisedData, datasets }) {
 
   return (
     <>
-      <div className="bg-white border-input-border border-2 rounded-lg p-8 items-center flex flex-col text-center">
+      <div className="bg-white rounded-lg p-8 items-center flex flex-col text-center">
         <div className=" h-[300px]">
           {datasets ? <Doughnut data={data} /> : <p>Diagram Not Available</p>}
         </div>
