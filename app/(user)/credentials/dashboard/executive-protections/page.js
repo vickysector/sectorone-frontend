@@ -102,7 +102,9 @@ export default function ExecutiveProtections() {
   const [isCheckDontShowAgain, setIsCheckDontShowAgain] = useState(false);
   const [triggerChange, setTriggerChange] = useState(false);
   const [triggerTrueVerified, setTriggerTrueVerified] = useState(false);
-  const [localUsersCredit, setLocalUsersCredit] = useState(0);
+  const [localUsersCredit, setLocalUsersCredit] = useState();
+
+  console.log("local users credit: ", localUsersCredit);
 
   const canSend = email;
   const dispatch = useDispatch();
@@ -295,6 +297,7 @@ export default function ExecutiveProtections() {
 
       if ("No results found" in data.List) {
         dispatch(setLeakedData(null));
+        setTriggerTrueVerified(true);
         return res;
       } else {
         let totalItems = Object.keys(data.List).length;
@@ -306,7 +309,9 @@ export default function ExecutiveProtections() {
     } catch (error) {
       return error;
     } finally {
+      setTriggerTrueVerified(true);
       dispatch(setLoadingState(false));
+      callGetUsersStatusCredit();
     }
   };
 
@@ -351,6 +356,7 @@ export default function ExecutiveProtections() {
 
       if (data.data) {
         // dispatch(setUsersCredit(data.data));
+        console.log("data ini adalah penentuan credit: ", data.data);
         setLocalUsersCredit(data.data);
         dispatch(setIsUsersDontShowAgain(data.data.is_protection));
         return res;
@@ -585,14 +591,18 @@ export default function ExecutiveProtections() {
       console.log("running is email verified");
       callGetDetailLeakedData();
       setEmail(scannedEmail);
-      callGetUsersStatusCredit();
+      // callGetUsersStatusCredit();
     }
   }, []);
 
   useEffect(() => {
-    setTriggerTrueVerified(false);
-    callGetUsersStatusCredit();
-  }, [triggerTrueVerified]);
+    // setTriggerTrueVerified(false);
+    if (triggerTrueVerified) {
+      console.log("jalan dong verified credit...");
+
+      callGetUsersStatusCredit();
+    }
+  }, []);
 
   useEffect(() => {
     setTimeout(() => {
@@ -761,7 +771,7 @@ export default function ExecutiveProtections() {
             <p className="text-SM-normal text-[#00000082] text-center mt-4 ml-[-25%]">
               You can only search a maximum of 10 searches.{" "}
               <span className="text-SM-strong text-primary-base">
-                {localUsersCredit.credit}/10
+                {localUsersCredit && localUsersCredit.credit}/10
               </span>{" "}
               Credits
             </p>
