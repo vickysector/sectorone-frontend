@@ -66,6 +66,7 @@ import {
   setIsDetailActive,
 } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { Button, Popover, ConfigProvider } from "antd";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -1805,22 +1806,47 @@ export default function DashboardLayout({ children }) {
             />
           </div> */}
           <Sidenav />
-          <div
-            className={clsx(
-              "bg-white  w-[32px] h-[32px] rounded-full fixed top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer shadow-lg",
-              hide ? "left-[61px]" : "left-[240px]"
-            )}
-            onClick={toggleHideIcon}
+          <ConfigProvider
+            theme={{
+              token: {
+                colorBgElevated: "#000000E0",
+                colorText: "#FFFFFF",
+                fontFamily: "inherit",
+                lineHeight: 0,
+                fontSize: 12,
+              },
+              components: {
+                Popover: {
+                  titleMinWidth: 15,
+                },
+              },
+            }}
           >
-            <LeftOutlined
-              style={{ fontSize: "12px" }}
-              className={clsx("cursor-pointer", hide ? "hidden" : "visible")}
-            />
-            <RightOutlined
-              style={{ fontSize: "12px" }}
-              className={clsx("cursor-pointer", hide ? "visible" : "hidden")}
-            />
-          </div>
+            <Popover content={hide ? "Show" : "Hide"} placement="right">
+              <div
+                className={clsx(
+                  "bg-white  w-[32px] h-[32px] rounded-full fixed top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer shadow-lg",
+                  hide ? "left-[61px]" : "left-[240px]"
+                )}
+                onClick={toggleHideIcon}
+              >
+                <LeftOutlined
+                  style={{ fontSize: "12px" }}
+                  className={clsx(
+                    "cursor-pointer",
+                    hide ? "hidden" : "visible"
+                  )}
+                />
+                <RightOutlined
+                  style={{ fontSize: "12px" }}
+                  className={clsx(
+                    "cursor-pointer",
+                    hide ? "visible" : "hidden"
+                  )}
+                />
+              </div>
+            </Popover>
+          </ConfigProvider>
         </aside>
         <div
           className={clsx(
