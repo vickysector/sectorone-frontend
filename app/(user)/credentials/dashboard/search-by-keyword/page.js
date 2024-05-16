@@ -322,7 +322,7 @@ export default function SearchByKeyword() {
         <section>
           <h1 className="text-black text-heading-2">Search by keyword</h1>
 
-          <section className="bg-white rounded-lg p-10 mt-8 relative shadow-md">
+          <section className="bg-white rounded-lg px-10 py-8 mt-8 relative shadow-md">
             <Alert
               message={successMessage}
               type="success"
@@ -354,12 +354,12 @@ export default function SearchByKeyword() {
               className={clsx(isError ? "visible" : "hidden")}
             />
             <h2 className="text-black text-heading-4">Add keyword</h2>
-            <p className="mt-2 text-Base-normal text-text-description">
+            <p className="mt-1 text-Base-normal text-text-description">
               Find data leaks based on the keywords you enter. You can only
               enter a maximum of 10 keywords.
             </p>
 
-            <div className="mt-10 flex">
+            <div className="mt-8 flex">
               <Select
                 defaultValue={selectedCategory}
                 value={selectedCategory}
@@ -397,14 +397,14 @@ export default function SearchByKeyword() {
                 }
               />
             </div>
-            <p className="text-SM-normal text-[#00000082] text-justify mt-4">
+            <p className="text-SM-normal text-[#00000082] text-justify mt-2">
               You can only search a maximum of 10 searches.{" "}
               <span className="text-SM-strong text-primary-base">
                 {usersCredit && usersCredit.credit}/10
               </span>{" "}
               Credits
             </p>
-            <div className="mt-10 flex justify-end">
+            <div className="mt-8 flex justify-end">
               <div>
                 <AuthButton
                   value={"Add Keyword"}
