@@ -12,6 +12,7 @@ import {
   DatePicker,
   Spin,
   Checkbox,
+  Popover,
 } from "antd";
 import Image from "next/image";
 import clsx from "clsx";
@@ -875,12 +876,27 @@ export default function StealerUserPage() {
                         token: {
                           colorPrimary: "#FF6F1E",
                         },
+                        components: {
+                          Popover: {
+                            titleMinWidth: 30,
+                            colorBgElevated: "#000000E0",
+                            colorText: "#FFFFFF",
+                            fontFamily: "inherit",
+                            lineHeight: 1,
+                            fontSize: 12,
+                          },
+                        },
                       }}
                     >
-                      <Checkbox
-                        onChange={handleInitialCheckboxState}
-                        checked={initialCheckboxState}
-                      ></Checkbox>
+                      <Popover
+                        content={"Check for Validated or Multiple Bookmark"}
+                        placement="bottomLeft"
+                      >
+                        <Checkbox
+                          onChange={handleInitialCheckboxState}
+                          checked={initialCheckboxState}
+                        ></Checkbox>
+                      </Popover>
                     </ConfigProvider>
                   ) : (
                     ""
