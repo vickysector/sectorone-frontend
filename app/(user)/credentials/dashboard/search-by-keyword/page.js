@@ -322,7 +322,7 @@ export default function SearchByKeyword() {
         <section>
           <h1 className="text-black text-heading-2">Search by keyword</h1>
 
-          <section className="bg-white rounded-lg shadow-sm p-10 mt-8 relative">
+          <section className="bg-white rounded-lg p-10 mt-8 relative shadow-md">
             <Alert
               message={successMessage}
               type="success"
@@ -420,7 +420,7 @@ export default function SearchByKeyword() {
           <h1 className="text-heading-4 text-black">Results of your keyword</h1>
           <section
             className={clsx(
-              "bg-white rounded-lg shadow-sm py-8 px-14 text-center mt-8",
+              "bg-white rounded-lg  py-8 px-14 text-center mt-8",
               allKeywordsUser.length === 0 ? "visible" : "hidden"
             )}
           >
