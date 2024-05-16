@@ -2660,7 +2660,7 @@ export default function CompromisedDashboard() {
       <section className="mt-10">
         <h1 className="text-heading-4 text-black">Detail compromised</h1>
         <div className="mt-4 bg-white  rounded-lg">
-          <section className="p-8 border-b-2 border-input-border ">
+          <section className="py-8 mx-8 border-b-2 border-input-border ">
             <CompromiseButton
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
