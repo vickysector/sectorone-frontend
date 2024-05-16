@@ -24,6 +24,7 @@ import {
   Spin,
   Select,
   Checkbox,
+  Popover,
 } from "antd";
 import { useEffect, useState } from "react";
 import {
@@ -2767,12 +2768,27 @@ export default function CompromisedDashboard() {
                         token: {
                           colorPrimary: "#FF6F1E",
                         },
+                        components: {
+                          Popover: {
+                            titleMinWidth: 30,
+                            colorBgElevated: "#000000E0",
+                            colorText: "#FFFFFF",
+                            fontFamily: "inherit",
+                            lineHeight: 1,
+                            fontSize: 12,
+                          },
+                        },
                       }}
                     >
-                      <Checkbox
-                        onChange={handleInitialCheckboxState}
-                        checked={initialCheckboxState}
-                      ></Checkbox>
+                      <Popover
+                        content={"Check for Validated or Multiple Bookmark"}
+                        placement="bottomLeft"
+                      >
+                        <Checkbox
+                          onChange={handleInitialCheckboxState}
+                          checked={initialCheckboxState}
+                        ></Checkbox>
+                      </Popover>
                     </ConfigProvider>
                   )}
                 </div>
