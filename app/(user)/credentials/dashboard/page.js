@@ -439,7 +439,7 @@ export default function UserDashboardPage() {
 
       <section>
         <h1 className="text-heading-2 text-black mb-4">Overview</h1>
-        <div className="bg-white  p-12 rounded-xl">
+        <div className="bg-white  p-12 rounded-xl shadow-md">
           <div className="flex items-center">
             <div>
               <div className="h-[32px] w-[32px] bg-input-container flex">
@@ -503,7 +503,7 @@ export default function UserDashboardPage() {
       </section>
       <section className="mt-8">
         <h1 className="text-heading-4 text-black ">Total compromised</h1>
-        <div className="p-8 bg-white border-input-border border-2 mt-4 rounded-[16px]">
+        <div className="p-8 bg-white  mt-4 rounded-[16px]">
           <ConfigProvider
             theme={{
               token: {
@@ -595,7 +595,7 @@ export default function UserDashboardPage() {
           <h1 className="text-heading-4 text-black mb-6">
             Top antivirus compromised
           </h1>
-          <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
+          <div className="bg-white  rounded-xl p-8 items-center flex flex-col text-center">
             {antivirusTopCompromised ? (
               <div
                 className="border-l-2 border-b-2 border-input-border w-full h-auto p-5"
@@ -622,7 +622,7 @@ export default function UserDashboardPage() {
           <h1 className="text-heading-4 text-black mb-6">
             Top malware compromised
           </h1>
-          <div className="bg-white border-input-border border-2 rounded-xl p-8 items-center flex flex-col text-center">
+          <div className="bg-white rounded-xl p-8 items-center flex flex-col text-center">
             {malwareTopCompromised ? (
               <div
                 className="border-l-2 border-b-2 border-input-border w-full h-auto p-5"

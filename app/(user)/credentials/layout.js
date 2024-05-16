@@ -62,8 +62,11 @@ import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 import { setIsScanNow } from "@/app/_lib/store/features/ExecutiveProtections/ScanEmailSlices";
 import {
   setIsAddedKeyword,
+  setIsDeleteKeyword,
   setIsDetailActive,
 } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import { Button, Popover, ConfigProvider } from "antd";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -202,6 +205,14 @@ export default function DashboardLayout({ children }) {
     (state) => state.keywordSearch.callAddKeywordFunctions
   );
 
+  const isDeleteKeywordButtonIsCalled = useSelector(
+    (state) => state.keywordSearch.isDeleteKeyword
+  );
+
+  const callDeleteKeywordFunction = useSelector(
+    (state) => state.keywordSearch.callDeleteKeywordFunction
+  );
+
   const freeTrialPopupStatus = useSelector(
     (state) => state.freeTrialPopup.status
   );
@@ -242,6 +253,15 @@ export default function DashboardLayout({ children }) {
 
   const handleNoAddButtonKeywordSearch = () => {
     dispatch(setIsAddedKeyword(false));
+  };
+
+  const handleYesDeleteButtonKeywordSearch = () => {
+    callDeleteKeywordFunction();
+    dispatch(setIsDeleteKeyword(false));
+  };
+
+  const handleNoDeleteButtonKeywordSearch = () => {
+    dispatch(setIsDeleteKeyword(false));
   };
 
   const handleIsScanEmailNow = () => {
@@ -1024,6 +1044,35 @@ export default function DashboardLayout({ children }) {
       <div
         className={clsx(
           "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
+          isDeleteKeywordButtonIsCalled ? "visible" : "hidden"
+        )}
+      >
+        <div className={clsx("rounded-lg bg-white p-[28px] w-[35%] ")}>
+          <h1 className="text-LG-strong mb-4">
+            Are you sure you want to Delete this Keyword?
+          </h1>
+          <p className="mb-6 text-text-description ">
+            This action is permanent and cannot be undone.
+          </p>
+          <div className="flex">
+            <button
+              className="bg-primary-base px-[20px] py-[8px] rounded-lg text-white"
+              onClick={handleYesDeleteButtonKeywordSearch}
+            >
+              Yes
+            </button>
+            <button
+              className="bg-white border-[1px] border-input-border px-[20px] py-[8px] rounded-lg ml-4"
+              onClick={handleNoDeleteButtonKeywordSearch}
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center text-black ",
           confirmCompromiseExportToCSV ? "visible" : "hidden"
         )}
       >
@@ -1657,18 +1706,18 @@ export default function DashboardLayout({ children }) {
       <div className={clsx(logoutLoading ? "visible" : "hidden")}>
         <LoadingSpin />
       </div>
-      <nav className="py-1.5 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white border-b-2 border-b-input-border">
+      <nav className="py-3 px-8 flex items-center justify-between fixed top-0 left-0 right-0 z-10 bg-white border-b-2 border-b-input-border">
         <Image
           src={"/images/SectorOne.png"}
           alt="Logo Sector"
-          width={92}
+          width={120}
           height={38}
         />
         <div className="flex items-center">
           {getCookie("user_status") === "true" && (
             <div
               className={clsx(
-                "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1 px-2.5 mr-8 flex items-center"
+                "cursor-pointer rounded-[100px] bg-[#FFEBD4] py-1 px-2.5 mr-4 flex items-center"
                 // getCookie("user_status") === "true" ? "visible" : "hidden"
               )}
               onClick={() => dispatch(setFreeTrialStatusToTrue())}
@@ -1690,21 +1739,18 @@ export default function DashboardLayout({ children }) {
             <Tooltip isActive={isHovered} right={0} top={"10px"} />
           </div> */}
           <div className="cursor-pointer" onClick={toggleAccount}>
-            <Image
-              src={"/images/sector_avatar.svg"}
-              alt="Avatar Profile"
-              width={28}
-              height={28}
+            <AccountCircleOutlinedIcon
+              style={{ fontSize: "28px", color: "#676767" }}
             />
           </div>
           <div
             className={clsx(
-              "fixed right-[48px] top-[50px] bg-white p-[32px] shadow-xl rounded-2xl transition-all ",
+              "fixed right-[48px] top-[50px] bg-white p-[16px] shadow-xl rounded-2xl transition-all ",
               accountShow ? "visible" : "hidden"
             )}
           >
-            <p className="text-heading-4"> {usersData && usersData} </p>
-            <div className="w-full h-[1px] bg-input-border my-[24px]"></div>
+            <p className="text-heading-5"> {usersData && usersData} </p>
+            <div className="w-full h-[1px] bg-input-border my-[16px]"></div>
             <div
               className="flex items-center cursor-pointer"
               onClick={fetchLogoutFunctionWithRefreshToken}
@@ -1713,11 +1759,13 @@ export default function DashboardLayout({ children }) {
                 <Image
                   src={"/images/image_logout.svg"}
                   alt="Avatar Profile"
-                  width={24}
-                  height={24}
+                  width={16}
+                  height={16}
                 />
               </div>
-              <p className="text-[#FF4D4F] ml-[8px]">Log out of account</p>
+              <p className="text-[#FF4D4F] ml-[8px] text-Base-normal">
+                Log out of account
+              </p>
             </div>
           </div>
         </div>
@@ -1735,8 +1783,8 @@ export default function DashboardLayout({ children }) {
         </div>
         <aside
           className={clsx(
-            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-r-2 border-r-input-border border-t-2 border-t-input-border ",
-            hide ? "w-[102px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
+            " h-auth-screen  flex-none transition-all fixed left-0 bottom-0 bg-white z-10 border-t-2 border-t-input-border shadow-lg ",
+            hide ? "w-[76px]" : "w-[260px] overflow-x-hidden overflow-y-hidden"
           )}
         >
           {/* <div className="mt-2 flex justify-end mr-5">
@@ -1758,27 +1806,50 @@ export default function DashboardLayout({ children }) {
             />
           </div> */}
           <Sidenav />
-          <div
-            className={clsx(
-              "bg-white border-2 border-input-border w-[38px] h-[38px] rounded-full fixed top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer",
-              hide ? "left-[87px]" : "left-[240px]"
-            )}
-            onClick={toggleHideIcon}
+          <ConfigProvider
+            theme={{
+              components: {
+                Popover: {
+                  titleMinWidth: 15,
+                  colorBgElevated: "#000000E0",
+                  colorText: "#FFFFFF",
+                  fontFamily: "inherit",
+                  lineHeight: 0,
+                  fontSize: 12,
+                },
+              },
+            }}
           >
-            <LeftOutlined
-              style={{ fontSize: "16px" }}
-              className={clsx("cursor-pointer", hide ? "hidden" : "visible")}
-            />
-            <RightOutlined
-              style={{ fontSize: "16px" }}
-              className={clsx("cursor-pointer", hide ? "visible" : "hidden")}
-            />
-          </div>
+            <Popover content={hide ? "Show" : "Hide"} placement="right">
+              <div
+                className={clsx(
+                  "bg-white  w-[32px] h-[32px] rounded-full fixed top-[208px] transition-all z-10 flex items-center justify-center cursor-pointer shadow-lg",
+                  hide ? "left-[61px]" : "left-[240px]"
+                )}
+                onClick={toggleHideIcon}
+              >
+                <LeftOutlined
+                  style={{ fontSize: "12px" }}
+                  className={clsx(
+                    "cursor-pointer",
+                    hide ? "hidden" : "visible"
+                  )}
+                />
+                <RightOutlined
+                  style={{ fontSize: "12px" }}
+                  className={clsx(
+                    "cursor-pointer",
+                    hide ? "visible" : "hidden"
+                  )}
+                />
+              </div>
+            </Popover>
+          </ConfigProvider>
         </aside>
         <div
           className={clsx(
             "flex-grow min-h-screen h-full  min-w-screen w-full fixed bg-input-container left-0 right-0 overflow-y-auto  pt-[75px] transition-all pr-[32px] pb-[64px]",
-            hide ? "pl-[130px]" : "pl-[290px]"
+            hide ? "pl-[104px]" : "pl-[290px]"
           )}
         >
           {children}

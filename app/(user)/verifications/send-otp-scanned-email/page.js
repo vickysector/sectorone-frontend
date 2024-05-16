@@ -38,45 +38,8 @@ export default function ResetPasswordPage() {
   const [isErrorResendCode, setIsErrorResendCode] = useState(false);
   const [showOtp, setShowOtp] = useState(false);
   const [isWaitResendCode, setIsWaitResendCode] = useState(false);
-
-  // const [countdown, setCountdown] = useState(dayjs().add(1, "minute"));
-  // const [remaining, setRemaining] = useState(60);
-
-  // console.log("countdown: ", dayjs().add(1, "minute").minute());
-  // console.log("countdown back: ", dayjs().minute());
-  // console.log(
-  //   "diff: ",
-  //   dayjs().add(1, "minute").diff(dayjs().minute(), "second")
-  // );
-  // console.log(
-  //   "different: ",
-  //   dayjs(dayjs().add(1, "minute").diff(dayjs().minute(), "second")).format(
-  //     "ss"
-  //   )
-  // );
-  // // console.log(
-  // //   "different: ",
-  // //   dayjs(dayjs().add(1, "minute").diff(dayjs().minute(), "second")).format(
-  // //     "mm:ss"
-  // //   )
-  // // );
-
-  // useEffect(() => {
-  //   if (isWaitResendCode) {
-  //     const timer = setInterval(() => {
-  //       const newRemaining = countdown.diff(dayjs(), "seconds");
-  //       setRemaining(newRemaining);
-
-  //       if (newRemaining <= 0) {
-  //         clearInterval(timer);
-  //         // Add any additional logic for when the countdown reaches 0
-  //         // setRemaining(60);
-  //       }
-  //     }, 1000);
-
-  //     return () => clearInterval(timer);
-  //   }
-  // }, []);
+  const [timeLeft, setTimeLeft] = useState(60); // 60 seconds
+  const [isActive, setIsActive] = useState(false);
 
   const handleOtp = (e) => {
     setEmail(e.target.value);
@@ -189,6 +152,7 @@ export default function ResetPasswordPage() {
       if (data.success) {
         setIsSuccessResendCode(true);
         setIsWaitResendCode(true);
+        setIsActive(true);
         return res;
       }
     } catch (error) {
@@ -207,13 +171,17 @@ export default function ResetPasswordPage() {
     await fetchWithRefreshToken(fetchResendOtpScannedEmail, router, dispatch);
   };
 
-  console.log("is waiting: ", isWaitResendCode);
+  const formatTime = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainderSeconds = seconds % 60;
+    return `${minutes}:${remainderSeconds < 10 ? "0" : ""}${remainderSeconds}`;
+  };
 
   useEffect(() => {
     if (isWaitResendCode) {
       setTimeout(() => {
         setIsWaitResendCode(false);
-      }, 5000);
+      }, timeLeft * 1000);
     }
   }, [isWaitResendCode]);
 
@@ -223,6 +191,20 @@ export default function ResetPasswordPage() {
       return redirect("/auth/login");
     }
   }, []);
+
+  useEffect(() => {
+    let timerId;
+    if (isActive && timeLeft > 0) {
+      timerId = setInterval(() => {
+        setTimeLeft((prevTime) => prevTime - 1);
+      }, 1000);
+    } else if (timeLeft === 0) {
+      setTimeLeft(60);
+      setIsActive(false);
+    }
+
+    return () => clearInterval(timerId);
+  }, [isActive, timeLeft]);
 
   return (
     <main className="h-screen bg-input-container flex items-center justify-center">
@@ -363,7 +345,7 @@ export default function ResetPasswordPage() {
                 isWaitResendCode ? "visible" : "hidden"
               )}
             >
-              You can only Resend code after ....
+              You can only Resend code after {formatTime(timeLeft)}
             </p>
           </div>
         </div>

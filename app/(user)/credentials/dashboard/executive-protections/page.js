@@ -23,6 +23,7 @@ import { Alert, Checkbox, ConfigProvider, Pagination, Space } from "antd";
 import clsx from "clsx";
 import Image from "next/image";
 import {
+  setEmailIsVerified,
   setErrorLeakedData,
   setIsUsersDontShowAgain,
   setIsUsersDontShowAgainTemp,
@@ -95,11 +96,15 @@ const informationsDontShowAgain = [
 export default function ExecutiveProtections() {
   const [email, setEmail] = useState("");
   const [isErrorEmail, setIsErrorEmail] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [allRecentSearch, setAllRecentSearch] = useState();
   const [isEmailFocused, setIsEmailFocused] = useState(false);
   const [isCheckDontShowAgain, setIsCheckDontShowAgain] = useState(false);
+  const [triggerChange, setTriggerChange] = useState(false);
+  const [triggerTrueVerified, setTriggerTrueVerified] = useState(false);
+  const [localUsersCredit, setLocalUsersCredit] = useState();
 
-  console.log("isemail focused: ", isEmailFocused);
+  console.log("local users credit: ", localUsersCredit);
 
   const canSend = email;
   const dispatch = useDispatch();
@@ -139,8 +144,6 @@ export default function ExecutiveProtections() {
   const handleDontShowAgaoinCheck = (e) => {
     setIsCheckDontShowAgain(e.target.checked);
   };
-
-  console.log("dont show again: ", isCheckDontShowAgain);
 
   const handleButtonDontShowAgain = () => {
     if (isCheckDontShowAgain) {
@@ -200,10 +203,12 @@ export default function ExecutiveProtections() {
         }
       );
 
-      if (res.status === 400) {
-        setIsErrorEmail(true);
-        return res;
-      }
+      // if (res.status === 400) {
+      //   setIsErrorEmail(true);
+      //   console.log("error bunggg  di 400....", res);
+
+      //   return res;
+      // }
 
       if (res.status === 401 || res.status === 403) {
         // DeleteCookies();
@@ -214,6 +219,8 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       if (data.data === null) {
+        setIsErrorEmail(true);
+        setErrorMessage(data.message);
         throw res;
       }
 
@@ -239,6 +246,8 @@ export default function ExecutiveProtections() {
   const fetchGetDetailLeakedData = async () => {
     try {
       dispatch(setLoadingState(true));
+
+      setTriggerTrueVerified(false);
 
       //   if (!filterApplied && (keyword || startDate || endDate)) {
       //     setPage(1);
@@ -288,17 +297,21 @@ export default function ExecutiveProtections() {
 
       if ("No results found" in data.List) {
         dispatch(setLeakedData(null));
+        setTriggerTrueVerified(true);
         return res;
       } else {
         let totalItems = Object.keys(data.List).length;
         dispatch(setLeakedData(data));
         dispatch(setTotalExposures(totalItems));
+        setTriggerTrueVerified(true);
         return res;
       }
     } catch (error) {
       return error;
     } finally {
+      setTriggerTrueVerified(true);
       dispatch(setLoadingState(false));
+      callGetUsersStatusCredit();
     }
   };
 
@@ -342,7 +355,9 @@ export default function ExecutiveProtections() {
       }
 
       if (data.data) {
-        dispatch(setUsersCredit(data.data));
+        // dispatch(setUsersCredit(data.data));
+        console.log("data ini adalah penentuan credit: ", data.data);
+        setLocalUsersCredit(data.data);
         dispatch(setIsUsersDontShowAgain(data.data.is_protection));
         return res;
       }
@@ -397,7 +412,7 @@ export default function ExecutiveProtections() {
       }
 
       if (data.data) {
-        dispatch(setUsersCredit(data.data));
+        // dispatch(setUsersCredit(data.data));
         dispatch(setIsUsersDontShowAgain(data.data.is_protection));
         return res;
       }
@@ -435,6 +450,7 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       if (data.data === null) {
+        setAllRecentSearch();
         throw res;
       }
 
@@ -463,6 +479,8 @@ export default function ExecutiveProtections() {
     try {
       dispatch(setLoadingState(true));
 
+      setTriggerChange(false);
+
       const res = await fetch(`${APIDATAV1}protection`, {
         method: "DELETE",
         credentials: "include",
@@ -486,10 +504,11 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       if (data.data === null) {
+        setTriggerChange(true);
         throw res;
       }
 
-      return res;
+      // return res;
     } catch (error) {
       return error;
     } finally {
@@ -504,6 +523,8 @@ export default function ExecutiveProtections() {
   const DeleteAllRecentSearchData = async () => {
     try {
       dispatch(setLoadingState(true));
+
+      setTriggerChange(false);
 
       const res = await fetch(`${APIDATAV1}protection`, {
         method: "DELETE",
@@ -525,10 +546,11 @@ export default function ExecutiveProtections() {
       const data = await res.json();
 
       if (data.data === null) {
+        setTriggerChange(true);
         throw res;
       }
 
-      return res;
+      // return res;
     } catch (error) {
       return error;
     } finally {
@@ -555,14 +577,29 @@ export default function ExecutiveProtections() {
   // }, [isEmailVerified]);
 
   useEffect(() => {
+    setTriggerChange(false);
+    callRecentSearchData();
+  }, [triggerChange]);
+
+  useEffect(() => {
     callRecentSearchData();
     callGetUsersStatusCredit();
   }, []);
 
   useEffect(() => {
     if (isEmailVerified) {
+      console.log("running is email verified");
       callGetDetailLeakedData();
       setEmail(scannedEmail);
+      // callGetUsersStatusCredit();
+    }
+  }, []);
+
+  useEffect(() => {
+    // setTriggerTrueVerified(false);
+    if (triggerTrueVerified) {
+      console.log("jalan dong verified credit...");
+
       callGetUsersStatusCredit();
     }
   }, []);
@@ -635,9 +672,9 @@ export default function ExecutiveProtections() {
           usersDontShowAgain || usersDontShowAgainTemp ? "visible" : "hidden"
         )}
       >
-        <section className="flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[96px] relative ">
+        <section className="flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center px-[96px] py-8 relative ">
           <Alert
-            message="Email is not valid"
+            message={errorMessage ? errorMessage : "Email is not valid"}
             type="error"
             showIcon
             closable={true}
@@ -669,7 +706,7 @@ export default function ExecutiveProtections() {
                 onFocus={handleIsEmailFocusTrue}
                 // onBlur={handleIsEmailFotusFalse}
               />
-              {isEmailFocused && (
+              {isEmailFocused && allRecentSearch && (
                 <div
                   className="bg-white drop-shadow-lg rounded-md p-4 absolute top-[50px] left-[20%] right-[31%] max-h-[320px] overflow-y-scroll pointer-events-auto z-10"
                   onMouseEnter={handleIsEmailFocusTrue}
@@ -734,7 +771,7 @@ export default function ExecutiveProtections() {
             <p className="text-SM-normal text-[#00000082] text-center mt-4 ml-[-25%]">
               You can only search a maximum of 10 searches.{" "}
               <span className="text-SM-strong text-primary-base">
-                {usersCredit.credit}
+                {localUsersCredit && localUsersCredit.credit}/10
               </span>{" "}
               Credits
             </p>
@@ -742,7 +779,7 @@ export default function ExecutiveProtections() {
         </section>
         <section
           className={clsx(
-            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            "flex flex-col justify-center items-center bg-white rounded-lg  text-center p-[64px] mt-8 ",
             // hasCookie("scanned_verified") &&
             //   getCookie("scanned_verified") === "true"
             //   ? "hidden"
@@ -771,7 +808,7 @@ export default function ExecutiveProtections() {
         </section>
         <section
           className={clsx(
-            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            "flex flex-col justify-center items-center bg-white rounded-lg  text-center p-[64px] mt-8 ",
             // hasCookie("scanned_verified") &&
             //   getCookie("scanned_verified") === "true"
             //   ? "visible"
@@ -802,7 +839,7 @@ export default function ExecutiveProtections() {
           </div>
 
           <div className="border-2 rounded-xl border-input-border w-full">
-            <table className="bg-white  w-full rounded-xl">
+            <table className="bg-white  w-full rounded-xl text-left">
               <thead className="text-black text-Base-strong bg-[#00000005]">
                 <tr className="border-b-[1px] border-[#D5D5D5]">
                   <td className="py-[19px] px-[16px]  border-r-[1px] border-input-border border-dashed ">
@@ -839,7 +876,7 @@ export default function ExecutiveProtections() {
                           {data.leakedKeys.map((key) => (
                             <>
                               <span
-                                className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2"
+                                className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2 mt-2"
                                 key={key}
                               >
                                 {key}
@@ -900,7 +937,7 @@ export default function ExecutiveProtections() {
         </section>
         <section
           className={clsx(
-            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            "flex flex-col justify-center items-center bg-white rounded-lg  text-center p-[64px] mt-8 ",
             // hasCookie("scanned_verified") &&
             //   getCookie("scanned_verified") === "true"
             //   ? "visible"
@@ -928,7 +965,7 @@ export default function ExecutiveProtections() {
 
         <section
           className={clsx(
-            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            "flex flex-col justify-center items-center bg-white rounded-lg  text-center p-[64px] mt-8 ",
             // hasCookie("scanned_verified") &&
             //   getCookie("scanned_verified") === "true"
             //   ? "visible"

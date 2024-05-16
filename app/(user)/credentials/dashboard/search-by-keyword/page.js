@@ -2,7 +2,7 @@
 
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 import { AuthButton } from "@/app/_ui/components/buttons/AuthButton";
-import { ConfigProvider, Pagination, Select } from "antd";
+import { ConfigProvider, Pagination, Select, Alert } from "antd";
 import clsx from "clsx";
 import Image from "next/image";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,7 +13,9 @@ import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import {
   setCallAddKeywordFunctions,
+  setCallDeleteKeywordFunction,
   setIsAddedKeyword,
+  setIsDeleteKeyword,
   setIsDetailActive,
 } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 import {
@@ -21,6 +23,7 @@ import {
   EyeInvisibleOutlined,
   LockOutlined,
 } from "@ant-design/icons";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 
 export default function SearchByKeyword() {
   const [usersCredit, setUsersCredit] = useState();
@@ -29,6 +32,10 @@ export default function SearchByKeyword() {
   const [keyword, setKeyword] = useState("");
   const [allKeywordsUser, setAllKeywordsUser] = useState([]);
   const [triggerChange, setTriggerChange] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   console.log("all keywords: ", allKeywordsUser);
 
@@ -45,6 +52,13 @@ export default function SearchByKeyword() {
   const handleAddKeywordButton = () => {
     dispatch(setIsAddedKeyword(true));
     dispatch(setCallAddKeywordFunctions(callPostAddKeywordSearch));
+  };
+
+  const handleDeleteKeywordButton = (id) => {
+    dispatch(setIsDeleteKeyword(true));
+    dispatch(
+      setCallDeleteKeywordFunction(() => callDeleteRemoveKeywordSearch(id))
+    );
   };
 
   const handleDetailActive = () => {
@@ -207,6 +221,68 @@ export default function SearchByKeyword() {
         }),
       });
 
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (!data.success) {
+        setIsError(true);
+        setErrorMessage(data.message);
+
+        return res;
+      }
+
+      if (data.data === null) {
+        setAllKeywordsUser([]);
+        throw res;
+      }
+
+      if (data.data) {
+        setAllKeywordsUser(data.data);
+        setKeyword("");
+        setTriggerChange(true);
+        setIsSuccess(true);
+        setSuccessMessage("Add Keyword Success!");
+        return res;
+      }
+    } catch (error) {
+      console.log("error add keyword: ", error);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+      setTimeout(() => {
+        setIsSuccess(false);
+        setSuccessMessage("");
+        setIsError(false);
+        setErrorMessage("");
+      }, 4000);
+    }
+  };
+
+  const callPostAddKeywordSearch = async () => {
+    await fetchWithRefreshToken(postKeywordSearch, router, dispatch);
+  };
+
+  const deleteKeywordSearch = async (id) => {
+    try {
+      dispatch(setLoadingState(true));
+
+      setTriggerChange(false);
+
+      const res = await fetch(`${APIDATAV1}keyword`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+        }),
+      });
+
       if (res.status === 400) {
         return res;
       }
@@ -218,26 +294,19 @@ export default function SearchByKeyword() {
       const data = await res.json();
 
       if (data.data === null) {
-        setAllKeywordsUser([]);
+        setTriggerChange(true);
         throw res;
       }
-
-      if (data.data) {
-        setAllKeywordsUser(data.data);
-        setKeyword("");
-        setTriggerChange(true);
-        return res;
-      }
     } catch (error) {
-      console.log("error add keyword: ", error);
+      console.log("error Delete keyword: ", error);
       return error;
     } finally {
       dispatch(setLoadingState(false));
     }
   };
 
-  const callPostAddKeywordSearch = async () => {
-    await fetchWithRefreshToken(postKeywordSearch, router, dispatch);
+  const callDeleteRemoveKeywordSearch = async (id) => {
+    await fetchWithRefreshToken(deleteKeywordSearch, router, dispatch, id);
   };
 
   useEffect(() => {
@@ -253,14 +322,44 @@ export default function SearchByKeyword() {
         <section>
           <h1 className="text-black text-heading-2">Search by keyword</h1>
 
-          <section className="bg-white rounded-lg shadow-sm p-10 mt-8">
+          <section className="bg-white rounded-lg px-10 py-8 mt-8 relative shadow-md">
+            <Alert
+              message={successMessage}
+              type="success"
+              showIcon
+              closable={true}
+              style={{
+                position: "absolute",
+                top: "-16px",
+                left: "50%",
+                right: "32px",
+                textAlign: "left",
+                transform: "translateX(-50%)",
+              }}
+              className={clsx(isSuccess ? "visible" : "hidden")}
+            />
+            <Alert
+              message={errorMessage}
+              type="error"
+              showIcon
+              closable={true}
+              style={{
+                position: "absolute",
+                top: "-16px",
+                left: "50%",
+                right: "32px",
+                textAlign: "left",
+                transform: "translateX(-50%)",
+              }}
+              className={clsx(isError ? "visible" : "hidden")}
+            />
             <h2 className="text-black text-heading-4">Add keyword</h2>
-            <p className="mt-2 text-Base-normal text-text-description">
+            <p className="mt-1 text-Base-normal text-text-description">
               Find data leaks based on the keywords you enter. You can only
-              enter a maximum of 5 keywords.
+              enter a maximum of 10 keywords.
             </p>
 
-            <div className="mt-10 flex">
+            <div className="mt-8 flex">
               <Select
                 defaultValue={selectedCategory}
                 value={selectedCategory}
@@ -274,25 +373,38 @@ export default function SearchByKeyword() {
                     label: category.category_search,
                   }))
                 }
+                disabled={
+                  usersCredit && usersCredit.credit === 0 ? true : false
+                }
               />
               <input
                 type="text"
                 className={clsx(
-                  "py-3 px-5 text-Base-normal text-[#000000E0] rounded-md border-[1px] border-input-border bg-[#F7F7F7] basis-4/5 ml-6 h-[40px]"
+                  "py-3 px-5 text-Base-normal text-[#000000E0] rounded-md border-[1px] border-input-border bg-[#F7F7F7] basis-4/5 ml-6 h-[40px]",
+                  usersCredit && usersCredit.credit === 0
+                    ? "cursor-not-allowed"
+                    : "cursor-default"
                 )}
-                placeholder="Type here..."
+                placeholder={
+                  usersCredit && usersCredit.credit === 0
+                    ? "Insufficient Balance"
+                    : "Type here..."
+                }
                 value={keyword}
                 onChange={handleChangeKeyword}
+                disabled={
+                  usersCredit && usersCredit.credit === 0 ? true : false
+                }
               />
             </div>
-            <p className="text-SM-normal text-[#00000082] text-justify mt-4">
+            <p className="text-SM-normal text-[#00000082] text-justify mt-2">
               You can only search a maximum of 10 searches.{" "}
               <span className="text-SM-strong text-primary-base">
-                {usersCredit && usersCredit.credit}
+                {usersCredit && usersCredit.credit}/10
               </span>{" "}
               Credits
             </p>
-            <div className="mt-10 flex justify-end">
+            <div className="mt-8 flex justify-end">
               <div>
                 <AuthButton
                   value={"Add Keyword"}
@@ -308,7 +420,7 @@ export default function SearchByKeyword() {
           <h1 className="text-heading-4 text-black">Results of your keyword</h1>
           <section
             className={clsx(
-              "bg-white rounded-lg shadow-sm py-8 px-14 text-center mt-8",
+              "bg-white rounded-lg  py-8 px-14 text-center mt-8",
               allKeywordsUser.length === 0 ? "visible" : "hidden"
             )}
           >
@@ -365,14 +477,14 @@ export default function SearchByKeyword() {
                           key={data.id}
                         >
                           <td className="py-[19px] px-[16px]"> {index + 1} </td>
-                          <td className="py-[19px] px-[16px]">
+                          <td className="py-[19px] px-[16px] max-w-[175px]">
                             {data.keyword}
                           </td>
-                          <td className="py-[19px] px-[16px] w-[45%]">
+                          <td className="py-[19px] px-[16px] w-[20%] max-w-[500px]">
                             {data.data_leak.map((key) => (
                               <>
                                 <span
-                                  className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2"
+                                  className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2 mt-2"
                                   key={key}
                                 >
                                   {key}
@@ -383,9 +495,17 @@ export default function SearchByKeyword() {
                           <td className="py-[19px] px-[16px]">
                             {data.count_data}
                           </td>
-                          <td className="py-[19px] px-[16px]">
+                          <td className="py-[19px] px-[16px] ">
+                            <DeleteOutlineIcon
+                              className="cursor-pointer"
+                              onClick={() => handleDeleteKeywordButton(data.id)}
+                              style={{
+                                color: "#00000040",
+                                fontSize: "20px",
+                              }}
+                            />
                             <button
-                              className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4"
+                              className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4 ml-4"
                               onClick={handleDetailActive}
                             >
                               <span className="mr-2">

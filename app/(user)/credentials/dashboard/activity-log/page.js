@@ -107,7 +107,7 @@ export default function ActivityLogUserPage() {
     <main>
       <section>
         <h1 className="text-heading-2 text-black mb-8">Activity log</h1>
-        <div className="mt-4 bg-white border-2 border-input-border rounded-lg">
+        <div className="mt-4 bg-white  rounded-lg">
           <section className="p-8">
             <div className=" ">
               <div className="flex items-center">
