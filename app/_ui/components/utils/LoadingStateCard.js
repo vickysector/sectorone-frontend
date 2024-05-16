@@ -11,19 +11,19 @@ export default function LoadingStateCard({ loading }) {
     >
       <div
         className={clsx(
-          "rounded-xl bg-white p-[24px] w-[35%] text-center flex justify-center items-center flex-col"
+          "rounded-xl bg-white p-[24px] w-[20%] text-center flex justify-center items-center flex-col"
         )}
       >
         <div>
           <Image
             src={"/images/Loading_image_gif.gif"}
             alt="search icon"
-            width={300}
-            height={300}
+            width={150}
+            height={150}
           />
         </div>
-        <h1 className="text-LG-strong mt-4">Scanning data</h1>
-        <p className="text-text-description text-Base-normal mt-4">
+        <h1 className="text-LG-strong">Scanning data</h1>
+        <p className="text-text-description text-Base-normal mt-[-2px]">
           This will take a moment...
         </p>
       </div>
