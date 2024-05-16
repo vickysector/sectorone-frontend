@@ -779,7 +779,7 @@ export default function ExecutiveProtections() {
         </section>
         <section
           className={clsx(
-            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            "flex flex-col justify-center items-center bg-white rounded-lg  text-center p-[64px] mt-8 ",
             // hasCookie("scanned_verified") &&
             //   getCookie("scanned_verified") === "true"
             //   ? "hidden"
@@ -808,7 +808,7 @@ export default function ExecutiveProtections() {
         </section>
         <section
           className={clsx(
-            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            "flex flex-col justify-center items-center bg-white rounded-lg  text-center p-[64px] mt-8 ",
             // hasCookie("scanned_verified") &&
             //   getCookie("scanned_verified") === "true"
             //   ? "visible"
@@ -937,7 +937,7 @@ export default function ExecutiveProtections() {
         </section>
         <section
           className={clsx(
-            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            "flex flex-col justify-center items-center bg-white rounded-lg  text-center p-[64px] mt-8 ",
             // hasCookie("scanned_verified") &&
             //   getCookie("scanned_verified") === "true"
             //   ? "visible"
@@ -965,7 +965,7 @@ export default function ExecutiveProtections() {
 
         <section
           className={clsx(
-            "flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[64px] mt-8 ",
+            "flex flex-col justify-center items-center bg-white rounded-lg  text-center p-[64px] mt-8 ",
             // hasCookie("scanned_verified") &&
             //   getCookie("scanned_verified") === "true"
             //   ? "visible"
