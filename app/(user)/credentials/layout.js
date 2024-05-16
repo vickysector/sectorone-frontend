@@ -1808,16 +1808,14 @@ export default function DashboardLayout({ children }) {
           <Sidenav />
           <ConfigProvider
             theme={{
-              token: {
-                colorBgElevated: "#000000E0",
-                colorText: "#FFFFFF",
-                fontFamily: "inherit",
-                lineHeight: 0,
-                fontSize: 12,
-              },
               components: {
                 Popover: {
                   titleMinWidth: 15,
+                  colorBgElevated: "#000000E0",
+                  colorText: "#FFFFFF",
+                  fontFamily: "inherit",
+                  lineHeight: 0,
+                  fontSize: 12,
                 },
               },
             }}
