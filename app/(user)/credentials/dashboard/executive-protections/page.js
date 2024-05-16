@@ -672,7 +672,7 @@ export default function ExecutiveProtections() {
           usersDontShowAgain || usersDontShowAgainTemp ? "visible" : "hidden"
         )}
       >
-        <section className="flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center p-[96px] relative ">
+        <section className="flex flex-col justify-center items-center bg-white rounded-lg shadow-md text-center px-[96px] py-8 relative ">
           <Alert
             message={errorMessage ? errorMessage : "Email is not valid"}
             type="error"
