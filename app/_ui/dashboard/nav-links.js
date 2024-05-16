@@ -14,22 +14,30 @@ import {
 } from "@ant-design/icons";
 import SecurityIcon from "@mui/icons-material/Security";
 import ManageSearchOutlinedIcon from "@mui/icons-material/ManageSearchOutlined";
+import ScreenSearchDesktopOutlinedIcon from "@mui/icons-material/ScreenSearchDesktopOutlined";
+import CoronavirusOutlinedIcon from "@mui/icons-material/CoronavirusOutlined";
+import ScreenSearchDesktopIcon from "@mui/icons-material/ScreenSearchDesktop";
+import CoronavirusIcon from "@mui/icons-material/Coronavirus";
+import SettingsIcon from "@mui/icons-material/Settings";
+import SettingsApplicationsOutlinedIcon from "@mui/icons-material/SettingsApplicationsOutlined";
+import HistoryOutlinedIcon from "@mui/icons-material/HistoryOutlined";
+import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
 
 const links = [
   {
     name: "Overview",
     href: "/credentials/dashboard",
-    icon: LineChartOutlined,
+    icon: InsertChartOutlinedIcon,
   },
   {
     name: "Compromised",
     href: "/credentials/dashboard/compromised",
-    icon: SafetyOutlined,
+    icon: ScreenSearchDesktopIcon,
   },
   {
     name: "Stealer",
     href: "/credentials/dashboard/stealer",
-    icon: BugOutlined,
+    icon: CoronavirusIcon,
   },
   {
     name: "Executive protection",
@@ -44,12 +52,12 @@ const links = [
   {
     name: "Activity Log",
     href: "/credentials/dashboard/activity-log",
-    icon: HistoryOutlined,
+    icon: HistoryOutlinedIcon,
   },
   {
     name: "Settings",
     href: "/credentials/dashboard/manage-accounts",
-    icon: SettingOutlined,
+    icon: SettingsApplicationsOutlinedIcon,
   },
 ];
 
@@ -66,7 +74,7 @@ export default function NavLinks() {
             key={link.name}
             href={link.href}
             className={clsx(
-              "flex items-center mb-4 py-3 px-5 text-center hover:bg-primary-base text-text-description hover:text-white overflow-hidden rounded-lg",
+              "flex items-center mb-4 py-1.5 px-2 text-center hover:bg-primary-base text-text-description hover:text-white overflow-hidden rounded-lg",
               {
                 "bg-primary-base text-white": pathname === link.href,
               }
@@ -81,7 +89,7 @@ export default function NavLinks() {
             />
             <p
               className={clsx(
-                "ml-5  text-LG-normal hover:text-white text-left flex-grow text-nowrap",
+                "ml-3  text-LG-normal hover:text-white text-left flex-grow text-nowrap",
                 {
                   "text-white text-LG-strong": pathname === link.href,
                 }

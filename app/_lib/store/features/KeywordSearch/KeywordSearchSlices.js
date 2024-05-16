@@ -7,6 +7,8 @@ const KeywordSearchSlice = createSlice({
     isAddedKeyword: false,
     idCategory: "",
     isDetailActive: false,
+    isDeleteKeyword: false,
+    callDeleteKeywordFunction: null,
   },
   reducers: {
     setCallAddKeywordFunctions(state, action) {
@@ -21,6 +23,12 @@ const KeywordSearchSlice = createSlice({
     setIsDetailActive(state, action) {
       state.isDetailActive = action.payload;
     },
+    setIsDeleteKeyword(state, action) {
+      state.isDeleteKeyword = action.payload;
+    },
+    setCallDeleteKeywordFunction(state, action) {
+      state.callDeleteKeywordFunction = action.payload;
+    },
   },
 });
 
@@ -29,6 +37,8 @@ export const {
   setIsAddedKeyword,
   setIdCategory,
   setIsDetailActive,
+  setIsDeleteKeyword,
+  setCallDeleteKeywordFunction,
 } = KeywordSearchSlice.actions;
 
 export default KeywordSearchSlice.reducer;

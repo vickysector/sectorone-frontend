@@ -24,6 +24,7 @@ import {
   Spin,
   Select,
   Checkbox,
+  Popover,
 } from "antd";
 import { useEffect, useState } from "react";
 import {
@@ -2590,7 +2591,7 @@ export default function CompromisedDashboard() {
   return (
     <main>
       <h1 className="text-heading-2 text-black mb-4">Compromised</h1>
-      <div className="bg-white  p-12 rounded-xl">
+      <div className="bg-white  p-12 rounded-xl shadow-md">
         <div className="flex items-center">
           <div>
             <div className="h-[32px] w-[32px] bg-input-container flex">
@@ -2658,8 +2659,8 @@ export default function CompromisedDashboard() {
       </div>
       <section className="mt-10">
         <h1 className="text-heading-4 text-black">Detail compromised</h1>
-        <div className="mt-4 bg-white border-2 border-input-border rounded-lg">
-          <section className="p-8 border-b-2 border-input-border ">
+        <div className="mt-4 bg-white  rounded-lg">
+          <section className="py-8 mx-8 border-b-2 border-input-border ">
             <CompromiseButton
               isActive={
                 selectedButton === DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
@@ -2767,12 +2768,27 @@ export default function CompromisedDashboard() {
                         token: {
                           colorPrimary: "#FF6F1E",
                         },
+                        components: {
+                          Popover: {
+                            titleMinWidth: 30,
+                            colorBgElevated: "#000000E0",
+                            colorText: "#FFFFFF",
+                            fontFamily: "inherit",
+                            lineHeight: 1,
+                            fontSize: 12,
+                          },
+                        },
                       }}
                     >
-                      <Checkbox
-                        onChange={handleInitialCheckboxState}
-                        checked={initialCheckboxState}
-                      ></Checkbox>
+                      <Popover
+                        content={"Check for Validated or Multiple Bookmark"}
+                        placement="bottomLeft"
+                      >
+                        <Checkbox
+                          onChange={handleInitialCheckboxState}
+                          checked={initialCheckboxState}
+                        ></Checkbox>
+                      </Popover>
                     </ConfigProvider>
                   )}
                 </div>
