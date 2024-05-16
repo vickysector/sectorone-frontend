@@ -734,7 +734,7 @@ export default function StealerUserPage() {
     <main>
       <section>
         <h1 className="text-heading-2 text-black mb-4">Stealer</h1>
-        <div className="bg-white  p-12 rounded-xl">
+        <div className="bg-white  p-12 rounded-xl shadow-md">
           <div className="flex items-center">
             <div>
               <div className="h-[32px] w-[32px] bg-input-container flex">
@@ -781,7 +781,7 @@ export default function StealerUserPage() {
       </section>
       <section className="mt-8">
         <h1 className="text-heading-4 text-black ">Total Stealer</h1>
-        <div className="p-8 bg-white border-input-border border-2 mt-4 rounded-[16px]">
+        <div className="p-8 bg-white mt-4 rounded-[16px]">
           <ConfigProvider
             theme={{
               token: {
@@ -831,7 +831,7 @@ export default function StealerUserPage() {
         <h1 className="text-heading-4 text-black">
           Total device compromised: {mapStealerData && mapStealerData.count}
         </h1>
-        <div className="mt-4 bg-white border-2 border-input-border rounded-lg">
+        <div className="mt-4 bg-white  rounded-lg">
           <section className="p-8">
             <OutlineButton
               isActive={selectSection === "stealer"}
