@@ -761,7 +761,7 @@ export default function ExecutiveProtections() {
             <p className="text-SM-normal text-[#00000082] text-center mt-4 ml-[-25%]">
               You can only search a maximum of 10 searches.{" "}
               <span className="text-SM-strong text-primary-base">
-                {localUsersCredit.credit}
+                {localUsersCredit.credit}/10
               </span>{" "}
               Credits
             </p>

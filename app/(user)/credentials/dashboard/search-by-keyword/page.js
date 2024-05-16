@@ -400,7 +400,7 @@ export default function SearchByKeyword() {
             <p className="text-SM-normal text-[#00000082] text-justify mt-4">
               You can only search a maximum of 10 searches.{" "}
               <span className="text-SM-strong text-primary-base">
-                {usersCredit && usersCredit.credit}
+                {usersCredit && usersCredit.credit}/10
               </span>{" "}
               Credits
             </p>
