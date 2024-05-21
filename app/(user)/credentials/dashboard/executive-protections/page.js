@@ -42,6 +42,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { setHistorySearchEmailVerified } from "@/app/_lib/store/features/ExecutiveProtections/SearchHistorySlices";
 
 const informations = [
   {
@@ -137,8 +138,18 @@ export default function ExecutiveProtections() {
     (state) => state.executiveProtections.isUsersDontShowAgainTemp
   );
 
+  const historySearchEmailVerified = useSelector(
+    (state) => state.searchHistory.historySearchEmailVerified
+  );
+
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
+  };
+
+  const handleClickSearchHistoryEmail = (email, verified) => {
+    setEmail(email);
+    dispatch(setHistorySearchEmailVerified(verified));
+    setCookie("scanned_email", email);
   };
 
   const handleDontShowAgaoinCheck = (e) => {
@@ -155,9 +166,17 @@ export default function ExecutiveProtections() {
 
   const handleScanNow = () => {
     if (canSend) {
-      dispatch(setIsScanNow(true));
-      dispatch(setScannedEmail(email));
-      dispatch(setCallScannedEmailFunctions(callSendOtpScannedEmail));
+      if (!historySearchEmailVerified) {
+        dispatch(setIsScanNow(true));
+        dispatch(setScannedEmail(email));
+        dispatch(setCallScannedEmailFunctions(callSendOtpScannedEmail));
+      }
+
+      if (historySearchEmailVerified) {
+        dispatch(setEmailIsVerified(true));
+        callGetDetailLeakedData();
+        dispatch(setHistorySearchEmailVerified(false));
+      }
     }
   };
 
@@ -747,7 +766,12 @@ export default function ExecutiveProtections() {
                             </div>
                             <h1
                               className="text-Base-normal text-black ml-3"
-                              onClick={() => setEmail(data.search)}
+                              onClick={() =>
+                                handleClickSearchHistoryEmail(
+                                  data.search,
+                                  data.verified
+                                )
+                              }
                             >
                               {data.search}
                             </h1>
