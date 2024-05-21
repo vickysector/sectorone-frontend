@@ -712,10 +712,16 @@ export default function ExecutiveProtections() {
                   onMouseEnter={handleIsEmailFocusTrue}
                   onMouseLeave={handleIsEmailFotusFalse}
                 >
-                  <div className="flex items-center justify-between">
-                    <h1 className="text-Base-strong text-black">
-                      Recent search
-                    </h1>
+                  <div className="flex justify-between items-start">
+                    <div className="text-left">
+                      <h1 className="text-Base-strong text-black">
+                        Search history
+                      </h1>
+                      <p className="text-text-description text-SM-normal mt-1">
+                        Rescanning these email addresses does not reduce your
+                        search credit count.
+                      </p>
+                    </div>
                     <button
                       className="text-primary-base text-Base-normal"
                       onClick={handleDeleteAll}
