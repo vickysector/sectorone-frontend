@@ -484,7 +484,7 @@ export default function SearchByKeyword() {
                             {data.data_leak.map((key) => (
                               <>
                                 <span
-                                  className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2 mt-2"
+                                  className="inline-block bg-white text-text-description rounded-[100px] border-[1px] border-[#D5D5D5] text-SM-normal py-1 px-4 mr-2 mt-2"
                                   key={key}
                                 >
                                   {key}
