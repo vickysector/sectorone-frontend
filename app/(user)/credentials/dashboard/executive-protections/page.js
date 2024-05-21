@@ -144,7 +144,37 @@ export default function ExecutiveProtections() {
 
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
+    // allRecentSearch &&
+    //   allRecentSearch.map((data) => {
+    //     console.log("data search: ", data.search);
+    //     console.log("e.target.value: ", e.target.value);
+    //     if (data.search === e.target.value) {
+    //       console.log("masuk if");
+    //       dispatch(setHistorySearchEmailVerified(true));
+    //       setCookie("scanned_email", e.target.value);
+    //     } else {
+    //       console.log("masuk else");
+    //       dispatch(setHistorySearchEmailVerified(false));
+    //       deleteCookie("scanned_email");
+    //     }
+    //   });
+
+    const isMatch =
+      allRecentSearch &&
+      allRecentSearch.some((data) => data.search === e.target.value);
+
+    if (isMatch) {
+      console.log("masuk if");
+      dispatch(setHistorySearchEmailVerified(true));
+      setCookie("scanned_email", e.target.value);
+    } else {
+      console.log("masuk else");
+      dispatch(setHistorySearchEmailVerified(false));
+      deleteCookie("scanned_email");
+    }
   };
+
+  console.log("history search email verified: ", historySearchEmailVerified);
 
   const handleClickSearchHistoryEmail = (email, verified) => {
     setEmail(email);
