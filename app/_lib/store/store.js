@@ -18,6 +18,7 @@ import FreetrialSlices from "./features/Accounts/FreetrialSlices";
 import ScanEmailSlices from "./features/ExecutiveProtections/ScanEmailSlices";
 import LeakedDataSlices from "./features/ExecutiveProtections/LeakedDataSlices";
 import KeywordSearchSlices from "./features/KeywordSearch/KeywordSearchSlices";
+import SearchHistorySlices from "./features/ExecutiveProtections/SearchHistorySlices";
 
 export const store = configureStore({
   reducer: {
@@ -40,5 +41,6 @@ export const store = configureStore({
     scanEmail: ScanEmailSlices,
     executiveProtections: LeakedDataSlices,
     keywordSearch: KeywordSearchSlices,
+    searchHistory: SearchHistorySlices,
   },
 });

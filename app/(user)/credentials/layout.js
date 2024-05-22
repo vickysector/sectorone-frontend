@@ -67,6 +67,7 @@ import {
 } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 import { Button, Popover, ConfigProvider } from "antd";
+import { setIsConfirmDeleteHistory } from "@/app/_lib/store/features/ExecutiveProtections/SearchHistorySlices";
 
 export default function DashboardLayout({ children }) {
   const [hide, setHide] = useState(false);
@@ -140,6 +141,14 @@ export default function DashboardLayout({ children }) {
 
   const isScanEmailNow = useSelector((state) => state.scanEmail.isScanNow);
   const scannedEmail = useSelector((state) => state.scanEmail.scannedEmail);
+
+  const isConfirmDeleteSearchHistory = useSelector(
+    (state) => state.searchHistory.isConfirmdeleteHistory
+  );
+
+  const calldeleteSearchHistoryFunctionsFunctions = useSelector(
+    (state) => state.searchHistory.callDeleteSearchHistory
+  );
 
   const callScannedSendOtpFunctions = useSelector(
     (state) => state.scanEmail.callScannedEmailFunctions
@@ -272,6 +281,15 @@ export default function DashboardLayout({ children }) {
   const handleConfirmSendOtp = () => {
     callScannedSendOtpFunctions();
     dispatch(setIsScanNow(false));
+  };
+
+  const handleCancelDeleteSearchHistory = () => {
+    dispatch(setIsConfirmDeleteHistory(false));
+  };
+
+  const handleConfirmDeleteSearchHistory = () => {
+    calldeleteSearchHistoryFunctionsFunctions();
+    dispatch(setIsConfirmDeleteHistory(false));
   };
 
   const toggleHideIcon = () => {
@@ -1536,6 +1554,43 @@ export default function DashboardLayout({ children }) {
       {/* End = Overview */}
 
       {/* End of: Loading State Cards */}
+
+      {/* Start of: Executive Protections - Delete Search History */}
+      <div
+        className={clsx(
+          "fixed top-0 bottom-0 left-0 right-0 bg-[#000000B2] w-full z-50 flex items-center justify-center",
+          isConfirmDeleteSearchHistory ? "visible" : "hidden"
+        )}
+      >
+        <div className="bg-white p-[32px] rounded-lg w-[30%]">
+          <h1 className="text-LG-strong ">Are you sure to delete this?</h1>
+          <p className="text-Base-normal text-text-description mt-[12px]">
+            This will be permanently deleted. You will need to re-enter the OTP
+            to scan the deleted email.
+          </p>
+
+          <div className="mt-8 flex justify-end items-center ">
+            <button
+              className="bg-white border-[1px] border-input-border py-1.5 px-3 rounded-lg ml-4 text-primary-base text-Base-normal mr-4"
+              // onClick={handleUrlListCancel}
+              onClick={handleCancelDeleteSearchHistory}
+            >
+              Cancel
+            </button>
+            <div>
+              <button
+                className="cursor-pointer w-full  py-1.5 px-3  rounded-lg text-Base-normal bg-primary-base border-2 border-primary-base text-white"
+                // onClick={handleUrlListCancel}
+                onClick={handleConfirmDeleteSearchHistory}
+              >
+                Yes, sure
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* End of: Executive Protections - Delete Search History */}
 
       {/* Start of: Executive Protections - Send OTP */}
       <div
