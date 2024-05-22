@@ -759,6 +759,8 @@ export default function ExecutiveProtections() {
                 onChange={handleChangeEmail}
                 onFocus={handleIsEmailFocusTrue}
                 // onBlur={handleIsEmailFotusFalse}
+                onMouseEnter={handleIsEmailFocusTrue}
+                // onMouseLeave={handleIsEmailFotusFalse}
               />
               {isEmailFocused && allRecentSearch && (
                 <div
