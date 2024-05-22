@@ -42,7 +42,11 @@ import LockIcon from "@mui/icons-material/Lock";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { setHistorySearchEmailVerified } from "@/app/_lib/store/features/ExecutiveProtections/SearchHistorySlices";
+import {
+  setCallDeleteSearchHistory,
+  setHistorySearchEmailVerified,
+  setIsConfirmDeleteHistory,
+} from "@/app/_lib/store/features/ExecutiveProtections/SearchHistorySlices";
 
 const informations = [
   {
@@ -174,8 +178,6 @@ export default function ExecutiveProtections() {
     }
   };
 
-  console.log("history search email verified: ", historySearchEmailVerified);
-
   const handleClickSearchHistoryEmail = (email, verified) => {
     setEmail(email);
     dispatch(setHistorySearchEmailVerified(verified));
@@ -211,11 +213,14 @@ export default function ExecutiveProtections() {
   };
 
   const handleDeleteIndividual = (id) => {
-    deleteRecentSearchData(id);
+    dispatch(setIsConfirmDeleteHistory(true));
+    dispatch(setCallDeleteSearchHistory(() => deleteRecentSearchData(id)));
   };
 
   const handleDeleteAll = () => {
-    deleteAllRecentSearchData();
+    dispatch(setIsConfirmDeleteHistory(true));
+    dispatch(setCallDeleteSearchHistory(deleteAllRecentSearchData));
+    // deleteAllRecentSearchData();
   };
 
   const handleIsEmailFocusTrue = () => {
