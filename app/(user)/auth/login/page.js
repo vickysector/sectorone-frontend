@@ -132,7 +132,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     const handleResize = () => {
-      setShowPopupNotResponsive(window.innerWidth <= 400);
+      setShowPopupNotResponsive(window.innerWidth <= 1240);
       // console.log("resize : ", window.innerWidth);
     };
 
@@ -153,7 +153,9 @@ export default function LoginPage() {
         )}
       >
         <div
-          className={clsx("rounded-lg bg-white p-[28px] w-[95%] text-center ")}
+          className={clsx(
+            "rounded-lg bg-white p-[28px] w-[92%] sm:w-[70%] md:w-[50%] lg:w-[35%]  text-center "
+          )}
         >
           <div className="m-auto mb-6">
             <Image
@@ -168,7 +170,8 @@ export default function LoginPage() {
             Please use a dekstop or laptop for a better experience
           </h1>
           <p className="mb-10 text-text-description  text-Base-normal">
-            Some parts of one visibility tool may not work on a mobile device.
+            Some parts of one visibility tool may not work on Mobile or Tablet
+            device.
           </p>
           <div className="flex justify-end">
             <button

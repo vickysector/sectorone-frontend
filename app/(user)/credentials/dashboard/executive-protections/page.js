@@ -42,6 +42,11 @@ import LockIcon from "@mui/icons-material/Lock";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import {
+  setCallDeleteSearchHistory,
+  setHistorySearchEmailVerified,
+  setIsConfirmDeleteHistory,
+} from "@/app/_lib/store/features/ExecutiveProtections/SearchHistorySlices";
 
 const informations = [
   {
@@ -137,8 +142,46 @@ export default function ExecutiveProtections() {
     (state) => state.executiveProtections.isUsersDontShowAgainTemp
   );
 
+  const historySearchEmailVerified = useSelector(
+    (state) => state.searchHistory.historySearchEmailVerified
+  );
+
   const handleChangeEmail = (e) => {
     setEmail(e.target.value);
+    // allRecentSearch &&
+    //   allRecentSearch.map((data) => {
+    //     console.log("data search: ", data.search);
+    //     console.log("e.target.value: ", e.target.value);
+    //     if (data.search === e.target.value) {
+    //       console.log("masuk if");
+    //       dispatch(setHistorySearchEmailVerified(true));
+    //       setCookie("scanned_email", e.target.value);
+    //     } else {
+    //       console.log("masuk else");
+    //       dispatch(setHistorySearchEmailVerified(false));
+    //       deleteCookie("scanned_email");
+    //     }
+    //   });
+
+    const isMatch =
+      allRecentSearch &&
+      allRecentSearch.some((data) => data.search === e.target.value);
+
+    if (isMatch) {
+      console.log("masuk if");
+      dispatch(setHistorySearchEmailVerified(true));
+      setCookie("scanned_email", e.target.value);
+    } else {
+      console.log("masuk else");
+      dispatch(setHistorySearchEmailVerified(false));
+      deleteCookie("scanned_email");
+    }
+  };
+
+  const handleClickSearchHistoryEmail = (email, verified) => {
+    setEmail(email);
+    dispatch(setHistorySearchEmailVerified(verified));
+    setCookie("scanned_email", email);
   };
 
   const handleDontShowAgaoinCheck = (e) => {
@@ -155,18 +198,29 @@ export default function ExecutiveProtections() {
 
   const handleScanNow = () => {
     if (canSend) {
-      dispatch(setIsScanNow(true));
-      dispatch(setScannedEmail(email));
-      dispatch(setCallScannedEmailFunctions(callSendOtpScannedEmail));
+      if (!historySearchEmailVerified) {
+        dispatch(setIsScanNow(true));
+        dispatch(setScannedEmail(email));
+        dispatch(setCallScannedEmailFunctions(callSendOtpScannedEmail));
+      }
+
+      if (historySearchEmailVerified) {
+        dispatch(setEmailIsVerified(true));
+        callGetDetailLeakedData();
+        dispatch(setHistorySearchEmailVerified(false));
+      }
     }
   };
 
   const handleDeleteIndividual = (id) => {
-    deleteRecentSearchData(id);
+    dispatch(setIsConfirmDeleteHistory(true));
+    dispatch(setCallDeleteSearchHistory(() => deleteRecentSearchData(id)));
   };
 
   const handleDeleteAll = () => {
-    deleteAllRecentSearchData();
+    dispatch(setIsConfirmDeleteHistory(true));
+    dispatch(setCallDeleteSearchHistory(deleteAllRecentSearchData));
+    // deleteAllRecentSearchData();
   };
 
   const handleIsEmailFocusTrue = () => {
@@ -705,6 +759,8 @@ export default function ExecutiveProtections() {
                 onChange={handleChangeEmail}
                 onFocus={handleIsEmailFocusTrue}
                 // onBlur={handleIsEmailFotusFalse}
+                onMouseEnter={handleIsEmailFocusTrue}
+                // onMouseLeave={handleIsEmailFotusFalse}
               />
               {isEmailFocused && allRecentSearch && (
                 <div
@@ -712,10 +768,16 @@ export default function ExecutiveProtections() {
                   onMouseEnter={handleIsEmailFocusTrue}
                   onMouseLeave={handleIsEmailFotusFalse}
                 >
-                  <div className="flex items-center justify-between">
-                    <h1 className="text-Base-strong text-black">
-                      Recent search
-                    </h1>
+                  <div className="flex justify-between items-start">
+                    <div className="text-left">
+                      <h1 className="text-Base-strong text-black">
+                        Search history
+                      </h1>
+                      <p className="text-text-description text-SM-normal mt-1">
+                        Rescanning these email addresses does not reduce your
+                        search credit count.
+                      </p>
+                    </div>
                     <button
                       className="text-primary-base text-Base-normal"
                       onClick={handleDeleteAll}
@@ -741,7 +803,12 @@ export default function ExecutiveProtections() {
                             </div>
                             <h1
                               className="text-Base-normal text-black ml-3"
-                              onClick={() => setEmail(data.search)}
+                              onClick={() =>
+                                handleClickSearchHistoryEmail(
+                                  data.search,
+                                  data.verified
+                                )
+                              }
                             >
                               {data.search}
                             </h1>
@@ -876,7 +943,7 @@ export default function ExecutiveProtections() {
                           {data.leakedKeys.map((key) => (
                             <>
                               <span
-                                className="inline-block bg-[#F7F7F7] rounded-lg text-[#00000040] text-SM-strong py-1 px-1.5 mr-2 mt-2"
+                                className="inline-block bg-white text-text-description rounded-[100px] border-[1px] border-[#D5D5D5] text-SM-normal py-1 px-4 mr-2 mt-2"
                                 key={key}
                               >
                                 {key}
