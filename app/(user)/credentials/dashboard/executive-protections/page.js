@@ -147,7 +147,7 @@ export default function ExecutiveProtections() {
   );
 
   const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
+    setEmail(e.target.value.trim());
     // allRecentSearch &&
     //   allRecentSearch.map((data) => {
     //     console.log("data search: ", data.search);
@@ -165,7 +165,7 @@ export default function ExecutiveProtections() {
 
     const isMatch =
       allRecentSearch &&
-      allRecentSearch.some((data) => data.search === e.target.value);
+      allRecentSearch.some((data) => data.search === e.target.value.trim());
 
     if (isMatch) {
       console.log("masuk if");

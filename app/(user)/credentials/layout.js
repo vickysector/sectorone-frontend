@@ -925,7 +925,9 @@ export default function DashboardLayout({ children }) {
           <p className="mb-10 text-text-description  text-Base-normal">
             Upgrade your account to access all SectorOne dashboard features.{" "}
             <span className="text-Base-normal underline text-primary-base">
-              Contact us
+              <a href="https://wa.me/6282115710506" target="_blank">
+                Contact us
+              </a>
             </span>
           </p>
           <div className="flex justify-end">
