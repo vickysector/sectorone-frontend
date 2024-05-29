@@ -679,8 +679,9 @@ export default function CompromisedDashboard() {
   };
 
   const handleDetails = (item) => {
-    dispatch(setDetailState(true));
+    // dispatch(setDetailState(true));
     dispatch(setDataDetails(item));
+    router.push(`/credentials/dashboard/compromised/detail/${item.id}`);
   };
 
   const handleRangePicker = (date, datestring) => {
