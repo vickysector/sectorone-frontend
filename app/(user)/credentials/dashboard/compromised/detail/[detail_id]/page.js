@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter, redirect } from "next/navigation";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import { useEffect } from "react";
 
 export default function DetailCompromised() {
   const detailsCompromisedData = useSelector(
@@ -124,6 +125,12 @@ export default function DetailCompromised() {
     // router.back();
     router.push("/credentials/dashboard/compromised");
   }
+
+  useEffect(() => {
+    if (!hasOwnProperty("id")) {
+      return redirect("/credentials/dashboard/compromised");
+    }
+  }, []);
 
   return (
     <>
