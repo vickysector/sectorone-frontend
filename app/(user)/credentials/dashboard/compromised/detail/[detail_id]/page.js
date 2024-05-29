@@ -5,6 +5,7 @@ import { DetailItems } from "@/app/_ui/components/details/detailsItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter, redirect } from "next/navigation";
+import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 
 export default function DetailCompromised() {
   const detailsCompromisedData = useSelector(
@@ -131,7 +132,7 @@ export default function DetailCompromised() {
         </div>
         <h1 className="text-heading-2 text-black ml-3">Details</h1>
       </section>
-      <section className="bg-white rounded-lg px-8 py-8 mt-6">
+      <section className="bg-white rounded-2xl px-8 py-8 mt-6">
         <div className=" pb-8 border-b-[1px] border-[#D5D5D5]">
           <DetailItems items={Date} />
         </div>
@@ -144,6 +145,26 @@ export default function DetailCompromised() {
         <div className=" mt-8">
           <DetailItems items={Others} />
         </div>
+      </section>
+      <section className="bg-gradient-to-b from-[#F8ECFF] to-white mt-8 rounded-2xl p-8">
+        <section className="flex items-center justify-between">
+          <div className="max-w-[755px] break-words">
+            <h2 className=" text-black text-heading-4">
+              Get data security recommendations from Sector
+            </h2>
+            <p className="text-Base-normal text-text-description mt-2">
+              Hacker can access your account and will most likely try to use it
+              to commit crimes. Get data security recommendations from Sector
+              AI.
+            </p>
+          </div>
+          <div>
+            <button className="bg-[#9254DE] text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center">
+              <TipsAndUpdatesOutlinedIcon style={{ fontSize: "19px" }} />
+              <p className="ml-3">Try Sector AI</p>
+            </button>
+          </div>
+        </section>
       </section>
     </>
   );
