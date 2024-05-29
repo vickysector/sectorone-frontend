@@ -59,6 +59,7 @@ import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSl
 import {
   setDataDetails,
   setDetailState,
+  setSection,
 } from "@/app/_lib/store/features/Compromised/DetailSlices";
 import {
   setBookmarkConfirmState,
@@ -678,9 +679,10 @@ export default function CompromisedDashboard() {
     dispatch(setChangeUrl(true));
   };
 
-  const handleDetails = (item) => {
+  const handleDetails = (item, section) => {
     // dispatch(setDetailState(true));
     dispatch(setDataDetails(item));
+    dispatch(setSection(section));
     router.push(`/credentials/dashboard/compromised/detail/${item.id}`, {
       scroll: true,
     });
@@ -854,7 +856,12 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div className="cursor-pointer" onClick={() => handleDetails(item)}>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              handleDetails(item, DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE)
+            }
+          >
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
           <div
@@ -884,7 +891,12 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div className="cursor-pointer" onClick={() => handleDetails(item)}>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              handleDetails(item, DETAIL_COMPROMISED_COMPROMISE_USERS)
+            }
+          >
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
           <div
@@ -914,7 +926,12 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div className="cursor-pointer" onClick={() => handleDetails(item)}>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              handleDetails(item, DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY)
+            }
+          >
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
           <div
@@ -941,7 +958,12 @@ export default function CompromisedDashboard() {
       ip: item.ip,
       action: (
         <div className="flex">
-          <div className="cursor-pointer" onClick={() => handleDetails(item)}>
+          <div
+            className="cursor-pointer"
+            onClick={() =>
+              handleDetails(item, DETAIL_COMPROMISED_COMPROMISE_DEVICES)
+            }
+          >
             <EyeOutlined style={{ fontSize: "18px" }} />
           </div>
           <div
@@ -3393,7 +3415,12 @@ export default function CompromisedDashboard() {
                                 <div className="flex">
                                   <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
@@ -3674,7 +3701,12 @@ export default function CompromisedDashboard() {
                                 <div className="flex">
                                   <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
@@ -4130,7 +4162,12 @@ export default function CompromisedDashboard() {
                                 <div className="flex">
                                   <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        DETAIL_COMPROMISED_COMPROMISE_USERS
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
@@ -4411,7 +4448,12 @@ export default function CompromisedDashboard() {
                                 <div className="flex">
                                   <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        DETAIL_COMPROMISED_COMPROMISE_USERS
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
@@ -4867,7 +4909,12 @@ export default function CompromisedDashboard() {
                                 <div className="flex">
                                   <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
@@ -5148,7 +5195,12 @@ export default function CompromisedDashboard() {
                                 <div className="flex">
                                   <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
@@ -5428,7 +5480,12 @@ export default function CompromisedDashboard() {
                                 <div className="flex">
                                   <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        DETAIL_COMPROMISED_COMPROMISE_DEVICES
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
