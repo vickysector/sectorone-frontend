@@ -38,7 +38,15 @@ export default function DetailCompromised() {
       {
         id: 1,
         key: "URL",
-        value: hasOwnProperty("url") && detailsCompromisedData.url,
+        value: hasOwnProperty("url") && (
+          <a
+            href={`${detailsCompromisedData.url}`}
+            className="underline"
+            target="_blank"
+          >
+            {detailsCompromisedData.url}
+          </a>
+        ),
       },
       {
         id: 2,
@@ -97,7 +105,8 @@ export default function DetailCompromised() {
           hasOwnProperty("antivirus") &&
           detailsCompromisedData.antivirus.length === 0
             ? "-"
-            : etailsCompromisedData.antivirus.join(),
+            : hasOwnProperty("antivirus") &&
+              detailsCompromisedData.antivirus.join(),
       },
     ],
   };
