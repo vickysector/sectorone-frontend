@@ -4,11 +4,14 @@ import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import { DetailItems } from "@/app/_ui/components/details/detailsItem";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useSelector, useDispatch } from "react-redux";
+import { useRouter, redirect } from "next/navigation";
 
 export default function DetailCompromised() {
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
   );
+
+  const router = useRouter();
 
   console.log("details compromised data: ", detailsCompromisedData);
 
@@ -115,10 +118,17 @@ export default function DetailCompromised() {
     return detailsCompromisedData.hasOwnProperty(property) ? true : false;
   }
 
+  function handleBackToCompromise() {
+    // router.back();
+    router.push("/credentials/dashboard/compromised");
+  }
+
   return (
     <>
       <section className="flex items-center">
-        <ArrowBackIcon />
+        <div onClick={handleBackToCompromise} className="hover:cursor-pointer">
+          <ArrowBackIcon />
+        </div>
         <h1 className="text-heading-2 text-black ml-3">Details</h1>
       </section>
       <section className="bg-white rounded-lg px-8 py-8 mt-6">
@@ -131,7 +141,7 @@ export default function DetailCompromised() {
         <div className=" pb-8 border-b-[1px] border-[#D5D5D5] mt-8">
           <DetailItems items={Devices} />
         </div>
-        <div className=" pb-8 border-b-[1px] border-[#D5D5D5] mt-8">
+        <div className=" mt-8">
           <DetailItems items={Others} />
         </div>
       </section>
