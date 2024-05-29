@@ -6,6 +6,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter, redirect } from "next/navigation";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 
 export default function DetailCompromised() {
   const detailsCompromisedData = useSelector(
@@ -131,6 +132,15 @@ export default function DetailCompromised() {
           <ArrowBackIcon />
         </div>
         <h1 className="text-heading-2 text-black ml-3">Details</h1>
+        <div className="ml-auto flex ">
+          <button className="bg-white border-[1px] border-[#D5D5D5] rounded-[8px] text-primary-base py-2 px-4 flex items-center">
+            <BookmarkBorderOutlinedIcon style={{ fontSize: "22px" }} />
+            <p className="ml-2">Bookmark</p>
+          </button>
+          <button className="bg-primary-base rounded-[8px] text-white py-2 px-4 ml-4 ">
+            Validate
+          </button>
+        </div>
       </section>
       <section className="bg-white rounded-2xl px-8 py-8 mt-6">
         <div className=" pb-8 border-b-[1px] border-[#D5D5D5]">
