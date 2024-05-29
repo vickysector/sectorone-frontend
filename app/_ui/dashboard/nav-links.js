@@ -32,6 +32,7 @@ const links = [
   {
     name: "Compromised",
     href: "/credentials/dashboard/compromised",
+    hrefDetail: "/credentials/dashboard/compromised/detail",
     icon: ScreenSearchDesktopIcon,
   },
   {
@@ -77,6 +78,11 @@ export default function NavLinks() {
               "flex items-center mb-4 py-1.5 px-2 text-center hover:bg-primary-base text-text-description hover:text-white overflow-hidden rounded-lg",
               {
                 "bg-primary-base text-white": pathname === link.href,
+              },
+              {
+                "bg-primary-base text-white": pathname.includes(
+                  link.hrefDetail
+                ),
               }
             )}
           >
@@ -92,6 +98,11 @@ export default function NavLinks() {
                 "ml-3  text-LG-normal hover:text-white text-left flex-grow text-nowrap",
                 {
                   "text-white text-LG-strong": pathname === link.href,
+                },
+                {
+                  "text-white text-LG-strong": pathname.includes(
+                    link.hrefDetail
+                  ),
                 }
               )}
             >
