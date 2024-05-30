@@ -59,6 +59,7 @@ import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSl
 import {
   setDataDetails,
   setDetailState,
+  setFilters,
   setSection,
 } from "@/app/_lib/store/features/Compromised/DetailSlices";
 import {
@@ -679,10 +680,11 @@ export default function CompromisedDashboard() {
     dispatch(setChangeUrl(true));
   };
 
-  const handleDetails = (item, section) => {
+  const handleDetails = (item, section, filters) => {
     // dispatch(setDetailState(true));
     dispatch(setDataDetails(item));
     dispatch(setSection(section));
+    dispatch(setFilters(filters));
     router.push(`/credentials/dashboard/compromised/detail/${item.id}`, {
       scroll: true,
     });
@@ -859,7 +861,11 @@ export default function CompromisedDashboard() {
           <div
             className="cursor-pointer"
             onClick={() =>
-              handleDetails(item, DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE)
+              handleDetails(
+                item,
+                DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                DETAIL_COMPROMISED_DEFAULT
+              )
             }
           >
             <EyeOutlined style={{ fontSize: "18px" }} />
@@ -894,7 +900,11 @@ export default function CompromisedDashboard() {
           <div
             className="cursor-pointer"
             onClick={() =>
-              handleDetails(item, DETAIL_COMPROMISED_COMPROMISE_USERS)
+              handleDetails(
+                item,
+                DETAIL_COMPROMISED_COMPROMISE_USERS,
+                DETAIL_COMPROMISED_DEFAULT
+              )
             }
           >
             <EyeOutlined style={{ fontSize: "18px" }} />
@@ -929,7 +939,11 @@ export default function CompromisedDashboard() {
           <div
             className="cursor-pointer"
             onClick={() =>
-              handleDetails(item, DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY)
+              handleDetails(
+                item,
+                DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
+                DETAIL_COMPROMISED_DEFAULT
+              )
             }
           >
             <EyeOutlined style={{ fontSize: "18px" }} />
@@ -961,7 +975,11 @@ export default function CompromisedDashboard() {
           <div
             className="cursor-pointer"
             onClick={() =>
-              handleDetails(item, DETAIL_COMPROMISED_COMPROMISE_DEVICES)
+              handleDetails(
+                item,
+                DETAIL_COMPROMISED_COMPROMISE_DEVICES,
+                DETAIL_COMPROMISED_DEFAULT
+              )
             }
           >
             <EyeOutlined style={{ fontSize: "18px" }} />
@@ -3418,7 +3436,8 @@ export default function CompromisedDashboard() {
                                     onClick={() =>
                                       handleDetails(
                                         data,
-                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                                        DETAIL_COMPROMISED_TESTING
                                       )
                                     }
                                   >
@@ -3704,7 +3723,8 @@ export default function CompromisedDashboard() {
                                     onClick={() =>
                                       handleDetails(
                                         data,
-                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+                                        DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                                        DETAIL_COMPROMISED_BOOKMARK
                                       )
                                     }
                                   >
@@ -4165,7 +4185,8 @@ export default function CompromisedDashboard() {
                                     onClick={() =>
                                       handleDetails(
                                         data,
-                                        DETAIL_COMPROMISED_COMPROMISE_USERS
+                                        DETAIL_COMPROMISED_COMPROMISE_USERS,
+                                        DETAIL_COMPROMISED_TESTING
                                       )
                                     }
                                   >
@@ -4451,7 +4472,8 @@ export default function CompromisedDashboard() {
                                     onClick={() =>
                                       handleDetails(
                                         data,
-                                        DETAIL_COMPROMISED_COMPROMISE_USERS
+                                        DETAIL_COMPROMISED_COMPROMISE_USERS,
+                                        DETAIL_COMPROMISED_BOOKMARK
                                       )
                                     }
                                   >
@@ -4912,7 +4934,8 @@ export default function CompromisedDashboard() {
                                     onClick={() =>
                                       handleDetails(
                                         data,
-                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
+                                        DETAIL_COMPROMISED_TESTING
                                       )
                                     }
                                   >
@@ -5198,7 +5221,8 @@ export default function CompromisedDashboard() {
                                     onClick={() =>
                                       handleDetails(
                                         data,
-                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY
+                                        DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
+                                        DETAIL_COMPROMISED_BOOKMARK
                                       )
                                     }
                                   >
@@ -5483,7 +5507,8 @@ export default function CompromisedDashboard() {
                                     onClick={() =>
                                       handleDetails(
                                         data,
-                                        DETAIL_COMPROMISED_COMPROMISE_DEVICES
+                                        DETAIL_COMPROMISED_COMPROMISE_DEVICES,
+                                        DETAIL_COMPROMISED_BOOKMARK
                                       )
                                     }
                                   >
