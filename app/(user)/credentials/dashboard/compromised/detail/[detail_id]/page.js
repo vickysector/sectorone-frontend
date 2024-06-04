@@ -10,6 +10,15 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import { useEffect } from "react";
 import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
+import {
+  Pagination,
+  ConfigProvider,
+  DatePicker,
+  Spin,
+  Select,
+  Checkbox,
+  Popover,
+} from "antd";
 
 export default function DetailCompromised() {
   const detailsCompromisedData = useSelector(
@@ -215,13 +224,78 @@ export default function DetailCompromised() {
         </div>
         <h1 className="text-heading-2 text-black ml-3">Details</h1>
         <div className="ml-auto flex ">
-          <button className="bg-white border-[1px] border-[#D5D5D5] rounded-[8px] text-primary-base py-2 px-4 flex items-center">
+          <button className="bg-white border-[1px] border-[#D5D5D5] rounded-[8px] text-primary-base py-2 px-4 flex items-center mr-4">
             <BookmarkBorderOutlinedIcon style={{ fontSize: "22px" }} />
             <p className="ml-2">Bookmark</p>
           </button>
-          <button className="bg-primary-base rounded-[8px] text-white py-2 px-4 ml-4 ">
+          {/* <button className="bg-primary-base rounded-[8px] text-white py-2 px-4 ml-4 ">
             Validate
-          </button>
+          </button> */}
+          <ConfigProvider
+            theme={{
+              token: {
+                colorBgContainer: `${
+                  detailsCompromisedData.status_validasi === "-" ||
+                  detailsCompromisedData.status_validasi === "invalid"
+                    ? "#F7F7F7"
+                    : "white"
+                }`,
+                colorBorder: `${
+                  detailsCompromisedData.status_validasi === "-" ||
+                  detailsCompromisedData.status_validasi === "invalid"
+                    ? "#D5D5D5"
+                    : "#52C41A"
+                }`,
+                colorText: `${
+                  detailsCompromisedData.status_validasi === "-" ||
+                  detailsCompromisedData.status_validasi === "invalid"
+                    ? "#000000E0"
+                    : "#52C41A"
+                }`,
+                fontWeightStrong: true,
+              },
+              components: {
+                Select: {
+                  optionActiveBg: "#F7F7F7",
+                  optionSelectedBg: "#FFEBD4",
+                },
+              },
+            }}
+          >
+            <Select
+              defaultValue={
+                detailsCompromisedData.status_validasi === "-" ||
+                detailsCompromisedData.status_validasi === "invalid"
+                  ? "invalid"
+                  : "valid"
+              }
+              value={
+                detailsCompromisedData.status_validasi === "-" ||
+                detailsCompromisedData.status_validasi === "invalid"
+                  ? "invalid"
+                  : "valid"
+              }
+              style={{ width: 91, height: "42px" }}
+              // onChange={(value) =>
+              //   handleSelectValidation(
+              //     value,
+              //     data.id,
+              //     DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
+              //   )
+              // }
+              options={[
+                {
+                  value: "invalid",
+                  label: "Invalid",
+                },
+
+                {
+                  value: "valid",
+                  label: "Valid",
+                },
+              ]}
+            />
+          </ConfigProvider>
         </div>
       </section>
       <section className="bg-white rounded-2xl px-8 py-8 mt-6">
