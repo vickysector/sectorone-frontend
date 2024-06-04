@@ -8,15 +8,28 @@ import { useRouter, redirect } from "next/navigation";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import { useEffect } from "react";
+import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
+import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 
 export default function DetailCompromised() {
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
   );
 
+  const detailsCompromisedSection = useSelector(
+    (state) => state.detailComrpomise.sections
+  );
+
+  const detailsCompromisedFilters = useSelector(
+    (state) => state.detailComrpomise.filters
+  );
+
   const router = useRouter();
+  const dispatch = useDispatch();
 
   console.log("details compromised data: ", detailsCompromisedData);
+  console.log("details compromised section: ", detailsCompromisedSection);
+  console.log("details compromised section: ", detailsCompromisedFilters);
 
   const Date = {
     title: "Date",
@@ -125,6 +138,68 @@ export default function DetailCompromised() {
     // router.back();
     router.push("/credentials/dashboard/compromised");
   }
+
+  const handleValidation = () => {};
+
+  const UpdateValidateTesting = async (id, validasi, status) => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(`${APIDATAV1}status/domain/${status}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          status_validasi: validasi,
+        }),
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (data.success === false) {
+        // throw new Error("");
+        throw res;
+      }
+
+      if (data.success) {
+        setValidasiSuccess(true);
+        return res;
+      }
+    } catch (error) {
+      setValidasiSuccess(false);
+      // return res
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+      setTimeout(() => {
+        setValidasiSuccess(null);
+      }, 5000);
+    }
+  };
+
+  const fetchUpdateValidateTestingWithRefreshToken = async (
+    id,
+    validasi,
+    status
+  ) => {
+    await fetchWithRefreshToken(
+      UpdateValidateTesting,
+      router,
+      dispatch,
+      id,
+      validasi,
+      status
+    );
+  };
 
   useEffect(() => {
     if (!hasOwnProperty("id")) {
