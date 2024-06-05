@@ -7,7 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { useRouter, redirect } from "next/navigation";
 import TipsAndUpdatesOutlinedIcon from "@mui/icons-material/TipsAndUpdatesOutlined";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 import {
@@ -18,9 +18,17 @@ import {
   Select,
   Checkbox,
   Popover,
+  Alert,
 } from "antd";
+import clsx from "clsx";
+import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
+import { getCookie } from "cookies-next";
+import { setDataDetails } from "@/app/_lib/store/features/Compromised/DetailSlices";
 
 export default function DetailCompromised() {
+  const [selectValidasi, setSelectValidasi] = useState();
+  const [validasiSuccess, setValidasiSuccess] = useState(null);
+
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
   );
@@ -148,23 +156,32 @@ export default function DetailCompromised() {
     router.push("/credentials/dashboard/compromised");
   }
 
-  const handleValidation = () => {};
+  const handleValidation = (value) => {
+    setSelectValidasi(value);
 
-  const UpdateValidateTesting = async (id, validasi, status) => {
+    console.log("triggered handlevalidation: ", value);
+    fetchUpdateValidateTestingWithRefreshToken(value);
+  };
+
+  const UpdateValidateTesting = async (validasi) => {
     try {
       dispatch(setLoadingState(true));
-      const res = await fetch(`${APIDATAV1}status/domain/${status}`, {
-        method: "PATCH",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id,
-          status_validasi: validasi,
-        }),
-      });
+      console.log("details compromise data before: ", detailsCompromisedData);
+      const res = await fetch(
+        `${APIDATAV1}status/domain/${detailsCompromisedSection}`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: detailsCompromisedData.id,
+            status_validasi: validasi,
+          }),
+        }
+      );
 
       if (res.status === 401 || res.status === 403) {
         // DeleteCookies();
@@ -181,10 +198,17 @@ export default function DetailCompromised() {
 
       if (data.success) {
         setValidasiSuccess(true);
+        let newDataDetails = {
+          ...detailsCompromisedData,
+          status_validasi: validasi,
+        };
+        dispatch(setDataDetails(newDataDetails));
+        console.log("details compromise data after: ", detailsCompromisedData);
         return res;
       }
     } catch (error) {
       setValidasiSuccess(false);
+      console.log("error : ", error);
       // return res
       return error;
     } finally {
@@ -195,18 +219,12 @@ export default function DetailCompromised() {
     }
   };
 
-  const fetchUpdateValidateTestingWithRefreshToken = async (
-    id,
-    validasi,
-    status
-  ) => {
+  const fetchUpdateValidateTestingWithRefreshToken = async (validasi) => {
     await fetchWithRefreshToken(
       UpdateValidateTesting,
       router,
       dispatch,
-      id,
-      validasi,
-      status
+      validasi
     );
   };
 
@@ -218,7 +236,47 @@ export default function DetailCompromised() {
 
   return (
     <>
-      <section className="flex items-center">
+      <section className="flex items-center relative">
+        <Alert
+          message={"Success change status"}
+          type="success"
+          showIcon
+          closable={true}
+          style={{
+            position: "absolute",
+            // top: "32px",
+            left: "20%",
+            right: "20%",
+            textAlign: "left",
+          }}
+          className={clsx(
+            validasiSuccess !== null
+              ? validasiSuccess
+                ? "visible"
+                : "hidden"
+              : "hidden"
+          )}
+        />
+        <Alert
+          message={"Failed change status"}
+          type="error"
+          showIcon
+          closable={true}
+          style={{
+            position: "absolute",
+            // top: "32px",
+            left: "20%",
+            right: "20%",
+            textAlign: "left",
+          }}
+          className={clsx(
+            validasiSuccess !== null
+              ? !validasiSuccess
+                ? "visible"
+                : "hidden"
+              : "hidden"
+          )}
+        />
         <div onClick={handleBackToCompromise} className="hover:cursor-pointer">
           <ArrowBackIcon />
         </div>
@@ -276,13 +334,7 @@ export default function DetailCompromised() {
                   : "valid"
               }
               style={{ width: 91, height: "42px" }}
-              // onChange={(value) =>
-              //   handleSelectValidation(
-              //     value,
-              //     data.id,
-              //     DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE
-              //   )
-              // }
+              onChange={(value) => handleValidation(value)}
               options={[
                 {
                   value: "invalid",
