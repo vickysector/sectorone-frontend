@@ -24,6 +24,7 @@ import clsx from "clsx";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { getCookie } from "cookies-next";
 import { setDataDetails } from "@/app/_lib/store/features/Compromised/DetailSlices";
+import { DETAIL_COMPROMISED_BOOKMARK } from "@/app/_lib/variables/Variables";
 
 export default function DetailCompromised() {
   const [selectValidasi, setSelectValidasi] = useState();
@@ -46,7 +47,7 @@ export default function DetailCompromised() {
 
   console.log("details compromised data: ", detailsCompromisedData);
   console.log("details compromised section: ", detailsCompromisedSection);
-  console.log("details compromised section: ", detailsCompromisedFilters);
+  console.log("details compromised filters: ", detailsCompromisedFilters);
 
   const Date = {
     title: "Date",
@@ -344,6 +345,11 @@ export default function DetailCompromised() {
                   label: "Valid",
                 },
               ]}
+              className={clsx(
+                detailsCompromisedFilters === DETAIL_COMPROMISED_BOOKMARK
+                  ? "hidden"
+                  : "visible"
+              )}
             />
           </ConfigProvider>
         </div>
