@@ -166,7 +166,6 @@ export default function DetailCompromised() {
   const UpdateValidateTesting = async (validasi) => {
     try {
       dispatch(setLoadingState(true));
-      console.log("details compromise data before: ", detailsCompromisedData);
       const res = await fetch(
         `${APIDATAV1}status/domain/${detailsCompromisedSection}`,
         {
@@ -203,7 +202,6 @@ export default function DetailCompromised() {
           status_validasi: validasi,
         };
         dispatch(setDataDetails(newDataDetails));
-        console.log("details compromise data after: ", detailsCompromisedData);
         return res;
       }
     } catch (error) {
