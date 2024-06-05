@@ -160,9 +160,14 @@ export default function DetailCompromised() {
   const handleValidation = (value) => {
     setSelectValidasi(value);
 
-    console.log("triggered handlevalidation: ", value);
-    fetchUpdateValidateTestingWithRefreshToken(value);
+    if (detailsCompromisedData.status_validasi === "-") {
+      fetchCheckboxMultipleValidatedWithRefreshToken();
+    } else {
+      fetchUpdateValidateTestingWithRefreshToken(value);
+    }
   };
+
+  // Start of: Handle Update Validate
 
   const UpdateValidateTesting = async (validasi) => {
     try {
@@ -226,6 +231,62 @@ export default function DetailCompromised() {
       validasi
     );
   };
+
+  const CheckboxMultipleValidated = async () => {
+    try {
+      dispatch(setLoadingState(true));
+      const res = await fetch(
+        `${APIDATAV1}status/domain/${detailsCompromisedSection}`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: [detailsCompromisedData.id],
+            status_validasi: "valid",
+          }),
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (!data.success) {
+        // throw new Error("");
+        throw res;
+      }
+
+      setValidasiSuccess(true);
+      let newDataDetails = {
+        ...detailsCompromisedData,
+        status_validasi: "valid",
+      };
+      dispatch(setDataDetails(newDataDetails));
+      return res;
+    } catch (error) {
+      setValidasiSuccess(false);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+      setTimeout(() => {
+        setValidasiSuccess(null);
+      }, 5000);
+    }
+  };
+
+  const fetchCheckboxMultipleValidatedWithRefreshToken = async () => {
+    await fetchWithRefreshToken(CheckboxMultipleValidated, router, dispatch);
+  };
+
+  // End of: Handle Update Validate
 
   useEffect(() => {
     if (!hasOwnProperty("id")) {
