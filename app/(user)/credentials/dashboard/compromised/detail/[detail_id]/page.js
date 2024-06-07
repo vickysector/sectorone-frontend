@@ -25,10 +25,12 @@ import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { getCookie } from "cookies-next";
 import { setDataDetails } from "@/app/_lib/store/features/Compromised/DetailSlices";
 import { DETAIL_COMPROMISED_BOOKMARK } from "@/app/_lib/variables/Variables";
+import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 
 export default function DetailCompromised() {
   const [selectValidasi, setSelectValidasi] = useState();
   const [validasiSuccess, setValidasiSuccess] = useState(null);
+  const [bookmarkSuccess, setBookmarkSuccess] = useState(null);
 
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
@@ -288,6 +290,68 @@ export default function DetailCompromised() {
 
   // End of: Handle Update Validate
 
+  // Start of: Handle Bookmark
+
+  const handleBookmark = () => {
+    fetchBookmarkFunctionalityWithRefreshToken();
+  };
+
+  const BookmarkFunctionality = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(
+        `${APIDATAV1}status/domain/${detailsCompromisedSection}/boomark`,
+        {
+          method: "PATCH",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            id: [detailsCompromisedData.id],
+          }),
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const data = await res.json();
+
+      if (!data.success) {
+        // throw new Error("");
+        throw res;
+      }
+
+      setBookmarkSuccess(true);
+      let newDataDetails = {
+        ...detailsCompromisedData,
+        is_boomark: !detailsCompromisedData.is_boomark,
+      };
+      dispatch(setDataDetails(newDataDetails));
+      return res;
+    } catch (error) {
+      setBookmarkSuccess(false);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+      setTimeout(() => {
+        setBookmarkSuccess(null);
+      }, 5000);
+    }
+  };
+
+  const fetchBookmarkFunctionalityWithRefreshToken = async () => {
+    await fetchWithRefreshToken(BookmarkFunctionality, router, dispatch);
+  };
+
+  // End of: Handle Bookmark
+
   useEffect(() => {
     if (!hasOwnProperty("id")) {
       return redirect("/credentials/dashboard/compromised");
@@ -337,14 +401,70 @@ export default function DetailCompromised() {
               : "hidden"
           )}
         />
+        <Alert
+          message={"Success Change Bookmark status"}
+          type="success"
+          showIcon
+          closable={true}
+          style={{
+            position: "absolute",
+            // top: "32px",
+            left: "20%",
+            right: "20%",
+            textAlign: "left",
+          }}
+          className={clsx(
+            bookmarkSuccess !== null
+              ? bookmarkSuccess
+                ? "visible"
+                : "hidden"
+              : "hidden"
+          )}
+        />
+        <Alert
+          message={"Failed Change Bookmark status"}
+          type="error"
+          showIcon
+          closable={true}
+          style={{
+            position: "absolute",
+            // top: "32px",
+            left: "20%",
+            right: "20%",
+            textAlign: "left",
+          }}
+          className={clsx(
+            bookmarkSuccess !== null
+              ? !bookmarkSuccess
+                ? "visible"
+                : "hidden"
+              : "hidden"
+          )}
+        />
         <div onClick={handleBackToCompromise} className="hover:cursor-pointer">
           <ArrowBackIcon />
         </div>
         <h1 className="text-heading-2 text-black ml-3">Details</h1>
         <div className="ml-auto flex ">
-          <button className="bg-white border-[1px] border-[#D5D5D5] rounded-[8px] text-primary-base py-2 px-4 flex items-center mr-4">
+          <button
+            className={clsx(
+              "bg-white border-[1px] border-[#D5D5D5] rounded-[8px] text-primary-base py-2 px-4 flex items-center mr-4",
+              detailsCompromisedData.is_boomark ? "hidden" : "visible"
+            )}
+            onClick={handleBookmark}
+          >
             <BookmarkBorderOutlinedIcon style={{ fontSize: "22px" }} />
             <p className="ml-2">Bookmark</p>
+          </button>
+          <button
+            className={clsx(
+              "bg-white border-[1px] border-primary-base rounded-[8px] text-primary-base py-2 px-4 flex items-center mr-4",
+              !detailsCompromisedData.is_boomark ? "hidden" : "visible"
+            )}
+            onClick={handleBookmark}
+          >
+            <BookmarkRemoveIcon style={{ fontSize: "22px" }} />
+            <p className="ml-2">Unmarked</p>
           </button>
           {/* <button className="bg-primary-base rounded-[8px] text-white py-2 px-4 ml-4 ">
             Validate
