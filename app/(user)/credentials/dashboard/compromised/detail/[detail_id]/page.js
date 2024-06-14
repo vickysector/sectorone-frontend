@@ -415,6 +415,63 @@ export default function DetailCompromised() {
 
   // End of: Handle AI - Post
 
+  // Start of: Handle AI - Get
+
+  const GetTrySectorAI = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(
+        `${APIDATAV1}recommendation?id=${detailsCompromisedData.id}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      console.log("res get: ", res);
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const data = await res.json();
+      console.log("response success get: ", data);
+
+      if (!data.success) {
+        // throw new Error("");
+        throw res;
+      }
+      setAiGenerated(data.data.description);
+      return res;
+    } catch (error) {
+      // setBookmarkSuccess(false);
+      console.log("error get: ", error);
+      setAiGenerated(null);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+      setTimeout(() => {
+        // setBookmarkSuccess(null);
+      }, 5000);
+    }
+  };
+
+  const fetchGetTrySectorAIWithRefreshToken = async () => {
+    await fetchWithRefreshToken(GetTrySectorAI, router, dispatch);
+  };
+
+  useEffect(() => {
+    fetchGetTrySectorAIWithRefreshToken();
+  }, []);
+
+  // End of: Handle AI - Get
+
   useEffect(() => {
     if (!hasOwnProperty("id")) {
       return redirect("/credentials/dashboard/compromised");
@@ -628,21 +685,30 @@ export default function DetailCompromised() {
             <button
               className={clsx(
                 "bg-[#9254DE] text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center",
-                loadingSectorAi ? "bg-[#D5D5D5]" : "bg-[#9254DE]"
+                // loadingSectorAi ? "bg-[#D5D5D5]" : "bg-[#9254DE]",
+                aiGenerated !== null || loadingSectorAi
+                  ? "bg-[#00000004] hover:-translate-y-0 cursor-not-allowed  border-[1px] border-[#D5D5D5]"
+                  : "bg-[#9254DE]"
               )}
               onClick={handlePostTrySectorAi}
-              disabled={loadingSectorAi ? true : false}
+              disabled={loadingSectorAi ? true : false || aiGenerated !== null}
             >
               <TipsAndUpdatesOutlinedIcon
                 style={{
                   fontSize: "19px",
-                  color: `${loadingSectorAi ? "#00000040" : "white"}`,
+                  color: `${
+                    loadingSectorAi || aiGenerated !== null
+                      ? "#00000040"
+                      : "white"
+                  }`,
                 }}
               />
               <p
                 className={clsx(
                   "ml-3 text-LG-normal",
-                  loadingSectorAi ? "text-[#00000040]" : "text-white"
+                  loadingSectorAi || aiGenerated !== null
+                    ? "text-[#00000040]"
+                    : "text-white"
                 )}
               >
                 {" "}
