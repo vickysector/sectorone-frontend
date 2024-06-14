@@ -31,6 +31,7 @@ export default function DetailCompromised() {
   const [selectValidasi, setSelectValidasi] = useState();
   const [validasiSuccess, setValidasiSuccess] = useState(null);
   const [bookmarkSuccess, setBookmarkSuccess] = useState(null);
+  const [loadingSectorAi, setLoadingSectorAi] = useState();
 
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
@@ -352,6 +353,65 @@ export default function DetailCompromised() {
 
   // End of: Handle Bookmark
 
+  // Start of: Handle AI - Post
+
+  const handlePostTrySectorAi = () => {
+    fetchPostTrySectorAiWithRefreshToken();
+  };
+
+  const PostTrySectorAi = async () => {
+    try {
+      // dispatch(setLoadingState(true));
+      setLoadingSectorAi(true);
+
+      const res = await fetch(`${APIDATAV1}recommendation`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: detailsCompromisedData.id,
+        }),
+      });
+
+      console.log("res: ", res);
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const data = await res.json();
+      console.log("response success: ", data);
+
+      if (!data.success) {
+        // throw new Error("");
+        throw res;
+      }
+
+      return res;
+    } catch (error) {
+      // setBookmarkSuccess(false);
+      console.log("error: ", error);
+      return error;
+    } finally {
+      // dispatch(setLoadingState(false));
+      setLoadingSectorAi(false);
+      setTimeout(() => {
+        // setBookmarkSuccess(null);
+      }, 5000);
+    }
+  };
+
+  const fetchPostTrySectorAiWithRefreshToken = async () => {
+    await fetchWithRefreshToken(PostTrySectorAi, router, dispatch);
+  };
+
+  // End of: Handle AI - Post
+
   useEffect(() => {
     if (!hasOwnProperty("id")) {
       return redirect("/credentials/dashboard/compromised");
@@ -562,9 +622,29 @@ export default function DetailCompromised() {
             </p>
           </div>
           <div>
-            <button className="bg-[#9254DE] text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center">
-              <TipsAndUpdatesOutlinedIcon style={{ fontSize: "19px" }} />
-              <p className="ml-3">Try Sector AI</p>
+            <button
+              className={clsx(
+                "bg-[#9254DE] text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center",
+                loadingSectorAi ? "bg-[#D5D5D5]" : "bg-[#9254DE]"
+              )}
+              onClick={handlePostTrySectorAi}
+              disabled={loadingSectorAi ? true : false}
+            >
+              <TipsAndUpdatesOutlinedIcon
+                style={{
+                  fontSize: "19px",
+                  color: `${loadingSectorAi ? "#00000040" : "white"}`,
+                }}
+              />
+              <p
+                className={clsx(
+                  "ml-3 text-LG-normal",
+                  loadingSectorAi ? "text-[#00000040]" : "text-white"
+                )}
+              >
+                {" "}
+                {loadingSectorAi ? "Loading..." : "Try Sector AI"}{" "}
+              </p>
             </button>
           </div>
         </section>
