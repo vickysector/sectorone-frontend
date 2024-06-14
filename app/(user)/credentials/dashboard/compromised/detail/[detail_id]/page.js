@@ -26,12 +26,14 @@ import { getCookie } from "cookies-next";
 import { setDataDetails } from "@/app/_lib/store/features/Compromised/DetailSlices";
 import { DETAIL_COMPROMISED_BOOKMARK } from "@/app/_lib/variables/Variables";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 
 export default function DetailCompromised() {
   const [selectValidasi, setSelectValidasi] = useState();
   const [validasiSuccess, setValidasiSuccess] = useState(null);
   const [bookmarkSuccess, setBookmarkSuccess] = useState(null);
   const [loadingSectorAi, setLoadingSectorAi] = useState();
+  const [aiGenerated, setAiGenerated] = useState(null);
 
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
@@ -391,10 +393,11 @@ export default function DetailCompromised() {
         // throw new Error("");
         throw res;
       }
-
+      setAiGenerated(data.data.description);
       return res;
     } catch (error) {
       // setBookmarkSuccess(false);
+      setAiGenerated(null);
       console.log("error: ", error);
       return error;
     } finally {
@@ -646,6 +649,32 @@ export default function DetailCompromised() {
                 {loadingSectorAi ? "Loading..." : "Try Sector AI"}{" "}
               </p>
             </button>
+          </div>
+        </section>
+        <section
+          className={clsx(
+            "bg-white rounded-[16px] border-[1px] border-[#EFDBFF] mt-8 p-8",
+            loadingSectorAi ? "visible" : "hidden"
+          )}
+        >
+          <div
+            className={clsx(
+              "text-center text-[#D3ADF7] text-LG-normal flex items-center justify-center ",
+              loadingSectorAi ? "visible" : "hidden"
+            )}
+          >
+            <AutoAwesomeIcon />
+            <p className={clsx("ml-[10px]")}>Sector AI is writing ...</p>
+          </div>
+        </section>
+        <section
+          className={clsx(
+            "bg-white rounded-[16px] border-[1px] border-[#EFDBFF] mt-8 p-8",
+            aiGenerated === null ? "hidden" : "visible"
+          )}
+        >
+          <div className="w-full">
+            <p> {aiGenerated && aiGenerated.replace(/"/g, " ")} </p>
           </div>
         </section>
       </section>
