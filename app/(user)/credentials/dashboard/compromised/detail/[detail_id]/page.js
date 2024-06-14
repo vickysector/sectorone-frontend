@@ -27,6 +27,9 @@ import { setDataDetails } from "@/app/_lib/store/features/Compromised/DetailSlic
 import { DETAIL_COMPROMISED_BOOKMARK } from "@/app/_lib/variables/Variables";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import { FormattedParagraph } from "@/app/_ui/components/details/paragraphAi";
+import { DetailDescriptions } from "@/app/_ui/components/details/detailsDescriptions";
 
 export default function DetailCompromised() {
   const [selectValidasi, setSelectValidasi] = useState();
@@ -684,7 +687,7 @@ export default function DetailCompromised() {
           <div>
             <button
               className={clsx(
-                "bg-[#9254DE] text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center",
+                " text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center",
                 // loadingSectorAi ? "bg-[#D5D5D5]" : "bg-[#9254DE]",
                 aiGenerated !== null || loadingSectorAi
                   ? "bg-[#00000004] hover:-translate-y-0 cursor-not-allowed  border-[1px] border-[#D5D5D5]"
@@ -740,7 +743,27 @@ export default function DetailCompromised() {
           )}
         >
           <div className="w-full">
-            <p> {aiGenerated && aiGenerated.replace(/"/g, " ")} </p>
+            <div className="flex justify-between items-start">
+              <h1 className={clsx("text-heading-3 text-black mb-8")}>
+                Recommendations
+              </h1>
+              <button
+                className={clsx(
+                  "flex items-center text-Base-normal text-primary-base bg-white border-[1px] rounded-[6px] border-[#D5D5D5] px-6 py-1"
+                )}
+              >
+                <SaveAltIcon />
+                <p className={clsx("ml-2")}>Download PDF</p>
+              </button>
+            </div>
+            {/* <p> {aiGenerated && aiGenerated.replace(/"/g, " ")} </p> */}
+            <div>
+              <h2 className="text-XL-strong text-black mb-3">
+                Incident summary
+              </h2>
+              <FormattedParagraph response={aiGenerated && aiGenerated} />
+              <DetailDescriptions />
+            </div>
           </div>
         </section>
       </section>
