@@ -475,6 +475,71 @@ export default function DetailCompromised() {
 
   // End of: Handle AI - Get
 
+  // Start of: Handle PDF Download
+
+  const handleDownloadPdf = () => {
+    FetchHandledownloadPdfWithRefreshToken();
+  };
+
+  const FetchHandledownloadPdf = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(
+        `${APIDATAV1}donwload/recommendation?id=${detailsCompromisedData.id}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      console.log("res blob pdf: ", res);
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const blob = await res.blob();
+      // Check if the `window` object is defined (browser environment)
+
+      console.log("blob files pdf: ", blob);
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = `Recommendation-Steps-for-${detailsCompromisedSection}-${detailsCompromisedFilters}-data.pdf`; // Set the desired file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return res;
+      } else {
+        console.log(
+          "Server-side rendering detected, cannot create download link"
+        );
+
+        return res;
+      }
+    } catch (error) {
+      console.log("Error export to pdf");
+
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const FetchHandledownloadPdfWithRefreshToken = async () => {
+    await fetchWithRefreshToken(FetchHandledownloadPdf, router, dispatch);
+  };
+
+  // End of: Handle PDF Download
+
   useEffect(() => {
     if (!hasOwnProperty("id")) {
       return redirect("/credentials/dashboard/compromised");
@@ -751,6 +816,7 @@ export default function DetailCompromised() {
                 className={clsx(
                   "flex items-center text-Base-normal text-primary-base bg-white border-[1px] rounded-[6px] border-[#D5D5D5] px-6 py-1"
                 )}
+                onClick={handleDownloadPdf}
               >
                 <SaveAltIcon />
                 <p className={clsx("ml-2")}>Download PDF</p>
