@@ -43,6 +43,7 @@ const links = [
   {
     name: "Executive protection",
     href: "/credentials/dashboard/executive-protections",
+    hrefDetail: "/credentials/dashboard/executive-protections/detail",
     icon: SecurityIcon,
   },
   {
