@@ -53,10 +53,6 @@ export default function DetailCompromised() {
   console.log("details compromised section: ", detailsCompromisedSection);
   console.log("details compromised filters: ", detailsCompromisedFilters);
 
-  function hasOwnProperty(property) {
-    return detailsCompromisedData.hasOwnProperty(property) ? true : false;
-  }
-
   function handleBackToCompromise() {
     // router.back();
     router.push("/credentials/dashboard/executive-protections");
@@ -74,36 +70,29 @@ export default function DetailCompromised() {
     return result;
   }
 
-  const handleValidation = (value) => {
-    setSelectValidasi(value);
+  // Start of: Handle AI - Post
 
-    if (detailsCompromisedData.status_validasi === "-") {
-      fetchCheckboxMultipleValidatedWithRefreshToken();
-    } else {
-      fetchUpdateValidateTestingWithRefreshToken(value);
-    }
+  const handlePostTrySectorAi = () => {
+    fetchPostTrySectorAiWithRefreshToken();
   };
 
-  // Start of: Handle Update Validate
-
-  const UpdateValidateTesting = async (validasi) => {
+  const PostTrySectorAi = async () => {
     try {
-      dispatch(setLoadingState(true));
-      const res = await fetch(
-        `${APIDATAV1}status/domain/${detailsCompromisedSection}`,
-        {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${getCookie("access_token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: detailsCompromisedData.id,
-            status_validasi: validasi,
-          }),
-        }
-      );
+      // dispatch(setLoadingState(true));
+
+      const res = await fetch(`${APIDATAV1}recommendation?type=executive`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: detailsCompromisedData.info_1.idDetailData,
+        }),
+      });
+
+      console.log("res: ", res);
 
       if (res.status === 401 || res.status === 403) {
         // DeleteCookies();
@@ -112,160 +101,31 @@ export default function DetailCompromised() {
       }
 
       const data = await res.json();
-
-      if (data.success === false) {
-        // throw new Error("");
-        throw res;
-      }
-
-      if (data.success) {
-        setValidasiSuccess(true);
-        let newDataDetails = {
-          ...detailsCompromisedData,
-          status_validasi: validasi,
-        };
-        dispatch(setDataDetails(newDataDetails));
-        return res;
-      }
-    } catch (error) {
-      setValidasiSuccess(false);
-      console.log("error : ", error);
-      // return res
-      return error;
-    } finally {
-      dispatch(setLoadingState(false));
-      setTimeout(() => {
-        setValidasiSuccess(null);
-      }, 5000);
-    }
-  };
-
-  const fetchUpdateValidateTestingWithRefreshToken = async (validasi) => {
-    await fetchWithRefreshToken(
-      UpdateValidateTesting,
-      router,
-      dispatch,
-      validasi
-    );
-  };
-
-  const CheckboxMultipleValidated = async () => {
-    try {
-      dispatch(setLoadingState(true));
-      const res = await fetch(
-        `${APIDATAV1}status/domain/${detailsCompromisedSection}`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${getCookie("access_token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: [detailsCompromisedData.id],
-            status_validasi: "valid",
-          }),
-        }
-      );
-
-      if (res.status === 401 || res.status === 403) {
-        // DeleteCookies();
-        // RedirectToLogin();
-        return res;
-      }
-
-      const data = await res.json();
+      console.log("response success: ", data);
 
       if (!data.success) {
         // throw new Error("");
         throw res;
       }
 
-      setValidasiSuccess(true);
-      let newDataDetails = {
-        ...detailsCompromisedData,
-        status_validasi: "valid",
-      };
-      dispatch(setDataDetails(newDataDetails));
       return res;
     } catch (error) {
-      setValidasiSuccess(false);
+      // setBookmarkSuccess(false);
+      console.log("error: ", error);
       return error;
     } finally {
-      dispatch(setLoadingState(false));
+      // dispatch(setLoadingState(false));
       setTimeout(() => {
-        setValidasiSuccess(null);
+        // setBookmarkSuccess(null);
       }, 5000);
     }
   };
 
-  const fetchCheckboxMultipleValidatedWithRefreshToken = async () => {
-    await fetchWithRefreshToken(CheckboxMultipleValidated, router, dispatch);
+  const fetchPostTrySectorAiWithRefreshToken = async () => {
+    await fetchWithRefreshToken(PostTrySectorAi, router, dispatch);
   };
 
-  // End of: Handle Update Validate
-
-  // Start of: Handle Bookmark
-
-  const handleBookmark = () => {
-    fetchBookmarkFunctionalityWithRefreshToken();
-  };
-
-  const BookmarkFunctionality = async () => {
-    try {
-      dispatch(setLoadingState(true));
-
-      const res = await fetch(
-        `${APIDATAV1}status/domain/${detailsCompromisedSection}/boomark`,
-        {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${getCookie("access_token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: [detailsCompromisedData.id],
-          }),
-        }
-      );
-
-      if (res.status === 401 || res.status === 403) {
-        // DeleteCookies();
-        // RedirectToLogin();
-        return res;
-      }
-
-      const data = await res.json();
-
-      if (!data.success) {
-        // throw new Error("");
-        throw res;
-      }
-
-      setBookmarkSuccess(true);
-      let newDataDetails = {
-        ...detailsCompromisedData,
-        is_boomark: !detailsCompromisedData.is_boomark,
-      };
-      dispatch(setDataDetails(newDataDetails));
-      return res;
-    } catch (error) {
-      setBookmarkSuccess(false);
-      return error;
-    } finally {
-      dispatch(setLoadingState(false));
-      setTimeout(() => {
-        setBookmarkSuccess(null);
-      }, 5000);
-    }
-  };
-
-  const fetchBookmarkFunctionalityWithRefreshToken = async () => {
-    await fetchWithRefreshToken(BookmarkFunctionality, router, dispatch);
-  };
-
-  // End of: Handle Bookmark
+  // End of: Handle AI - Post
 
   useEffect(() => {
     if (!detailsCompromisedData?.info_1?.idDetailData) {
@@ -304,7 +164,10 @@ export default function DetailCompromised() {
             </p>
           </div>
           <div>
-            <button className="bg-[#9254DE] text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center">
+            <button
+              className="bg-[#9254DE] text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center"
+              onClick={handlePostTrySectorAi}
+            >
               <TipsAndUpdatesOutlinedIcon style={{ fontSize: "19px" }} />
               <p className="ml-3">Try Sector AI</p>
             </button>
