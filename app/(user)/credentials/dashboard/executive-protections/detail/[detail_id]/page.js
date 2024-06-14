@@ -127,6 +127,62 @@ export default function DetailCompromised() {
 
   // End of: Handle AI - Post
 
+  // Start of: Handle AI - Post
+
+  const GetTrySectorAI = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(
+        `${APIDATAV1}recommendation?id=${detailsCompromisedData.info_1.idDetailData}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      console.log("res get: ", res);
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const data = await res.json();
+      console.log("response success get: ", data);
+
+      if (!data.success) {
+        // throw new Error("");
+        throw res;
+      }
+
+      return res;
+    } catch (error) {
+      // setBookmarkSuccess(false);
+      console.log("error get: ", error);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+      setTimeout(() => {
+        // setBookmarkSuccess(null);
+      }, 5000);
+    }
+  };
+
+  const fetchGetTrySectorAIWithRefreshToken = async () => {
+    await fetchWithRefreshToken(GetTrySectorAI, router, dispatch);
+  };
+
+  useEffect(() => {
+    fetchGetTrySectorAIWithRefreshToken();
+  }, []);
+
+  // End of: Handle AI - Post
+
   useEffect(() => {
     if (!detailsCompromisedData?.info_1?.idDetailData) {
       return redirect("/credentials/dashboard/executive-protections");
