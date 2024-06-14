@@ -24,7 +24,10 @@ import clsx from "clsx";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { getCookie } from "cookies-next";
 import { setDataDetails } from "@/app/_lib/store/features/Compromised/DetailSlices";
-import { DETAIL_COMPROMISED_BOOKMARK } from "@/app/_lib/variables/Variables";
+import {
+  DETAIL_COMPROMISED_BOOKMARK,
+  DETAIL_COMPROMISED_COMPROMISE_DEVICES,
+} from "@/app/_lib/variables/Variables";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
@@ -715,7 +718,9 @@ export default function DetailCompromised() {
                 },
               ]}
               className={clsx(
-                detailsCompromisedFilters === DETAIL_COMPROMISED_BOOKMARK
+                detailsCompromisedFilters === DETAIL_COMPROMISED_BOOKMARK ||
+                  detailsCompromisedSection ===
+                    DETAIL_COMPROMISED_COMPROMISE_DEVICES
                   ? "hidden"
                   : "visible"
               )}
