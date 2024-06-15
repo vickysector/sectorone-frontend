@@ -38,6 +38,7 @@ const links = [
   {
     name: "Stealer",
     href: "/credentials/dashboard/stealer",
+    hrefDetail: "/credentials/dashboard/stealer/detail",
     icon: CoronavirusIcon,
   },
   {

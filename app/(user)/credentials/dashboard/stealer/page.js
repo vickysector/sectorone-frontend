@@ -36,6 +36,8 @@ import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import {
   setDataDetails,
   setDetailState,
+  setFilters,
+  setSection,
 } from "@/app/_lib/store/features/Compromised/DetailSlices";
 import {
   setBookmarkConfirmState,
@@ -294,9 +296,16 @@ export default function StealerUserPage() {
     dispatch(clearIds());
   };
 
-  const handleDetails = (item) => {
-    dispatch(setDetailState(true));
+  const handleDetails = (item, sections, filters) => {
+    // dispatch(setDetailState(true));
+    // dispatch(setDataDetails(item));
+
     dispatch(setDataDetails(item));
+    dispatch(setSection(sections));
+    dispatch(setFilters(filters));
+    router.push(`/credentials/dashboard/stealer/detail/${item.id}`, {
+      scroll: true,
+    });
   };
 
   const handleBookmarkConfirm = (dataID, domain) => {
@@ -1149,7 +1158,13 @@ export default function StealerUserPage() {
                               <div className="flex">
                                 <div
                                   className="cursor-pointer"
-                                  onClick={() => handleDetails(data)}
+                                  onClick={() =>
+                                    handleDetails(
+                                      data,
+                                      "stealer",
+                                      "default-stealer"
+                                    )
+                                  }
                                 >
                                   <EyeOutlined style={{ fontSize: "18px" }} />
                                 </div>
@@ -1291,7 +1306,13 @@ export default function StealerUserPage() {
                                 <div className="flex">
                                   <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        "stealer",
+                                        "bookmark-stealer"
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
