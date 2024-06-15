@@ -33,6 +33,7 @@ import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import SaveAltIcon from "@mui/icons-material/SaveAlt";
 import { FormattedParagraph } from "@/app/_ui/components/details/paragraphAi";
 import { DetailDescriptions } from "@/app/_ui/components/details/detailsDescriptions";
+import { setIsDetailActive } from "@/app/_lib/store/features/KeywordSearch/KeywordSearchSlices";
 
 export default function DetailCompromised() {
   const [selectValidasi, setSelectValidasi] = useState();
@@ -217,7 +218,11 @@ export default function DetailCompromised() {
   // Start of: Handle AI - Post
 
   const handlePostTrySectorAi = () => {
-    fetchPostTrySectorAiWithRefreshToken();
+    if (getCookie("user_status")) {
+      dispatch(setIsDetailActive(true));
+    } else {
+      fetchPostTrySectorAiWithRefreshToken();
+    }
   };
 
   const PostTrySectorAi = async () => {
