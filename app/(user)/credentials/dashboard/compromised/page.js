@@ -2852,13 +2852,15 @@ export default function CompromisedDashboard() {
                     <BookmarkBorderIcon />
                     <p className="ml-3">Bookmark all</p>
                   </button>
-                  <button
-                    className={clsx(
-                      "ml-4 py-[5px] px-[16px] rounded-md bg-primary-base text-white text-Base-normal"
-                    )}
-                  >
-                    Validate all
-                  </button>
+                  {selectedButton !== DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
+                    <button
+                      className={clsx(
+                        "ml-4 py-[5px] px-[16px] rounded-md bg-primary-base text-white text-Base-normal"
+                      )}
+                    >
+                      Validate all
+                    </button>
+                  )}
                 </div>
                 <div
                   className={clsx(
