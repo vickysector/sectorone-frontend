@@ -27,12 +27,18 @@ import { setDataDetails } from "@/app/_lib/store/features/Compromised/DetailSlic
 import { DETAIL_COMPROMISED_BOOKMARK } from "@/app/_lib/variables/Variables";
 import BookmarkRemoveIcon from "@mui/icons-material/BookmarkRemove";
 import { DetailItemsExecutive } from "@/app/_ui/components/details/detailsItemExecutive";
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
+import SaveAltIcon from "@mui/icons-material/SaveAlt";
+import { FormattedParagraph } from "@/app/_ui/components/details/paragraphAi";
+import { DetailDescriptions } from "@/app/_ui/components/details/detailsDescriptions";
 
 export default function DetailCompromised() {
   const [selectValidasi, setSelectValidasi] = useState();
   const [validasiSuccess, setValidasiSuccess] = useState(null);
   const [bookmarkSuccess, setBookmarkSuccess] = useState(null);
   const [allData, setAllData] = useState();
+  const [loadingSectorAi, setLoadingSectorAi] = useState();
+  const [aiGenerated, setAiGenerated] = useState(null);
 
   const detailsCompromisedData = useSelector(
     (state) => state.detailComrpomise.data
@@ -79,6 +85,7 @@ export default function DetailCompromised() {
   const PostTrySectorAi = async () => {
     try {
       // dispatch(setLoadingState(true));
+      setLoadingSectorAi(true);
 
       const res = await fetch(`${APIDATAV1}recommendation?type=executive`, {
         method: "POST",
@@ -107,14 +114,16 @@ export default function DetailCompromised() {
         // throw new Error("");
         throw res;
       }
-
+      setAiGenerated(data.data.description);
       return res;
     } catch (error) {
       // setBookmarkSuccess(false);
+      setAiGenerated(null);
       console.log("error: ", error);
       return error;
     } finally {
       // dispatch(setLoadingState(false));
+      setLoadingSectorAi(false);
       setTimeout(() => {
         // setBookmarkSuccess(null);
       }, 5000);
@@ -127,7 +136,7 @@ export default function DetailCompromised() {
 
   // End of: Handle AI - Post
 
-  // Start of: Handle AI - Post
+  // Start of: Handle AI - GET
 
   const GetTrySectorAI = async () => {
     try {
@@ -159,11 +168,12 @@ export default function DetailCompromised() {
         // throw new Error("");
         throw res;
       }
-
+      setAiGenerated(data.data.description);
       return res;
     } catch (error) {
       // setBookmarkSuccess(false);
       console.log("error get: ", error);
+      setAiGenerated(null);
       return error;
     } finally {
       dispatch(setLoadingState(false));
@@ -181,7 +191,72 @@ export default function DetailCompromised() {
     fetchGetTrySectorAIWithRefreshToken();
   }, []);
 
-  // End of: Handle AI - Post
+  // End of: Handle AI - GET
+
+  // Start of: Handle PDF Download
+
+  const handleDownloadPdf = () => {
+    FetchHandledownloadPdfWithRefreshToken();
+  };
+
+  const FetchHandledownloadPdf = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(
+        `${APIDATAV1}donwload/recommendation?id=${detailsCompromisedData.info_1.idDetailData}&type=executive`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      console.log("res blob pdf: ", res);
+
+      if (res.status === 401 || res.status === 403) {
+        // DeleteCookies();
+        // RedirectToLogin();
+        return res;
+      }
+
+      const blob = await res.blob();
+      // Check if the `window` object is defined (browser environment)
+
+      console.log("blob files pdf: ", blob);
+      if (typeof window !== "undefined") {
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = downloadUrl;
+        link.download = `Recommendation-Steps-for-${detailsCompromisedData.info_2.Email}-data.pdf`; // Set the desired file name
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        return res;
+      } else {
+        console.log(
+          "Server-side rendering detected, cannot create download link"
+        );
+
+        return res;
+      }
+    } catch (error) {
+      console.log("Error export to pdf");
+
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const FetchHandledownloadPdfWithRefreshToken = async () => {
+    await fetchWithRefreshToken(FetchHandledownloadPdf, router, dispatch);
+  };
+
+  // End of: Handle PDF Download
 
   useEffect(() => {
     if (!detailsCompromisedData?.info_1?.idDetailData) {
@@ -207,7 +282,7 @@ export default function DetailCompromised() {
             );
           })}
       </section>
-      <section className="bg-gradient-to-b from-[#F8ECFF] to-white mt-8 rounded-2xl p-8">
+      {/* <section className="bg-gradient-to-b from-[#F8ECFF] to-white mt-8 rounded-2xl p-8">
         <section className="flex items-center justify-between">
           <div className="max-w-[755px] break-words">
             <h2 className=" text-black text-heading-4">
@@ -227,6 +302,103 @@ export default function DetailCompromised() {
               <TipsAndUpdatesOutlinedIcon style={{ fontSize: "19px" }} />
               <p className="ml-3">Try Sector AI</p>
             </button>
+          </div>
+        </section>
+      </section> */}
+
+      <section className="bg-gradient-to-b from-[#F8ECFF] to-white mt-8 rounded-2xl p-8">
+        <section className="flex items-center justify-between">
+          <div className="max-w-[755px] break-words">
+            <h2 className=" text-black text-heading-4">
+              Get data security recommendations from Sector
+            </h2>
+            <p className="text-Base-normal text-text-description mt-2">
+              Hacker can access your account and will most likely try to use it
+              to commit crimes. Get data security recommendations from Sector
+              AI.
+            </p>
+          </div>
+          <div>
+            <button
+              className={clsx(
+                " text-white text-LG-normal py-2 px-8 rounded-[8px] hover:-translate-y-1 transition-all flex items-center",
+                // loadingSectorAi ? "bg-[#D5D5D5]" : "bg-[#9254DE]",
+                aiGenerated !== null || loadingSectorAi
+                  ? "bg-[#00000004] hover:-translate-y-0 cursor-not-allowed  border-[1px] border-[#D5D5D5]"
+                  : "bg-[#9254DE]"
+              )}
+              onClick={handlePostTrySectorAi}
+              disabled={loadingSectorAi ? true : false || aiGenerated !== null}
+            >
+              <TipsAndUpdatesOutlinedIcon
+                style={{
+                  fontSize: "19px",
+                  color: `${
+                    loadingSectorAi || aiGenerated !== null
+                      ? "#00000040"
+                      : "white"
+                  }`,
+                }}
+              />
+              <p
+                className={clsx(
+                  "ml-3 text-LG-normal",
+                  loadingSectorAi || aiGenerated !== null
+                    ? "text-[#00000040]"
+                    : "text-white"
+                )}
+              >
+                {" "}
+                {loadingSectorAi ? "Loading..." : "Try Sector AI"}{" "}
+              </p>
+            </button>
+          </div>
+        </section>
+        <section
+          className={clsx(
+            "bg-white rounded-[16px] border-[1px] border-[#EFDBFF] mt-8 p-8",
+            loadingSectorAi ? "visible" : "hidden"
+          )}
+        >
+          <div
+            className={clsx(
+              "text-center text-[#D3ADF7] text-LG-normal flex items-center justify-center ",
+              loadingSectorAi ? "visible" : "hidden"
+            )}
+          >
+            <AutoAwesomeIcon />
+            <p className={clsx("ml-[10px]")}>Sector AI is writing ...</p>
+          </div>
+        </section>
+        <section
+          className={clsx(
+            "bg-white rounded-[16px] border-[1px] border-[#EFDBFF] mt-8 p-8",
+            aiGenerated === null ? "hidden" : "visible"
+          )}
+        >
+          <div className="w-full">
+            <div className="flex justify-between items-start">
+              <h1 className={clsx("text-heading-3 text-black mb-8")}>
+                Recommendations
+              </h1>
+              <button
+                className={clsx(
+                  "flex items-center text-Base-normal text-primary-base bg-white border-[1px] rounded-[6px] border-[#D5D5D5] px-6 py-1"
+                )}
+                onClick={handleDownloadPdf}
+              >
+                <SaveAltIcon />
+                <p className={clsx("ml-2")}>Download PDF</p>
+              </button>
+            </div>
+            {/* <p> {aiGenerated && aiGenerated.replace(/"/g, " ")} </p> */}
+            <div>
+              <h2 className="text-XL-strong text-black mb-3">
+                Incident summary
+              </h2>
+              <FormattedParagraph response={aiGenerated && aiGenerated} />
+              <DetailDescriptions />
+            </div>
           </div>
         </section>
       </section>
