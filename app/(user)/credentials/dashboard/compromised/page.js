@@ -93,6 +93,7 @@ import dynamic from "next/dynamic";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 import dayjs from "dayjs";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 // const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
 //   ssr: false, // Ensure ApexCharts is not imported during SSR
@@ -2804,7 +2805,7 @@ export default function CompromisedDashboard() {
                     </div>
                   </div>
                 </div>
-                <div>
+                <div className="border-[1px] border-[#D5D5D5] py-[6px] px-[8px] rounded-[8px]">
                   {handleDisableExportButton() !== null && (
                     <ConfigProvider
                       theme={{
@@ -2830,13 +2831,40 @@ export default function CompromisedDashboard() {
                         <Checkbox
                           onChange={handleInitialCheckboxState}
                           checked={initialCheckboxState}
-                        ></Checkbox>
+                        >
+                          Bookmark / Validated
+                        </Checkbox>
                       </Popover>
                     </ConfigProvider>
                   )}
                 </div>
                 <div
-                  className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]"
+                  className={clsx(
+                    "flex ml-auto",
+                    initialCheckboxState ? "visible" : "hidden"
+                  )}
+                >
+                  <button
+                    className={clsx(
+                      "py-[5px] px-[16px] rounded-md text-primary-base bg-white border-[1px] border-[#D5D5D5] flex"
+                    )}
+                  >
+                    <BookmarkBorderIcon />
+                    <p className="ml-3">Bookmark all</p>
+                  </button>
+                  <button
+                    className={clsx(
+                      "ml-4 py-[5px] px-[16px] rounded-md bg-primary-base text-white text-Base-normal"
+                    )}
+                  >
+                    Validate all
+                  </button>
+                </div>
+                <div
+                  className={clsx(
+                    "ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]",
+                    initialCheckboxState ? "hidden" : "visible"
+                  )}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -2879,7 +2907,9 @@ export default function CompromisedDashboard() {
                   </div>
                 </div>
                 {/* <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} /> */}
-                <div>
+                <div
+                  className={clsx(initialCheckboxState ? "hidden" : "visible")}
+                >
                   <ConfigProvider
                     theme={{
                       token: {
@@ -2923,7 +2953,12 @@ export default function CompromisedDashboard() {
                     bottom={"50px"}
                   /> */}
                 </div>
-                <div className="ml-auto ">
+                <div
+                  className={clsx(
+                    "ml-auto ",
+                    initialCheckboxState ? "hidden" : "visible"
+                  )}
+                >
                   {checkIsBookmarkSection() === "no-bookmark" ? (
                     <ExportButton
                       onClick={handleExportToCSV}
