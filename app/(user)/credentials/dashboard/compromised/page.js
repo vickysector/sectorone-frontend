@@ -488,28 +488,28 @@ export default function CompromisedDashboard() {
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          return "Unbookmark Item";
+          return "Unmarked";
         } else {
-          return "Bookmark Item";
+          return "Bookmark";
         }
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          return "Unbookmark Item";
+          return "Unmarked";
         } else {
-          return "Bookmark Item";
+          return "Bookmark";
         }
       // // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          return "Unbookmark Item";
+          return "Unmarked";
         } else {
-          return "Bookmark Item";
+          return "Bookmark";
         }
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          return "Unbookmark Item";
+          return "Unmarked";
         } else {
-          return "Bookmark Item";
+          return "Bookmark";
         }
       default:
         break;
@@ -2772,7 +2772,7 @@ export default function CompromisedDashboard() {
 
             <div className="mt-8 ">
               <div className="flex items-center relative">
-                <div
+                {/* <div
                   className={clsx(
                     "absolute bottom-[-90px] left-0 z-30",
                     initialCheckboxState && checkboxArray.length > 0
@@ -2804,7 +2804,7 @@ export default function CompromisedDashboard() {
                       <RightOutlined />
                     </div>
                   </div>
-                </div>
+                </div> */}
                 <div className="border-[1px] border-[#D5D5D5] py-[6px] px-[8px] rounded-[8px]">
                   {handleDisableExportButton() !== null && (
                     <ConfigProvider
@@ -2832,7 +2832,11 @@ export default function CompromisedDashboard() {
                           onChange={handleInitialCheckboxState}
                           checked={initialCheckboxState}
                         >
-                          Bookmark / Validated
+                          {handleCheckBookmarkOrUnbookmarkText()}
+                          {""}
+                          {selectedOutlineButton !== DETAIL_COMPROMISED_TESTING
+                            ? " / Validated"
+                            : ",etc"}
                         </Checkbox>
                       </Popover>
                     </ConfigProvider>
@@ -2848,17 +2852,27 @@ export default function CompromisedDashboard() {
                     className={clsx(
                       "py-[5px] px-[16px] rounded-md text-primary-base bg-white border-[1px] border-[#D5D5D5] flex"
                     )}
+                    onClick={handleBookmarkAllCheckboxes}
                   >
                     <BookmarkBorderIcon />
-                    <p className="ml-3">Bookmark all</p>
+                    <p className="ml-3">
+                      {handleCheckBookmarkOrUnbookmarkText()} All
+                    </p>
                   </button>
                   {selectedButton !== DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
                     <button
                       className={clsx(
-                        "ml-4 py-[5px] px-[16px] rounded-md bg-primary-base text-white text-Base-normal"
+                        "ml-4 py-[5px] px-[16px] rounded-md bg-primary-base text-white text-Base-normal",
+                        selectedButton !== DETAIL_COMPROMISED_COMPROMISE_DEVICES
+                          ? "visible"
+                          : "hidden",
+                        selectedOutlineButton !== DETAIL_COMPROMISED_BOOKMARK
+                          ? "visible"
+                          : "hidden"
                       )}
+                      onClick={handleValidatedAllCheckbox}
                     >
-                      Validate all
+                      Validate All
                     </button>
                   )}
                 </div>
