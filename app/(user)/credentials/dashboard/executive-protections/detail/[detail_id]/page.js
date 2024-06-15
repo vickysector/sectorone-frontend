@@ -394,7 +394,7 @@ export default function DetailCompromised() {
             {/* <p> {aiGenerated && aiGenerated.replace(/"/g, " ")} </p> */}
             <div>
               <h2 className="text-XL-strong text-black mb-3">
-                Incident summary
+                Data Leak Analysis
               </h2>
               <FormattedParagraph response={aiGenerated && aiGenerated} />
               <DetailDescriptions />
