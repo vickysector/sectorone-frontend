@@ -859,7 +859,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() =>
               handleDetails(
@@ -881,6 +881,22 @@ export default function CompromisedDashboard() {
             }
           >
             <BookOutlined style={{ fontSize: "18px" }} />
+          </div> */}
+          <div>
+            <button
+              className={clsx(
+                "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+              )}
+              onClick={() =>
+                handleDetails(
+                  item,
+                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_DEFAULT
+                )
+              }
+            >
+              Details
+            </button>
           </div>
         </div>
       ),
@@ -898,7 +914,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() =>
               handleDetails(
@@ -920,6 +936,22 @@ export default function CompromisedDashboard() {
             }
           >
             <BookOutlined style={{ fontSize: "18px" }} />
+          </div> */}
+          <div>
+            <button
+              className={clsx(
+                "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+              )}
+              onClick={() =>
+                handleDetails(
+                  item,
+                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_DEFAULT
+                )
+              }
+            >
+              Details
+            </button>
           </div>
         </div>
       ),
@@ -937,7 +969,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() =>
               handleDetails(
@@ -959,6 +991,22 @@ export default function CompromisedDashboard() {
             }
           >
             <BookOutlined style={{ fontSize: "18px" }} />
+          </div> */}
+          <div>
+            <button
+              className={clsx(
+                "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+              )}
+              onClick={() =>
+                handleDetails(
+                  item,
+                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_DEFAULT
+                )
+              }
+            >
+              Details
+            </button>
           </div>
         </div>
       ),
@@ -973,7 +1021,7 @@ export default function CompromisedDashboard() {
       ip: item.ip,
       action: (
         <div className="flex">
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() =>
               handleDetails(
@@ -995,6 +1043,22 @@ export default function CompromisedDashboard() {
             }
           >
             <BookOutlined style={{ fontSize: "18px" }} />
+          </div> */}
+          <div>
+            <button
+              className={clsx(
+                "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+              )}
+              onClick={() =>
+                handleDetails(
+                  item,
+                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_DEFAULT
+                )
+              }
+            >
+              Details
+            </button>
           </div>
         </div>
       ),
@@ -3482,7 +3546,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -3515,6 +3579,22 @@ export default function CompromisedDashboard() {
                                         style={{ fontSize: "18px" }}
                                       />
                                     )}
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                                          DETAIL_COMPROMISED_TESTING
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -3769,7 +3849,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -3796,6 +3876,22 @@ export default function CompromisedDashboard() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                                          DETAIL_COMPROMISED_BOOKMARK
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -4231,7 +4327,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -4264,6 +4360,22 @@ export default function CompromisedDashboard() {
                                         style={{ fontSize: "18px" }}
                                       />
                                     )}
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_USERS,
+                                          DETAIL_COMPROMISED_TESTING
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -4518,7 +4630,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -4545,6 +4657,22 @@ export default function CompromisedDashboard() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_USERS,
+                                          DETAIL_COMPROMISED_BOOKMARK
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -4980,7 +5108,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -5013,6 +5141,22 @@ export default function CompromisedDashboard() {
                                         style={{ fontSize: "18px" }}
                                       />
                                     )}
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
+                                          DETAIL_COMPROMISED_TESTING
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -5267,7 +5411,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -5294,6 +5438,22 @@ export default function CompromisedDashboard() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
+                                          DETAIL_COMPROMISED_BOOKMARK
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -5553,7 +5713,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -5580,6 +5740,22 @@ export default function CompromisedDashboard() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_DEVICES,
+                                          DETAIL_COMPROMISED_BOOKMARK
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
