@@ -36,6 +36,8 @@ import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import {
   setDataDetails,
   setDetailState,
+  setFilters,
+  setSection,
 } from "@/app/_lib/store/features/Compromised/DetailSlices";
 import {
   setBookmarkConfirmState,
@@ -66,6 +68,7 @@ import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { useRouter, redirect } from "next/navigation";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 import dayjs from "dayjs";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 const { RangePicker } = DatePicker;
 
@@ -277,9 +280,9 @@ export default function StealerUserPage() {
   const handleCheckBookmarkOrUnBookmarkText = () => {
     switch (selectSection) {
       case "stealer":
-        return "Bookmark Item";
+        return "Bookmark";
       case "bookmark-stealer":
-        return "Unbookmark Item";
+        return "Unmarked";
       default:
         break;
     }
@@ -294,9 +297,16 @@ export default function StealerUserPage() {
     dispatch(clearIds());
   };
 
-  const handleDetails = (item) => {
-    dispatch(setDetailState(true));
+  const handleDetails = (item, sections, filters) => {
+    // dispatch(setDetailState(true));
+    // dispatch(setDataDetails(item));
+
     dispatch(setDataDetails(item));
+    dispatch(setSection(sections));
+    dispatch(setFilters(filters));
+    router.push(`/credentials/dashboard/stealer/detail/${item.id}`, {
+      scroll: true,
+    });
   };
 
   const handleBookmarkConfirm = (dataID, domain) => {
@@ -849,7 +859,7 @@ export default function StealerUserPage() {
 
             <div className="mt-8 ">
               <div className="flex items-center relative">
-                <div
+                {/* <div
                   className={clsx(
                     "absolute bottom-[-70px] left-0 z-30",
                     initialCheckboxState && checkboxArray.length > 0
@@ -868,8 +878,8 @@ export default function StealerUserPage() {
                       <RightOutlined />
                     </div>
                   </div>
-                </div>
-                <div>
+                </div> */}
+                <div className="border-[1px] border-[#D5D5D5] py-[6px] px-[8px] rounded-[8px]">
                   {handleDisabledButton() !== null ? (
                     <ConfigProvider
                       theme={{
@@ -889,13 +899,16 @@ export default function StealerUserPage() {
                       }}
                     >
                       <Popover
-                        content={"Check for Validated or Multiple Bookmark"}
+                        content={"Check Multiple Bookmark"}
                         placement="bottomLeft"
                       >
                         <Checkbox
                           onChange={handleInitialCheckboxState}
                           checked={initialCheckboxState}
-                        ></Checkbox>
+                        >
+                          {" "}
+                          {handleCheckBookmarkOrUnBookmarkText()}{" "}
+                        </Checkbox>
                       </Popover>
                     </ConfigProvider>
                   ) : (
@@ -903,7 +916,28 @@ export default function StealerUserPage() {
                   )}
                 </div>
                 <div
-                  className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]"
+                  className={clsx(
+                    "flex ml-auto",
+                    initialCheckboxState ? "visible" : "hidden"
+                  )}
+                >
+                  <button
+                    className={clsx(
+                      "py-[6px] px-[16px] rounded-md text-primary-base bg-white border-[1px] border-[#D5D5D5] flex"
+                    )}
+                    onClick={handleBookmarkAllCheckboxes}
+                  >
+                    <BookmarkBorderIcon />
+                    <p className="ml-3">
+                      {handleCheckBookmarkOrUnBookmarkText()} All
+                    </p>
+                  </button>
+                </div>
+                <div
+                  className={clsx(
+                    "ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]",
+                    initialCheckboxState ? "hidden" : "visible"
+                  )}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -947,7 +981,9 @@ export default function StealerUserPage() {
                   </div>
                 </div>
                 {/* <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} /> */}
-                <div>
+                <div
+                  className={clsx(initialCheckboxState ? "hidden" : "visible")}
+                >
                   <ConfigProvider
                     theme={{
                       token: {
@@ -993,7 +1029,12 @@ export default function StealerUserPage() {
                     bottom={"50px"}
                   /> */}
                 </div>
-                <div className="ml-auto ">
+                <div
+                  className={clsx(
+                    "ml-auto ",
+                    initialCheckboxState ? "hidden" : "visible"
+                  )}
+                >
                   {checkIsBookmarkSection() === "stealer" ? (
                     <ExportButton
                       onClick={handleExportToCV}
@@ -1147,9 +1188,15 @@ export default function StealerUserPage() {
                             </td>
                             <td className="py-[19px] px-[16px]">
                               <div className="flex">
-                                <div
+                                {/* <div
                                   className="cursor-pointer"
-                                  onClick={() => handleDetails(data)}
+                                  onClick={() =>
+                                    handleDetails(
+                                      data,
+                                      "stealer",
+                                      "default-stealer"
+                                    )
+                                  }
                                 >
                                   <EyeOutlined style={{ fontSize: "18px" }} />
                                 </div>
@@ -1160,6 +1207,22 @@ export default function StealerUserPage() {
                                   }
                                 >
                                   <BookOutlined style={{ fontSize: "18px" }} />
+                                </div> */}
+                                <div>
+                                  <button
+                                    className={clsx(
+                                      "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                    )}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        "stealer",
+                                        "default-stealer"
+                                      )
+                                    }
+                                  >
+                                    Details
+                                  </button>
                                 </div>
                               </div>
                             </td>
@@ -1289,9 +1352,15 @@ export default function StealerUserPage() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
-                                    onClick={() => handleDetails(data)}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        "stealer",
+                                        "bookmark-stealer"
+                                      )
+                                    }
                                   >
                                     <EyeOutlined style={{ fontSize: "18px" }} />
                                   </div>
@@ -1310,6 +1379,22 @@ export default function StealerUserPage() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          "stealer",
+                                          "bookmark-stealer"
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
