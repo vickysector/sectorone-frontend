@@ -68,6 +68,7 @@ import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { useRouter, redirect } from "next/navigation";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 import dayjs from "dayjs";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 const { RangePicker } = DatePicker;
 
@@ -279,9 +280,9 @@ export default function StealerUserPage() {
   const handleCheckBookmarkOrUnBookmarkText = () => {
     switch (selectSection) {
       case "stealer":
-        return "Bookmark Item";
+        return "Bookmark";
       case "bookmark-stealer":
-        return "Unbookmark Item";
+        return "Unmarked";
       default:
         break;
     }
@@ -858,7 +859,7 @@ export default function StealerUserPage() {
 
             <div className="mt-8 ">
               <div className="flex items-center relative">
-                <div
+                {/* <div
                   className={clsx(
                     "absolute bottom-[-70px] left-0 z-30",
                     initialCheckboxState && checkboxArray.length > 0
@@ -877,8 +878,8 @@ export default function StealerUserPage() {
                       <RightOutlined />
                     </div>
                   </div>
-                </div>
-                <div>
+                </div> */}
+                <div className="border-[1px] border-[#D5D5D5] py-[6px] px-[8px] rounded-[8px]">
                   {handleDisabledButton() !== null ? (
                     <ConfigProvider
                       theme={{
@@ -898,13 +899,16 @@ export default function StealerUserPage() {
                       }}
                     >
                       <Popover
-                        content={"Check for Validated or Multiple Bookmark"}
+                        content={"Check Multiple Bookmark"}
                         placement="bottomLeft"
                       >
                         <Checkbox
                           onChange={handleInitialCheckboxState}
                           checked={initialCheckboxState}
-                        ></Checkbox>
+                        >
+                          {" "}
+                          {handleCheckBookmarkOrUnBookmarkText()}{" "}
+                        </Checkbox>
                       </Popover>
                     </ConfigProvider>
                   ) : (
@@ -912,7 +916,28 @@ export default function StealerUserPage() {
                   )}
                 </div>
                 <div
-                  className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]"
+                  className={clsx(
+                    "flex ml-auto",
+                    initialCheckboxState ? "visible" : "hidden"
+                  )}
+                >
+                  <button
+                    className={clsx(
+                      "py-[6px] px-[16px] rounded-md text-primary-base bg-white border-[1px] border-[#D5D5D5] flex"
+                    )}
+                    onClick={handleBookmarkAllCheckboxes}
+                  >
+                    <BookmarkBorderIcon />
+                    <p className="ml-3">
+                      {handleCheckBookmarkOrUnBookmarkText()} All
+                    </p>
+                  </button>
+                </div>
+                <div
+                  className={clsx(
+                    "ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]",
+                    initialCheckboxState ? "hidden" : "visible"
+                  )}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -956,7 +981,9 @@ export default function StealerUserPage() {
                   </div>
                 </div>
                 {/* <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} /> */}
-                <div>
+                <div
+                  className={clsx(initialCheckboxState ? "hidden" : "visible")}
+                >
                   <ConfigProvider
                     theme={{
                       token: {
@@ -1002,7 +1029,12 @@ export default function StealerUserPage() {
                     bottom={"50px"}
                   /> */}
                 </div>
-                <div className="ml-auto ">
+                <div
+                  className={clsx(
+                    "ml-auto ",
+                    initialCheckboxState ? "hidden" : "visible"
+                  )}
+                >
                   {checkIsBookmarkSection() === "stealer" ? (
                     <ExportButton
                       onClick={handleExportToCV}
