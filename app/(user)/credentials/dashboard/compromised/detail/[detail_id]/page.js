@@ -727,6 +727,9 @@ export default function DetailCompromised() {
                   detailsCompromisedSection ===
                     DETAIL_COMPROMISED_COMPROMISE_DEVICES
                   ? "hidden"
+                  : "visible",
+                detailsCompromisedData.status_validasi === undefined
+                  ? "hidden"
                   : "visible"
               )}
             />
