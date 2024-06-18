@@ -1188,7 +1188,7 @@ export default function StealerUserPage() {
                             </td>
                             <td className="py-[19px] px-[16px]">
                               <div className="flex">
-                                <div
+                                {/* <div
                                   className="cursor-pointer"
                                   onClick={() =>
                                     handleDetails(
@@ -1207,6 +1207,22 @@ export default function StealerUserPage() {
                                   }
                                 >
                                   <BookOutlined style={{ fontSize: "18px" }} />
+                                </div> */}
+                                <div>
+                                  <button
+                                    className={clsx(
+                                      "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                    )}
+                                    onClick={() =>
+                                      handleDetails(
+                                        data,
+                                        "stealer",
+                                        "default-stealer"
+                                      )
+                                    }
+                                  >
+                                    Details
+                                  </button>
                                 </div>
                               </div>
                             </td>
@@ -1336,7 +1352,7 @@ export default function StealerUserPage() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -1363,6 +1379,22 @@ export default function StealerUserPage() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          "stealer",
+                                          "bookmark-stealer"
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
