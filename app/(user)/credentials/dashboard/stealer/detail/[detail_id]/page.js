@@ -134,39 +134,13 @@ export default function DetailCompromised() {
     ],
   };
 
-  const Others = {
-    title: "Others",
-    data: [
-      {
-        id: 1,
-        key: "IP Address",
-        value: hasOwnProperty("ip") && detailsCompromisedData.ip,
-      },
-      {
-        id: 2,
-        key: "Location",
-        value: hasOwnProperty("location") && detailsCompromisedData.location,
-      },
-      {
-        id: 3,
-        key: "Antivirus",
-        value:
-          hasOwnProperty("antivirus") &&
-          detailsCompromisedData.antivirus.length === 0
-            ? "-"
-            : hasOwnProperty("antivirus") &&
-              detailsCompromisedData.antivirus.join(),
-      },
-    ],
-  };
-
   function hasOwnProperty(property) {
     return detailsCompromisedData.hasOwnProperty(property) ? true : false;
   }
 
   function handleBackToCompromise() {
     // router.back();
-    router.push("/credentials/dashboard/compromised");
+    router.push("/credentials/dashboard/stealer");
   }
 
   const handleValidation = (value) => {
@@ -178,127 +152,6 @@ export default function DetailCompromised() {
       fetchUpdateValidateTestingWithRefreshToken(value);
     }
   };
-
-  // Start of: Handle Update Validate
-
-  const UpdateValidateTesting = async (validasi) => {
-    try {
-      dispatch(setLoadingState(true));
-      const res = await fetch(
-        `${APIDATAV1}status/domain/${detailsCompromisedSection}`,
-        {
-          method: "PATCH",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${getCookie("access_token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: detailsCompromisedData.id,
-            status_validasi: validasi,
-          }),
-        }
-      );
-
-      if (res.status === 401 || res.status === 403) {
-        // DeleteCookies();
-        // RedirectToLogin();
-        return res;
-      }
-
-      const data = await res.json();
-
-      if (data.success === false) {
-        // throw new Error("");
-        throw res;
-      }
-
-      if (data.success) {
-        setValidasiSuccess(true);
-        let newDataDetails = {
-          ...detailsCompromisedData,
-          status_validasi: validasi,
-        };
-        dispatch(setDataDetails(newDataDetails));
-        return res;
-      }
-    } catch (error) {
-      setValidasiSuccess(false);
-      console.log("error : ", error);
-      // return res
-      return error;
-    } finally {
-      dispatch(setLoadingState(false));
-      setTimeout(() => {
-        setValidasiSuccess(null);
-      }, 5000);
-    }
-  };
-
-  const fetchUpdateValidateTestingWithRefreshToken = async (validasi) => {
-    await fetchWithRefreshToken(
-      UpdateValidateTesting,
-      router,
-      dispatch,
-      validasi
-    );
-  };
-
-  const CheckboxMultipleValidated = async () => {
-    try {
-      dispatch(setLoadingState(true));
-      const res = await fetch(
-        `${APIDATAV1}status/domain/${detailsCompromisedSection}`,
-        {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            Authorization: `Bearer ${getCookie("access_token")}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            id: [detailsCompromisedData.id],
-            status_validasi: "valid",
-          }),
-        }
-      );
-
-      if (res.status === 401 || res.status === 403) {
-        // DeleteCookies();
-        // RedirectToLogin();
-        return res;
-      }
-
-      const data = await res.json();
-
-      if (!data.success) {
-        // throw new Error("");
-        throw res;
-      }
-
-      setValidasiSuccess(true);
-      let newDataDetails = {
-        ...detailsCompromisedData,
-        status_validasi: "valid",
-      };
-      dispatch(setDataDetails(newDataDetails));
-      return res;
-    } catch (error) {
-      setValidasiSuccess(false);
-      return error;
-    } finally {
-      dispatch(setLoadingState(false));
-      setTimeout(() => {
-        setValidasiSuccess(null);
-      }, 5000);
-    }
-  };
-
-  const fetchCheckboxMultipleValidatedWithRefreshToken = async () => {
-    await fetchWithRefreshToken(CheckboxMultipleValidated, router, dispatch);
-  };
-
-  // End of: Handle Update Validate
 
   // Start of: Handle Bookmark
 
@@ -494,7 +347,7 @@ export default function DetailCompromised() {
       dispatch(setLoadingState(true));
 
       const res = await fetch(
-        `${APIDATAV1}donwload/recommendation?id=${detailsCompromisedData.id}`,
+        `${APIDATAV1}donwload/recommendation?id=${detailsCompromisedData.id}&type=stealer`,
         {
           method: "GET",
           credentials: "include",
@@ -662,78 +515,6 @@ export default function DetailCompromised() {
             <BookmarkRemoveIcon style={{ fontSize: "22px" }} />
             <p className="ml-2">Unmarked</p>
           </button>
-          {/* <button className="bg-primary-base rounded-[8px] text-white py-2 px-4 ml-4 ">
-            Validate
-          </button> */}
-          <ConfigProvider
-            theme={{
-              token: {
-                colorBgContainer: `${
-                  detailsCompromisedData.status_validasi === "-" ||
-                  detailsCompromisedData.status_validasi === "invalid"
-                    ? "#F7F7F7"
-                    : "white"
-                }`,
-                colorBorder: `${
-                  detailsCompromisedData.status_validasi === "-" ||
-                  detailsCompromisedData.status_validasi === "invalid"
-                    ? "#D5D5D5"
-                    : "#52C41A"
-                }`,
-                colorText: `${
-                  detailsCompromisedData.status_validasi === "-" ||
-                  detailsCompromisedData.status_validasi === "invalid"
-                    ? "#000000E0"
-                    : "#52C41A"
-                }`,
-                fontWeightStrong: true,
-              },
-              components: {
-                Select: {
-                  optionActiveBg: "#F7F7F7",
-                  optionSelectedBg: "#FFEBD4",
-                },
-              },
-            }}
-          >
-            <Select
-              defaultValue={
-                detailsCompromisedData.status_validasi === "-" ||
-                detailsCompromisedData.status_validasi === "invalid"
-                  ? "invalid"
-                  : "valid"
-              }
-              value={
-                detailsCompromisedData.status_validasi === "-" ||
-                detailsCompromisedData.status_validasi === "invalid"
-                  ? "invalid"
-                  : "valid"
-              }
-              style={{ width: 91, height: "42px" }}
-              onChange={(value) => handleValidation(value)}
-              options={[
-                {
-                  value: "invalid",
-                  label: "Invalid",
-                },
-
-                {
-                  value: "valid",
-                  label: "Valid",
-                },
-              ]}
-              className={clsx(
-                detailsCompromisedFilters === DETAIL_COMPROMISED_BOOKMARK ||
-                  detailsCompromisedSection ===
-                    DETAIL_COMPROMISED_COMPROMISE_DEVICES
-                  ? "hidden"
-                  : "visible",
-                detailsCompromisedData.status_validasi === undefined
-                  ? "hidden"
-                  : "visible"
-              )}
-            />
-          </ConfigProvider>
         </div>
       </section>
       <section className="bg-white rounded-2xl px-8 py-8 mt-6">
@@ -743,11 +524,8 @@ export default function DetailCompromised() {
         <div className=" pb-8 border-b-[1px] border-[#D5D5D5] mt-8">
           <DetailItems items={Account} />
         </div>
-        <div className=" pb-8 border-b-[1px] border-[#D5D5D5] mt-8">
-          <DetailItems items={Devices} />
-        </div>
         <div className=" mt-8">
-          <DetailItems items={Others} />
+          <DetailItems items={Devices} />
         </div>
       </section>
       <section className="bg-gradient-to-b from-[#F8ECFF] to-white mt-8 rounded-2xl p-8">

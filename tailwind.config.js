@@ -118,6 +118,14 @@ module.exports = {
             letterSpacing: "1px",
           },
         ],
+        "XL-strong": [
+          "20px",
+          {
+            lineHeight: "28px",
+            fontWeight: "600",
+            letterSpacing: "1px",
+          },
+        ],
 
         "Base-normal": [
           "14px",

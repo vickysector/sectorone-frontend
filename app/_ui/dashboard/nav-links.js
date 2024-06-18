@@ -38,11 +38,13 @@ const links = [
   {
     name: "Stealer",
     href: "/credentials/dashboard/stealer",
+    hrefDetail: "/credentials/dashboard/stealer/detail",
     icon: CoronavirusIcon,
   },
   {
     name: "Executive protection",
     href: "/credentials/dashboard/executive-protections",
+    hrefDetail: "/credentials/dashboard/executive-protections/detail",
     icon: SecurityIcon,
   },
   {

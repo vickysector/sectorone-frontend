@@ -32,9 +32,12 @@ import {
   setUsersCredit,
 } from "@/app/_lib/store/features/ExecutiveProtections/LeakedDataSlices";
 import {
+  setDataDetails,
   setDataExecutiveKeysDetails,
   setDataExecutiveValuesDetails,
   setDetailExecutiveState,
+  setFilters,
+  setSection,
 } from "@/app/_lib/store/features/Compromised/DetailSlices";
 import { ExecutiveProtectionsFirstAccess } from "@/app/_ui/components/cards/ExecutiveProtectionsFirstAccess";
 import DocumentScannerIcon from "@mui/icons-material/DocumentScanner";
@@ -146,6 +149,18 @@ export default function ExecutiveProtections() {
     (state) => state.searchHistory.historySearchEmailVerified
   );
 
+  function sliceObject(obj, chunkSize = 3) {
+    const entries = Object.entries(obj);
+    if (entries.length <= chunkSize) return [obj];
+
+    const result = [];
+    for (let i = 0; i < entries.length; i += chunkSize) {
+      const chunk = entries.slice(i, i + chunkSize);
+      result.push(Object.fromEntries(chunk));
+    }
+    return result;
+  }
+
   const handleChangeEmail = (e) => {
     setEmail(e.target.value.trim());
     // allRecentSearch &&
@@ -231,10 +246,18 @@ export default function ExecutiveProtections() {
     setIsEmailFocused(false);
   };
 
-  const handleDetails = (keys, values) => {
-    dispatch(setDetailExecutiveState(true));
-    dispatch(setDataExecutiveKeysDetails(keys));
-    dispatch(setDataExecutiveValuesDetails(values));
+  const handleDetails = (item) => {
+    // dispatch(setDetailExecutiveState(true));
+    // dispatch(setDataExecutiveKeysDetails(keys));
+    // dispatch(setDataExecutiveValuesDetails(values));
+    console.log("item handledetails: ", item);
+    dispatch(setDataDetails(item));
+    router.push(
+      `/credentials/dashboard/executive-protections/detail/${item.info_1.idDetailData}`,
+      {
+        scroll: true,
+      }
+    );
   };
 
   const fetchSendOtpScannedEmail = async () => {
@@ -623,8 +646,12 @@ export default function ExecutiveProtections() {
       if (data.Data && data.Data.length > 0) {
         leakedKeys = Object.keys(data.Data[0]);
       }
-      return { website, leakedKeys };
+
+      let idDetailData = dataLeaked.id;
+      return { website, leakedKeys, idDetailData };
     });
+
+  console.log("data leaked: ", dataLeaked);
 
   // useEffect(() => {
   //   callGetDetailLeakedData();
@@ -932,6 +959,18 @@ export default function ExecutiveProtections() {
                       dataLeaked.List[data.website].Data[0]
                     );
 
+                    console.log("data semua: ", data);
+
+                    const formattedData = sliceObject(
+                      dataLeaked.List[data.website].Data[0]
+                    );
+
+                    let allData = {
+                      info_1: data,
+                      info_2: dataLeaked.List[data.website].Data[0],
+                      info_3: formattedData,
+                    };
+
                     return (
                       <tr
                         className="border-b-[2px] border-[#D5D5D5]"
@@ -954,12 +993,7 @@ export default function ExecutiveProtections() {
                         <td className="py-[19px] px-[16px]">
                           <button
                             className="rounded-md border-[1px] border-input-border text-primary-base text-Base-normal py-1.5 px-4"
-                            onClick={() =>
-                              handleDetails(
-                                data.leakedKeys,
-                                dataLeaked.List[data.website].Data[0]
-                              )
-                            }
+                            onClick={() => handleDetails(allData)}
                           >
                             Details
                           </button>

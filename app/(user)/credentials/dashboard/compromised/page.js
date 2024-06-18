@@ -93,6 +93,7 @@ import dynamic from "next/dynamic";
 import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import { Tooltip } from "@/app/_ui/components/utils/Tooltips";
 import dayjs from "dayjs";
+import BookmarkBorderIcon from "@mui/icons-material/BookmarkBorder";
 
 // const DynamicApexCharts = dynamic(() => import("react-apexcharts"), {
 //   ssr: false, // Ensure ApexCharts is not imported during SSR
@@ -487,28 +488,28 @@ export default function CompromisedDashboard() {
     switch (selectedButton) {
       case DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          return "Unbookmark Item";
+          return "Unmarked";
         } else {
-          return "Bookmark Item";
+          return "Bookmark";
         }
       case DETAIL_COMPROMISED_COMPROMISE_DEVICES:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          return "Unbookmark Item";
+          return "Unmarked";
         } else {
-          return "Bookmark Item";
+          return "Bookmark";
         }
       // // Add more cases for other buttons if needed
       case DETAIL_COMPROMISED_COMPROMISE_USERS:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          return "Unbookmark Item";
+          return "Unmarked";
         } else {
-          return "Bookmark Item";
+          return "Bookmark";
         }
       case DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY:
         if (selectedOutlineButton === DETAIL_COMPROMISED_BOOKMARK) {
-          return "Unbookmark Item";
+          return "Unmarked";
         } else {
-          return "Bookmark Item";
+          return "Bookmark";
         }
       default:
         break;
@@ -858,7 +859,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() =>
               handleDetails(
@@ -880,6 +881,22 @@ export default function CompromisedDashboard() {
             }
           >
             <BookOutlined style={{ fontSize: "18px" }} />
+          </div> */}
+          <div>
+            <button
+              className={clsx(
+                "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+              )}
+              onClick={() =>
+                handleDetails(
+                  item,
+                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_DEFAULT
+                )
+              }
+            >
+              Details
+            </button>
           </div>
         </div>
       ),
@@ -897,7 +914,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() =>
               handleDetails(
@@ -919,6 +936,22 @@ export default function CompromisedDashboard() {
             }
           >
             <BookOutlined style={{ fontSize: "18px" }} />
+          </div> */}
+          <div>
+            <button
+              className={clsx(
+                "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+              )}
+              onClick={() =>
+                handleDetails(
+                  item,
+                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_DEFAULT
+                )
+              }
+            >
+              Details
+            </button>
           </div>
         </div>
       ),
@@ -936,7 +969,7 @@ export default function CompromisedDashboard() {
         .strengthLabel,
       action: (
         <div className="flex">
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() =>
               handleDetails(
@@ -958,6 +991,22 @@ export default function CompromisedDashboard() {
             }
           >
             <BookOutlined style={{ fontSize: "18px" }} />
+          </div> */}
+          <div>
+            <button
+              className={clsx(
+                "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+              )}
+              onClick={() =>
+                handleDetails(
+                  item,
+                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_DEFAULT
+                )
+              }
+            >
+              Details
+            </button>
           </div>
         </div>
       ),
@@ -972,7 +1021,7 @@ export default function CompromisedDashboard() {
       ip: item.ip,
       action: (
         <div className="flex">
-          <div
+          {/* <div
             className="cursor-pointer"
             onClick={() =>
               handleDetails(
@@ -994,6 +1043,22 @@ export default function CompromisedDashboard() {
             }
           >
             <BookOutlined style={{ fontSize: "18px" }} />
+          </div> */}
+          <div>
+            <button
+              className={clsx(
+                "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+              )}
+              onClick={() =>
+                handleDetails(
+                  item,
+                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_DEFAULT
+                )
+              }
+            >
+              Details
+            </button>
           </div>
         </div>
       ),
@@ -2771,7 +2836,7 @@ export default function CompromisedDashboard() {
 
             <div className="mt-8 ">
               <div className="flex items-center relative">
-                <div
+                {/* <div
                   className={clsx(
                     "absolute bottom-[-90px] left-0 z-30",
                     initialCheckboxState && checkboxArray.length > 0
@@ -2803,8 +2868,8 @@ export default function CompromisedDashboard() {
                       <RightOutlined />
                     </div>
                   </div>
-                </div>
-                <div>
+                </div> */}
+                <div className="border-[1px] border-[#D5D5D5] py-[6px] px-[8px] rounded-[8px]">
                   {handleDisableExportButton() !== null && (
                     <ConfigProvider
                       theme={{
@@ -2830,13 +2895,56 @@ export default function CompromisedDashboard() {
                         <Checkbox
                           onChange={handleInitialCheckboxState}
                           checked={initialCheckboxState}
-                        ></Checkbox>
+                        >
+                          {handleCheckBookmarkOrUnbookmarkText()}
+                          {""}
+                          {selectedOutlineButton !== DETAIL_COMPROMISED_TESTING
+                            ? " / Validated"
+                            : ",etc"}
+                        </Checkbox>
                       </Popover>
                     </ConfigProvider>
                   )}
                 </div>
                 <div
-                  className="ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]"
+                  className={clsx(
+                    "flex ml-auto",
+                    initialCheckboxState ? "visible" : "hidden"
+                  )}
+                >
+                  <button
+                    className={clsx(
+                      "py-[5px] px-[16px] rounded-md text-primary-base bg-white border-[1px] border-[#D5D5D5] flex"
+                    )}
+                    onClick={handleBookmarkAllCheckboxes}
+                  >
+                    <BookmarkBorderIcon />
+                    <p className="ml-3">
+                      {handleCheckBookmarkOrUnbookmarkText()} All
+                    </p>
+                  </button>
+                  {selectedButton !== DETAIL_COMPROMISED_COMPROMISE_DEVICES && (
+                    <button
+                      className={clsx(
+                        "ml-4 py-[5px] px-[16px] rounded-md bg-primary-base text-white text-Base-normal",
+                        selectedButton !== DETAIL_COMPROMISED_COMPROMISE_DEVICES
+                          ? "visible"
+                          : "hidden",
+                        selectedOutlineButton !== DETAIL_COMPROMISED_BOOKMARK
+                          ? "visible"
+                          : "hidden"
+                      )}
+                      onClick={handleValidatedAllCheckbox}
+                    >
+                      Validate All
+                    </button>
+                  )}
+                </div>
+                <div
+                  className={clsx(
+                    "ml-4 bg-input-container border-input-border flex items-center justify-between border-t-2 border-b-2 border-r-2 rounded-lg w-[400px]",
+                    initialCheckboxState ? "hidden" : "visible"
+                  )}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                 >
@@ -2879,7 +2987,9 @@ export default function CompromisedDashboard() {
                   </div>
                 </div>
                 {/* <Tooltip isActive={isHovered} right={"30px"} bottom={"30px"} /> */}
-                <div>
+                <div
+                  className={clsx(initialCheckboxState ? "hidden" : "visible")}
+                >
                   <ConfigProvider
                     theme={{
                       token: {
@@ -2923,7 +3033,12 @@ export default function CompromisedDashboard() {
                     bottom={"50px"}
                   /> */}
                 </div>
-                <div className="ml-auto ">
+                <div
+                  className={clsx(
+                    "ml-auto ",
+                    initialCheckboxState ? "hidden" : "visible"
+                  )}
+                >
                   {checkIsBookmarkSection() === "no-bookmark" ? (
                     <ExportButton
                       onClick={handleExportToCSV}
@@ -3431,7 +3546,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -3464,6 +3579,22 @@ export default function CompromisedDashboard() {
                                         style={{ fontSize: "18px" }}
                                       />
                                     )}
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                                          DETAIL_COMPROMISED_TESTING
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -3718,7 +3849,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -3745,6 +3876,22 @@ export default function CompromisedDashboard() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                                          DETAIL_COMPROMISED_BOOKMARK
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -4180,7 +4327,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -4213,6 +4360,22 @@ export default function CompromisedDashboard() {
                                         style={{ fontSize: "18px" }}
                                       />
                                     )}
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_USERS,
+                                          DETAIL_COMPROMISED_TESTING
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -4467,7 +4630,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -4494,6 +4657,22 @@ export default function CompromisedDashboard() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_USERS,
+                                          DETAIL_COMPROMISED_BOOKMARK
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -4929,7 +5108,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -4962,6 +5141,22 @@ export default function CompromisedDashboard() {
                                         style={{ fontSize: "18px" }}
                                       />
                                     )}
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
+                                          DETAIL_COMPROMISED_TESTING
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -5216,7 +5411,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -5243,6 +5438,22 @@ export default function CompromisedDashboard() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
+                                          DETAIL_COMPROMISED_BOOKMARK
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
@@ -5502,7 +5713,7 @@ export default function CompromisedDashboard() {
                               </td>
                               <td className="py-[19px] px-[16px]">
                                 <div className="flex">
-                                  <div
+                                  {/* <div
                                     className="cursor-pointer"
                                     onClick={() =>
                                       handleDetails(
@@ -5529,6 +5740,22 @@ export default function CompromisedDashboard() {
                                         color: "#FFD591",
                                       }}
                                     />
+                                  </div> */}
+                                  <div>
+                                    <button
+                                      className={clsx(
+                                        "text-Base-normal text-primary-base py-[5px] px-[16px] border-[1px] border-[#D5D5D5] shadow-sm rounded-[6px]"
+                                      )}
+                                      onClick={() =>
+                                        handleDetails(
+                                          data,
+                                          DETAIL_COMPROMISED_COMPROMISE_DEVICES,
+                                          DETAIL_COMPROMISED_BOOKMARK
+                                        )
+                                      }
+                                    >
+                                      Details
+                                    </button>
                                   </div>
                                 </div>
                               </td>
