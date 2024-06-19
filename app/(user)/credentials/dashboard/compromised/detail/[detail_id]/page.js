@@ -365,7 +365,7 @@ export default function DetailCompromised() {
   // Start of: Handle AI - Post
 
   const handlePostTrySectorAi = () => {
-    if (getCookie("user_status")) {
+    if (getCookie("user_status") === "true") {
       dispatch(setIsDetailActive(true));
     } else {
       fetchPostTrySectorAiWithRefreshToken();
