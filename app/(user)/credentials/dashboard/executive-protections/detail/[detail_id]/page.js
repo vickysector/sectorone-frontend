@@ -80,7 +80,7 @@ export default function DetailCompromised() {
   // Start of: Handle AI - Post
 
   const handlePostTrySectorAi = () => {
-    if (getCookie("user_status")) {
+    if (getCookie("user_status") === "true") {
       dispatch(setIsDetailActive(true));
     } else {
       fetchPostTrySectorAiWithRefreshToken();
@@ -148,7 +148,7 @@ export default function DetailCompromised() {
       dispatch(setLoadingState(true));
 
       const res = await fetch(
-        `${APIDATAV1}recommendation?id=${detailsCompromisedData.info_1.idDetailData}`,
+        `${APIDATAV1}recommendation?&type=executive&id=${detailsCompromisedData.info_1.idDetailData}`,
         {
           method: "GET",
           credentials: "include",
