@@ -945,7 +945,7 @@ export default function CompromisedDashboard() {
               onClick={() =>
                 handleDetails(
                   item,
-                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_COMPROMISE_USERS,
                   DETAIL_COMPROMISED_DEFAULT
                 )
               }
@@ -1000,7 +1000,7 @@ export default function CompromisedDashboard() {
               onClick={() =>
                 handleDetails(
                   item,
-                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_COMPROMISE_THIRDPARTY,
                   DETAIL_COMPROMISED_DEFAULT
                 )
               }
@@ -1052,7 +1052,7 @@ export default function CompromisedDashboard() {
               onClick={() =>
                 handleDetails(
                   item,
-                  DETAIL_COMPROMISED_COMPROMISE_EMPLOYEE,
+                  DETAIL_COMPROMISED_COMPROMISE_DEVICES,
                   DETAIL_COMPROMISED_DEFAULT
                 )
               }
