@@ -429,6 +429,8 @@ export default function UserDashboardPage() {
 
   // End of: Get data Top Antivirus and Malware
 
+  console.log("image: ", iconBreaches);
+
   return (
     <main>
       {/* <div
@@ -446,7 +448,9 @@ export default function UserDashboardPage() {
                 <Image
                   width={32}
                   height={32}
-                  src={iconBreaches && iconBreaches}
+                  src={
+                    iconBreaches ? iconBreaches : "/images/empty_state_img.svg"
+                  }
                   alt="Icon Logo Users"
                   // style={{
                   //   objectFit: "cover",
