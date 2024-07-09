@@ -156,7 +156,7 @@ export default function NavLinks() {
           >
             <section
               className={clsx(
-                "flex items-center mb-4 py-1.5 px-2 text-center text-text-description overflow-hidden rounded-lg"
+                "flex items-center mb-4 py-1.5 px-2 text-center text-text-description overflow-hidden rounded-lg cursor-pointer "
               )}
               onClick={ransomwareDropdownSidebar}
             >
