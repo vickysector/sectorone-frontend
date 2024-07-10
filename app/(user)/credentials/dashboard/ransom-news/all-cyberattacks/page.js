@@ -101,6 +101,8 @@ export default function AllCyberAttacksPage() {
       }
 
       if (data.data) {
+        setRecentCyberattacks(data.data);
+
         return res;
       }
     } catch (error) {
@@ -242,6 +244,83 @@ export default function AllCyberAttacksPage() {
 
   // End of: Table Recent CyberAttacks
 
+  // Start of: Table Recent Cyberattacks
+
+  const columnsRecentCyberattacks = [
+    {
+      title: "No",
+      key: "no",
+      render: (param1, record, index) => {
+        console.log("inside render (param1): ", param1);
+        console.log("inside render (record): ", record);
+        console.log("inside render (index): ", index);
+        return <p>{index + 1}</p>;
+      },
+    },
+    {
+      title: "Date added",
+      key: "added",
+      render: (param1) => {
+        return <p>{convertDateFormat(param1.added)}</p>;
+      },
+    },
+    {
+      title: "Country",
+
+      key: "country",
+      render: (param1) => {
+        let newCountryName;
+
+        fetchToChangeCountry(param1.country).then((data) => {
+          console.log("allcyberattacks countryname: ", data);
+
+          newCountryName = data.data.title;
+        });
+
+        return <>{newCountryName}</>;
+      },
+    },
+    {
+      title: "Domain",
+      dataIndex: "domain",
+      key: "domain",
+    },
+    {
+      title: "Victim",
+      dataIndex: "victim",
+      key: "victim",
+    },
+    {
+      title: "URL",
+
+      key: "url",
+      render: (param1) => {
+        return (
+          <a href={`${param1.url}`} target="_blank">
+            <LaunchIcon style={{ color: "#FF6F1E" }} />
+          </a>
+        );
+      },
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (param1, record) => {
+        return (
+          <button
+            className={clsx(
+              `py-2 px-4 rounded-md text-primary-base text-Base-normal border-[1px] border-input-border `
+            )}
+          >
+            Details
+          </button>
+        );
+      },
+    },
+  ];
+
+  // End of: Table Recent Cyberattacks
+
   return (
     <main>
       <h1 className="text-heading-2 text-black mb-4">All Cyber Attacks</h1>
@@ -276,10 +355,20 @@ export default function AllCyberAttacksPage() {
                 },
               }}
             >
-              <Table
-                columns={columnsLastCyberattacks}
-                dataSource={last100ransomware}
-              />
+              {selectedButton === LAST_100_CYBERATTACKS && (
+                <Table
+                  columns={columnsLastCyberattacks}
+                  dataSource={last100ransomware}
+                />
+              )}
+
+              {selectedButton === RECENT_CYBERATTACKS && (
+                <Table
+                  columns={columnsRecentCyberattacks}
+                  dataSource={recentCyberattacks}
+                  pagination={false}
+                />
+              )}
             </ConfigProvider>
           </section>
         </section>
