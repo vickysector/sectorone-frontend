@@ -115,6 +115,41 @@ export default function AllCyberAttacksPage() {
     await fetchWithRefreshToken(fetchRecentCyberAttacks, router, dispatch);
   };
 
+  const fetchToChangeCountry = async (country) => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(`${APIDATAV1}ransomware/country?id=${country}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      console.log("data allcyberattacks country: ", data);
+
+      if (data.data === null) {
+        throw res;
+      }
+
+      if (data.data) {
+        return data;
+      }
+    } catch (error) {
+      console.log("inside catch allcyberattacks country: ", error);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
   useEffect(() => {
     switch (selectedButton) {
       case LAST_100_CYBERATTACKS:
@@ -152,8 +187,19 @@ export default function AllCyberAttacksPage() {
     },
     {
       title: "Country",
-      dataIndex: "country",
+
       key: "country",
+      render: (param1) => {
+        let newCountryName;
+
+        fetchToChangeCountry(param1.country).then((data) => {
+          console.log("allcyberattacks countryname: ", data);
+
+          newCountryName = data.data.title;
+        });
+
+        return <>{newCountryName}</>;
+      },
     },
     {
       title: "Domain",
@@ -181,7 +227,15 @@ export default function AllCyberAttacksPage() {
       title: "Action",
       key: "action",
       render: (param1, record) => {
-        return <button>Details</button>;
+        return (
+          <button
+            className={clsx(
+              `py-2 px-4 rounded-md text-primary-base text-Base-normal border-[1px] border-input-border `
+            )}
+          >
+            Details
+          </button>
+        );
       },
     },
   ];
