@@ -19,3 +19,10 @@ export const DETAIL_COMPROMISED_TESTING = "testing";
 export const DETAIL_COMPROMISED_DEFAULT = "compromised";
 
 // End of: Page Compromised - Detail Comrpomised
+
+// Start of: Page Ransomware - All CyberAttacks
+
+export const LAST_100_CYBERATTACKS = "last_100_cyberattacks";
+export const RECENT_CYBERATTACKS = "recent_cyberattacks";
+
+// End of: Page Ransomware - All CyberAttacks
