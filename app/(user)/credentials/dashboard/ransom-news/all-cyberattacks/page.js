@@ -21,6 +21,7 @@ export default function AllCyberAttacksPage() {
   const [selectedButton, setSelectedButton] = useState(LAST_100_CYBERATTACKS);
   const [last100ransomware, setLast100Cyberattacks] = useState();
   const [recentCyberattacks, setRecentCyberattacks] = useState();
+  const [countryName, setCountryName] = useState("");
 
   const handleButtonClick = (value) => {
     setSelectedButton(value.target.name);
@@ -269,15 +270,13 @@ export default function AllCyberAttacksPage() {
 
       key: "country",
       render: (param1) => {
-        let newCountryName;
+        fetchToChangeCountry("in").then((data) => {
+          console.log("allcyberattacks countryname: ", data.data.title);
 
-        fetchToChangeCountry(param1.country).then((data) => {
-          console.log("allcyberattacks countryname: ", data);
-
-          newCountryName = data.data.title;
+          setCountryName(data.data.title);
         });
 
-        return <>{newCountryName}</>;
+        return <p>{countryName}</p>;
       },
     },
     {
