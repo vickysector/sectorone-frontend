@@ -17,6 +17,7 @@ import clsx from "clsx";
 import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import LaunchIcon from "@mui/icons-material/Launch";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function AllCyberAttacksPage() {
   const [selectedButton, setSelectedButton] = useState(LAST_100_CYBERATTACKS);
@@ -203,13 +204,15 @@ export default function AllCyberAttacksPage() {
         // });
 
         return (
-          <div>
-            <Image
-              width={32}
-              height={24}
-              src={param1.image}
-              alt="Country Icon"
-            />
+          <div className="flex items-center">
+            <Link key={param1.title} href={"/"}>
+              <Image
+                width={32}
+                height={24}
+                src={param1.image}
+                alt="Country Icon"
+              />
+            </Link>
           </div>
         );
       },
@@ -288,12 +291,14 @@ export default function AllCyberAttacksPage() {
 
         return (
           <div>
-            <Image
-              width={32}
-              height={24}
-              src={param1.image}
-              alt="Country Icon"
-            />
+            <Link key={param1.title} href={"/"}>
+              <Image
+                width={32}
+                height={24}
+                src={param1.image}
+                alt="Country Icon"
+              />
+            </Link>
           </div>
         );
       },
