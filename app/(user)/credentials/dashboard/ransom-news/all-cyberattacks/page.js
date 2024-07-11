@@ -278,6 +278,13 @@ export default function AllCyberAttacksPage() {
             className={clsx(
               `py-2 px-4 rounded-md text-primary-base text-Base-normal border-[1px] border-input-border `
             )}
+            onClick={() =>
+              handleMigrateContent(
+                param1.title,
+                param1.summary,
+                LAST_100_CYBERATTACKS
+              )
+            }
           >
             Details
           </button>
@@ -388,7 +395,7 @@ export default function AllCyberAttacksPage() {
         <section className="p-8">
           <section>
             <CompromiseButton
-              value={"Last 100 cyberattacks"}
+              value={"Latest cyberattacks"}
               nameData={LAST_100_CYBERATTACKS}
               isActive={selectedButton === LAST_100_CYBERATTACKS}
               onClick={handleButtonClick}
