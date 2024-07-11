@@ -70,6 +70,7 @@ const links = [
       {
         name: "All cyberattacks",
         href: "/credentials/dashboard/ransom-news/all-cyberattacks",
+        hrefDetail: "/credentials/dashboard/ransom-news/all-cyberattacks",
       },
       {
         name: "All country",
