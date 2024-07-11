@@ -16,6 +16,7 @@ import { fetchWithRefreshToken } from "@/app/_lib/token/fetchWithRefreshToken";
 import clsx from "clsx";
 import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import LaunchIcon from "@mui/icons-material/Launch";
+import Image from "next/image";
 
 export default function AllCyberAttacksPage() {
   const [selectedButton, setSelectedButton] = useState(LAST_100_CYBERATTACKS);
@@ -195,13 +196,22 @@ export default function AllCyberAttacksPage() {
       render: (param1) => {
         let newCountryName;
 
-        fetchToChangeCountry(param1.country).then((data) => {
-          console.log("allcyberattacks countryname: ", data);
+        // fetchToChangeCountry(param1.country).then((data) => {
+        //   console.log("allcyberattacks countryname: ", data);
 
-          newCountryName = data.data.title;
-        });
+        //   newCountryName = data.data.title;
+        // });
 
-        return <>{newCountryName}</>;
+        return (
+          <div>
+            <Image
+              width={32}
+              height={24}
+              src={param1.image}
+              alt="Country Icon"
+            />
+          </div>
+        );
       },
     },
     {
@@ -270,13 +280,22 @@ export default function AllCyberAttacksPage() {
 
       key: "country",
       render: (param1) => {
-        fetchToChangeCountry("in").then((data) => {
-          console.log("allcyberattacks countryname: ", data.data.title);
+        // fetchToChangeCountry("in").then((data) => {
+        //   console.log("allcyberattacks countryname: ", data.data.title);
 
-          setCountryName(data.data.title);
-        });
+        //   setCountryName(data.data.title);
+        // });
 
-        return <p>{countryName}</p>;
+        return (
+          <div>
+            <Image
+              width={32}
+              height={24}
+              src={param1.image}
+              alt="Country Icon"
+            />
+          </div>
+        );
       },
     },
     {
