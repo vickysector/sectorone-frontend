@@ -18,6 +18,10 @@ import { convertDateFormat } from "@/app/_lib/CalculatePassword";
 import LaunchIcon from "@mui/icons-material/Launch";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  setContent,
+  setTitle,
+} from "@/app/_lib/store/features/Ransomware/DetailsSlices";
 
 export default function AllCyberAttacksPage() {
   const [selectedButton, setSelectedButton] = useState(LAST_100_CYBERATTACKS);
@@ -34,7 +38,33 @@ export default function AllCyberAttacksPage() {
   const dispatch = useDispatch();
   const router = useRouter();
 
+  const detailsContentCyberAccack = useSelector(
+    (state) => state.ransomwareDetailContent.content
+  );
+  const detailsTitleCyberAccack = useSelector(
+    (state) => state.ransomwareDetailContent.title
+  );
+
   // End of: Redux
+
+  // Start of: Handle function
+
+  const handleMigrateContent = (title, summary, status) => {
+    dispatch(setContent(summary));
+    dispatch(setTitle(title));
+
+    if (status === LAST_100_CYBERATTACKS) {
+      router.push(
+        "/credentials/dashboard/ransom-news/all-cyberattacks/latest/details"
+      );
+    } else if (status === RECENT_CYBERATTACKS) {
+      router.push(
+        "/credentials/dashboard/ransom-news/all-cyberattacks/recent/details"
+      );
+    }
+  };
+
+  // End of: Handle function
 
   // Start of: API Intregations
 
@@ -334,6 +364,13 @@ export default function AllCyberAttacksPage() {
             className={clsx(
               `py-2 px-4 rounded-md text-primary-base text-Base-normal border-[1px] border-input-border `
             )}
+            onClick={() =>
+              handleMigrateContent(
+                param1.title,
+                param1.summary,
+                RECENT_CYBERATTACKS
+              )
+            }
           >
             Details
           </button>
