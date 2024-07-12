@@ -6,7 +6,7 @@ import {
 } from "@/app/_lib/variables/Variables";
 import CompromiseButton from "@/app/_ui/components/buttons/CompromiseButton";
 import { useEffect, useState } from "react";
-import { ConfigProvider, Table } from "antd";
+import { ConfigProvider, Table, Select } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter, redirect } from "next/navigation";
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
@@ -25,6 +25,7 @@ import {
 
 export default function AllCyberAttacksPage() {
   const [last100ransomware, setLast100Cyberattacks] = useState();
+  const [selectOptions, setSelectOptions] = useState([]);
 
   // Start of: Redux
 
@@ -87,6 +88,72 @@ export default function AllCyberAttacksPage() {
     await fetchWithRefreshToken(fetchAllCyberAttacks, router, dispatch);
   };
 
+  const fetchAllCountryOnSelect = async () => {
+    const url1 = `${APIDATAV1}ransomware/list/country`;
+    const url2 = `${APIDATAV1}ransomware/country?id=`;
+
+    try {
+      dispatch(setLoadingState(true));
+
+      const res1 = await fetch(url1, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          Authorization: `Bearer ${getCookie("access_token")}`,
+        },
+      });
+
+      if (res1.status === 401 || res1.status === 403) {
+        return res1;
+      }
+
+      const data1 = await res1.json();
+
+      console.log("allcountry data: ", data1);
+
+      if (data1.data === null) {
+        throw res1;
+      }
+
+      const updatedData = await Promise.all(
+        data1.data.map(async (item) => {
+          const res2 = await fetch(`${url2}${item.id.toLowerCase()}`, {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              Authorization: `Bearer ${getCookie("access_token")}`,
+            },
+          });
+
+          if (res2.status === 401 || res2.status === 403) {
+            return res2;
+          }
+
+          const data2 = await res2.json();
+
+          console.log("allcountry data (data2): ", data2);
+
+          //   return {
+          //     ...item,
+          //     title: data2.data.title,
+          //   };
+          return {
+            value: item.id.toLowerCase(),
+            label: data2.data.title,
+          };
+        })
+      );
+
+      console.log("allcountry data (updatedData): ", updatedData);
+      setSelectOptions(updatedData);
+    } catch (error) {
+      console.log("inside catch allcountry: ", error);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
   const fetchToChangeCountry = async (country) => {
     try {
       dispatch(setLoadingState(true));
@@ -124,11 +191,14 @@ export default function AllCyberAttacksPage() {
 
   useEffect(() => {
     fetchAllCyberAttarcksWithRefreshToken();
+    fetchAllCountryOnSelect();
   }, []);
 
   console.log("allcyberattacks data: ", last100ransomware);
 
   // End of: API Intregations
+
+  console.log("select options: ", selectOptions);
 
   // Start of: Table Last 100 Cyberattacks
 
@@ -224,7 +294,16 @@ export default function AllCyberAttacksPage() {
       <h1 className="text-heading-2 text-black mb-4">All country</h1>
       <div className="bg-white rounded-lg mt-4">
         <section className="p-8">
-          <section></section>
+          <section>
+            <Select
+              defaultValue="af"
+              style={{
+                width: 160,
+              }}
+              //   onChange={handleChange}
+              options={selectOptions}
+            />
+          </section>
           <section className={clsx("mt-8")}>
             <ConfigProvider
               theme={{
