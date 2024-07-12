@@ -44,7 +44,9 @@ export default function RecentPageDetails() {
           </h1>
           <p className={clsx("text-Base-normal text-text-description")}>
             {" "}
-            {detailsContentCyberAccack}{" "}
+            {detailsContentCyberAccack.length === 0
+              ? "No Descriptions"
+              : detailsContentCyberAccack}{" "}
           </p>
         </section>
       </div>
