@@ -75,6 +75,7 @@ const links = [
       {
         name: "All country",
         href: "/credentials/dashboard/ransom-news/all-country",
+        hrefDetail: "/credentials/dashboard/ransom-news/all-country",
       },
     ],
   },
