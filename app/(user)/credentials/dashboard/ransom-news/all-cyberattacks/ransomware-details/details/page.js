@@ -166,24 +166,24 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
         return <p>{convertDateFormat(param1.published)}</p>;
       },
     },
-    {
-      title: "Country",
+    // {
+    //   title: "Country",
 
-      key: "country",
-      render: (param1) => {
-        return (
-          <div className="flex items-center">
-            <Image
-              width={32}
-              height={24}
-              src={param1.image}
-              alt="Country Icon"
-              className="rounded-md"
-            />
-          </div>
-        );
-      },
-    },
+    //   key: "country",
+    //   render: (param1) => {
+    //     return (
+    //       <div className="flex items-center">
+    //         <Image
+    //           width={32}
+    //           height={24}
+    //           src={param1.image}
+    //           alt="Country Icon"
+    //           className="rounded-md"
+    //         />
+    //       </div>
+    //     );
+    //   },
+    // },
     {
       title: "Ransomware",
 
