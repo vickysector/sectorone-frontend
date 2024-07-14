@@ -207,7 +207,10 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
       key: "url",
       render: (param1) => {
         return (
-          <a href={`${param1.website}`} target="_blank">
+          <a
+            href={`${param1.post_url.length === 0 ? "#" : param1.post_url}`}
+            target="_blank"
+          >
             <LaunchIcon style={{ color: "#FF6F1E" }} />
           </a>
         );

@@ -277,7 +277,7 @@ export default function AllCyberAttacksPage() {
       key: "url",
       render: (param1) => {
         return (
-          <a href={`${param1.website}`} target="_blank">
+          <a href={`${param1.post_url}`} target="_blank">
             <LaunchIcon style={{ color: "#FF6F1E" }} />
           </a>
         );

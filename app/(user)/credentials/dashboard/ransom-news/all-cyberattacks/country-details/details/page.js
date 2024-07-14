@@ -207,20 +207,14 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
       render: (param1) => {
         return (
           <div className="flex items-center">
-            <Link
-              key={param1.title}
-              href={"/"}
-              className="flex items-center cursor-pointer"
-            >
-              <Image
-                width={32}
-                height={24}
-                src={param1.image}
-                alt="Country Icon"
-                className="rounded-md"
-              />
-              <p className="ml-2"> {param1.title} </p>
-            </Link>
+            <Image
+              width={32}
+              height={24}
+              src={param1.image}
+              alt="Country Icon"
+              className="rounded-md"
+            />
+            <p className="ml-2"> {param1.title} </p>
           </div>
         );
       },
@@ -248,7 +242,10 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
       key: "url",
       render: (param1) => {
         return (
-          <a href={`${param1.website}`} target="_blank">
+          <a
+            href={`${param1.post_url.length === 0 ? "#" : param1.post_url}`}
+            target="_blank"
+          >
             <LaunchIcon style={{ color: "#FF6F1E" }} />
           </a>
         );
@@ -264,7 +261,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
               `py-2 px-4 rounded-md text-primary-base text-Base-normal border-[1px] border-input-border `
             )}
             onClick={() =>
-              handleMigrateContent(param1.post_title, param1.description)
+              handleMigrateContent(param1.post_title, param1.activity)
             }
           >
             Details
