@@ -265,8 +265,16 @@ export default function AllCyberAttacksPage() {
       key: "ransomware",
       render: (param1) => {
         return (
+          //   <div>
+          //     <p>{param1.group_name}</p>
+          //   </div>
           <div>
-            <p>{param1.group_name}</p>
+            <Link
+              className="underline"
+              href={`/credentials/dashboard/ransom-news/all-cyberattacks/ransomware-details/details?ransomware=${param1.group_name}`}
+            >
+              {param1.group_name}
+            </Link>
           </div>
         );
       },
