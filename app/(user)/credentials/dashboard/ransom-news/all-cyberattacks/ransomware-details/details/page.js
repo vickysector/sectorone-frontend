@@ -19,6 +19,7 @@ import {
   setTitle,
 } from "@/app/_lib/store/features/Ransomware/DetailsSlices";
 import ImageIcon from "@mui/icons-material/Image";
+import { setAllDataRansomware } from "@/app/_lib/store/features/Ransomware/DetailsRansomwareSlices";
 
 export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
   // Start of: state
@@ -128,11 +129,12 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
     router.back();
   };
 
-  const handleMigrateContent = (title, summary) => {
-    dispatch(setContent(summary));
-    dispatch(setTitle(title));
+  const handleMigrateContent = (allData, ransomware) => {
+    dispatch(setAllDataRansomware(allData));
 
-    router.push("/credentials/dashboard/ransom-news/all-country/details");
+    router.push(
+      `/credentials/dashboard/ransom-news/all-cyberattacks/ransomware-details/${ransomware}/details`
+    );
   };
 
   //   End of: Handle function
@@ -259,9 +261,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
             className={clsx(
               `py-2 px-4 rounded-md text-primary-base text-Base-normal border-[1px] border-input-border `
             )}
-            onClick={() =>
-              handleMigrateContent(param1.post_title, param1.activity)
-            }
+            onClick={() => handleMigrateContent(param1, param1.group_name)}
           >
             Details
           </button>
@@ -271,8 +271,6 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
   ];
 
   // End of: Table Recent CyberAttacks
-
-  console.log("ransomwaredata: ", ransomwareData);
 
   return (
     <main>
