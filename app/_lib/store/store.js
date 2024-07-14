@@ -19,6 +19,8 @@ import ScanEmailSlices from "./features/ExecutiveProtections/ScanEmailSlices";
 import LeakedDataSlices from "./features/ExecutiveProtections/LeakedDataSlices";
 import KeywordSearchSlices from "./features/KeywordSearch/KeywordSearchSlices";
 import SearchHistorySlices from "./features/ExecutiveProtections/SearchHistorySlices";
+import DetailsSlices from "./features/Ransomware/DetailsSlices";
+import DetailsRansomwareSlices from "./features/Ransomware/DetailsRansomwareSlices";
 
 export const store = configureStore({
   reducer: {
@@ -42,5 +44,7 @@ export const store = configureStore({
     executiveProtections: LeakedDataSlices,
     keywordSearch: KeywordSearchSlices,
     searchHistory: SearchHistorySlices,
+    ransomwareDetailContent: DetailsSlices,
+    ransomwareAllDetailContent: DetailsRansomwareSlices,
   },
 });
