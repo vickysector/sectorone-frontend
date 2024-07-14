@@ -40,11 +40,13 @@ export default function RecentPageDetails() {
         <section className="p-8">
           <h1 className={clsx("text-heading-3 text-black mb-4")}>
             {" "}
-            {detailsTitleCyberAccack}{" "}
+            {detailsTitleCyberAccack && detailsTitleCyberAccack.length === 0
+              ? "No Title"
+              : detailsTitleCyberAccack}{" "}
           </h1>
           <p className={clsx("text-Base-normal text-text-description")}>
             {" "}
-            {detailsContentCyberAccack.length === 0
+            {detailsContentCyberAccack && detailsContentCyberAccack.length === 0
               ? "No Descriptions"
               : detailsContentCyberAccack}{" "}
           </p>
