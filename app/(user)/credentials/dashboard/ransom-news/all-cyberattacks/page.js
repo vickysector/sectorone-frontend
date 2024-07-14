@@ -93,7 +93,38 @@ export default function AllCyberAttacksPage() {
       }
 
       if (data.data) {
-        setLast100Cyberattacks(data.data);
+        const updatedData = await Promise.all(
+          data.data.map(async (item) => {
+            const res2 = await fetch(
+              `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
+              {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                  Authorization: `Bearer ${getCookie("access_token")}`,
+                },
+              }
+            );
+
+            if (res2.status === 401 || res2.status === 403) {
+              return res2;
+            }
+
+            const data2 = await res2.json();
+
+            console.log("allcountry data (data2): ", data2);
+
+            if (data.data === null) {
+              throw res2;
+            }
+
+            return {
+              ...item,
+              country_name: data2.data.title,
+            };
+          })
+        );
+        setLast100Cyberattacks(updatedData);
 
         return res;
       }
@@ -134,7 +165,38 @@ export default function AllCyberAttacksPage() {
       }
 
       if (data.data) {
-        setRecentCyberattacks(data.data);
+        const updatedData = await Promise.all(
+          data.data.map(async (item) => {
+            const res2 = await fetch(
+              `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
+              {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                  Authorization: `Bearer ${getCookie("access_token")}`,
+                },
+              }
+            );
+
+            if (res2.status === 401 || res2.status === 403) {
+              return res2;
+            }
+
+            const data2 = await res2.json();
+
+            console.log("allcountry data (data2): ", data2);
+
+            if (data.data === null) {
+              throw res2;
+            }
+
+            return {
+              ...item,
+              country_name: data2.data.title,
+            };
+          })
+        );
+        setRecentCyberattacks(updatedData);
 
         return res;
       }
@@ -148,41 +210,6 @@ export default function AllCyberAttacksPage() {
 
   const fetchRecentCyberAttarcksWithRefreshToken = async () => {
     await fetchWithRefreshToken(fetchRecentCyberAttacks, router, dispatch);
-  };
-
-  const fetchToChangeCountry = async (country) => {
-    try {
-      dispatch(setLoadingState(true));
-
-      const res = await fetch(`${APIDATAV1}ransomware/country?id=${country}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-        },
-      });
-
-      if (res.status === 401 || res.status === 403) {
-        return res;
-      }
-
-      const data = await res.json();
-
-      console.log("data allcyberattacks country: ", data);
-
-      if (data.data === null) {
-        throw res;
-      }
-
-      if (data.data) {
-        return data;
-      }
-    } catch (error) {
-      console.log("inside catch allcyberattacks country: ", error);
-      return error;
-    } finally {
-      dispatch(setLoadingState(false));
-    }
   };
 
   useEffect(() => {
@@ -225,23 +252,21 @@ export default function AllCyberAttacksPage() {
 
       key: "country",
       render: (param1) => {
-        let newCountryName;
-
-        // fetchToChangeCountry(param1.country).then((data) => {
-        //   console.log("allcyberattacks countryname: ", data);
-
-        //   newCountryName = data.data.title;
-        // });
-
         return (
           <div className="flex items-center">
-            <Link key={param1.title} href={"/"}>
+            <Link
+              key={param1.title}
+              href={`/credentials/dashboard/ransom-news/all-cyberattacks/country-details/details?country=${param1.country}`}
+              className="flex items-center cursor-pointer"
+            >
               <Image
                 width={32}
                 height={24}
                 src={param1.image}
                 alt="Country Icon"
+                className="rounded-md"
               />
+              <p className="ml-2 underline"> {param1.country_name} </p>
             </Link>
           </div>
         );
@@ -320,21 +345,21 @@ export default function AllCyberAttacksPage() {
 
       key: "country",
       render: (param1) => {
-        // fetchToChangeCountry("in").then((data) => {
-        //   console.log("allcyberattacks countryname: ", data.data.title);
-
-        //   setCountryName(data.data.title);
-        // });
-
         return (
-          <div>
-            <Link key={param1.title} href={"/"}>
+          <div className="flex items-center">
+            <Link
+              key={param1.title}
+              href={`/credentials/dashboard/ransom-news/all-cyberattacks/country-details/details?country=${param1.country}`}
+              className="flex items-center cursor-pointer"
+            >
               <Image
                 width={32}
                 height={24}
                 src={param1.image}
                 alt="Country Icon"
+                className="rounded-md"
               />
+              <p className="ml-2 underline"> {param1.country_name} </p>
             </Link>
           </div>
         );
