@@ -246,20 +246,14 @@ export default function AllCyberAttacksPage() {
       render: (param1) => {
         return (
           <div className="flex items-center">
-            <Link
-              key={param1.title}
-              href={"/"}
-              className="flex items-center cursor-pointer"
-            >
-              <Image
-                width={32}
-                height={24}
-                src={param1.image}
-                alt="Country Icon"
-                className="rounded-md"
-              />
-              <p className="ml-2"> {param1.title} </p>
-            </Link>
+            <Image
+              width={32}
+              height={24}
+              src={param1.image}
+              alt="Country Icon"
+              className="rounded-md"
+            />
+            <p className="ml-2"> {param1.title} </p>
           </div>
         );
       },

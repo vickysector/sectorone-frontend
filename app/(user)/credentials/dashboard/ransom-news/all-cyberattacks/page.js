@@ -93,38 +93,38 @@ export default function AllCyberAttacksPage() {
       }
 
       if (data.data) {
-        const updatedData = await Promise.all(
-          data.data.map(async (item) => {
-            const res2 = await fetch(
-              `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
-              {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                  Authorization: `Bearer ${getCookie("access_token")}`,
-                },
-              }
-            );
+        // const updatedData = await Promise.all(
+        //   data.data.map(async (item) => {
+        //     const res2 = await fetch(
+        //       `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
+        //       {
+        //         method: "GET",
+        //         credentials: "include",
+        //         headers: {
+        //           Authorization: `Bearer ${getCookie("access_token")}`,
+        //         },
+        //       }
+        //     );
 
-            if (res2.status === 401 || res2.status === 403) {
-              return res2;
-            }
+        //     if (res2.status === 401 || res2.status === 403) {
+        //       return res2;
+        //     }
 
-            const data2 = await res2.json();
+        //     const data2 = await res2.json();
 
-            console.log("allcountry data (data2): ", data2);
+        //     console.log("allcountry data (data2): ", data2);
 
-            if (data.data === null) {
-              throw res2;
-            }
+        //     if (data.data === null) {
+        //       throw res2;
+        //     }
 
-            return {
-              ...item,
-              country_name: data2.data.title,
-            };
-          })
-        );
-        setLast100Cyberattacks(updatedData);
+        //     return {
+        //       ...item,
+        //       country_name: data2.data.title,
+        //     };
+        //   })
+        // );
+        setLast100Cyberattacks(data.data);
 
         return res;
       }
@@ -165,38 +165,38 @@ export default function AllCyberAttacksPage() {
       }
 
       if (data.data) {
-        const updatedData = await Promise.all(
-          data.data.map(async (item) => {
-            const res2 = await fetch(
-              `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
-              {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                  Authorization: `Bearer ${getCookie("access_token")}`,
-                },
-              }
-            );
+        // const updatedData = await Promise.all(
+        //   data.data.map(async (item) => {
+        //     const res2 = await fetch(
+        //       `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
+        //       {
+        //         method: "GET",
+        //         credentials: "include",
+        //         headers: {
+        //           Authorization: `Bearer ${getCookie("access_token")}`,
+        //         },
+        //       }
+        //     );
 
-            if (res2.status === 401 || res2.status === 403) {
-              return res2;
-            }
+        //     if (res2.status === 401 || res2.status === 403) {
+        //       return res2;
+        //     }
 
-            const data2 = await res2.json();
+        //     const data2 = await res2.json();
 
-            console.log("allcountry data (data2): ", data2);
+        //     console.log("allcountry data (data2): ", data2);
 
-            if (data.data === null) {
-              throw res2;
-            }
+        //     if (data.data === null) {
+        //       throw res2;
+        //     }
 
-            return {
-              ...item,
-              country_name: data2.data.title,
-            };
-          })
-        );
-        setRecentCyberattacks(updatedData);
+        //     return {
+        //       ...item,
+        //       country_name: data2.data.title,
+        //     };
+        //   })
+        // );
+        setRecentCyberattacks(data.data);
 
         return res;
       }
@@ -266,7 +266,7 @@ export default function AllCyberAttacksPage() {
                 alt="Country Icon"
                 className="rounded-md"
               />
-              <p className="ml-2 underline"> {param1.country_name} </p>
+              {/* <p className="ml-2 underline"> {param1.country_name} </p> */}
             </Link>
           </div>
         );
@@ -359,7 +359,7 @@ export default function AllCyberAttacksPage() {
                 alt="Country Icon"
                 className="rounded-md"
               />
-              <p className="ml-2 underline"> {param1.country_name} </p>
+              {/* <p className="ml-2 underline"> {param1.country_name} </p> */}
             </Link>
           </div>
         );

@@ -18,18 +18,16 @@ import {
   setContent,
   setTitle,
 } from "@/app/_lib/store/features/Ransomware/DetailsSlices";
+import ImageIcon from "@mui/icons-material/Image";
 
-export default function DetailsCountryCyberAttacksPageAllCyberAttack({
-  params,
-}) {
+export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
   // Start of: state
 
-  const [countryName, setCountryName] = useState("");
-  const [last100ransomware, setLast100Cyberattacks] = useState();
+  const [ransomwareData, setRansomwareData] = useState();
 
   const searchParams = useSearchParams();
 
-  const country = searchParams.get("country");
+  const ransomware = searchParams.get("ransomware");
 
   // End of: state
 
@@ -42,52 +40,12 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
 
   // Start of: API Intregations
 
-  const fetchCountryName = async () => {
-    try {
-      dispatch(setLoadingState(true));
-
-      const res = await fetch(`${APIDATAV1}ransomware/country?id=${country}`, {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          Authorization: `Bearer ${getCookie("access_token")}`,
-        },
-      });
-
-      if (res.status === 401 || res.status === 403) {
-        return res;
-      }
-
-      const data = await res.json();
-
-      console.log("data allcyberattacks (recent): ", data);
-
-      if (data.data === null) {
-        throw res;
-      }
-
-      if (data.data) {
-        setCountryName(data.data.title);
-        return res;
-      }
-    } catch (error) {
-      console.log("inside catch allcyberattacks (recent): ", error);
-      return error;
-    } finally {
-      dispatch(setLoadingState(false));
-    }
-  };
-
-  const fetchCountryNameWithRefreshToken = async () => {
-    await fetchWithRefreshToken(fetchCountryName, router, dispatch);
-  };
-
-  const fetchAllCountryCyberAttack = async () => {
+  const fetchAllRansomwareHub = async () => {
     try {
       dispatch(setLoadingState(true));
 
       const res = await fetch(
-        `${APIDATAV1}ransomware/countryattacks?id=${country}`,
+        `${APIDATAV1}ransomware/groupvictims?name=${ransomware}`,
         {
           method: "GET",
           credentials: "include",
@@ -141,7 +99,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
             };
           })
         );
-        setLast100Cyberattacks(updatedData);
+        setRansomwareData(updatedData);
         console.log("allcountry data (updatedData in table): ", updatedData);
 
         return res;
@@ -154,13 +112,12 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
     }
   };
 
-  const fetchAllCyberAttarcksWithRefreshToken = async () => {
-    await fetchWithRefreshToken(fetchAllCountryCyberAttack, router, dispatch);
+  const fetchAllRansomwareWithRefreshToken = async () => {
+    await fetchWithRefreshToken(fetchAllRansomwareHub, router, dispatch);
   };
 
   useEffect(() => {
-    fetchCountryNameWithRefreshToken();
-    fetchAllCyberAttarcksWithRefreshToken();
+    fetchAllRansomwareWithRefreshToken();
   }, []);
 
   // End of: API Intregations
@@ -201,6 +158,13 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
       },
     },
     {
+      title: "Published",
+      key: "published",
+      render: (param1) => {
+        return <p>{convertDateFormat(param1.published)}</p>;
+      },
+    },
+    {
       title: "Country",
 
       key: "country",
@@ -232,12 +196,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
       render: (param1) => {
         return (
           <div>
-            <Link
-              className="underline"
-              href={`/credentials/dashboard/ransom-news/all-cyberattacks/ransomware-details/details?ransomware=${param1.group_name}`}
-            >
-              {param1.group_name}
-            </Link>
+            <p>{param1.group_name}</p>
           </div>
         );
       },
@@ -250,6 +209,18 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
         return (
           <a href={`${param1.website}`} target="_blank">
             <LaunchIcon style={{ color: "#FF6F1E" }} />
+          </a>
+        );
+      },
+    },
+    {
+      title: "Proof",
+
+      key: "proof",
+      render: (param1) => {
+        return (
+          <a href={`${param1.screenshot}`} target="_blank">
+            <ImageIcon style={{ color: "#FF6F1E" }} />
           </a>
         );
       },
@@ -283,7 +254,8 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
           <ArrowBackIcon />
         </div>
         <h1 className="text-heading-2 text-black  ml-4">
-          {countryName.length !== 0 && countryName}
+          {" "}
+          {ransomwareData && ransomwareData.group_name}{" "}
         </h1>
       </div>
       <div className="bg-white rounded-lg mt-4">
@@ -304,7 +276,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
           >
             <Table
               columns={columnsLastCyberattacks}
-              dataSource={last100ransomware}
+              dataSource={ransomwareData}
             />
           </ConfigProvider>
         </section>
