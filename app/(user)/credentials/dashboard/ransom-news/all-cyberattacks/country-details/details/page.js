@@ -9,6 +9,15 @@ import { APIDATAV1 } from "@/app/_lib/helpers/APIKEYS";
 import { useEffect, useState } from "react";
 import { setLoadingState } from "@/app/_lib/store/features/Compromised/LoadingSlices";
 import { setCookie, getCookie, hasCookie, deleteCookie } from "cookies-next";
+import LaunchIcon from "@mui/icons-material/Launch";
+import Image from "next/image";
+import Link from "next/link";
+import { convertDateFormat } from "@/app/_lib/CalculatePassword";
+import { ConfigProvider, Table } from "antd";
+import {
+  setContent,
+  setTitle,
+} from "@/app/_lib/store/features/Ransomware/DetailsSlices";
 
 export default function DetailsCountryCyberAttacksPageAllCyberAttack({
   params,
@@ -16,6 +25,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
   // Start of: state
 
   const [countryName, setCountryName] = useState("");
+  const [last100ransomware, setLast100Cyberattacks] = useState();
 
   const searchParams = useSearchParams();
 
@@ -72,8 +82,85 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
     await fetchWithRefreshToken(fetchCountryName, router, dispatch);
   };
 
+  const fetchAllCountryCyberAttack = async () => {
+    try {
+      dispatch(setLoadingState(true));
+
+      const res = await fetch(
+        `${APIDATAV1}ransomware/countryattacks?id=${country}`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${getCookie("access_token")}`,
+          },
+        }
+      );
+
+      if (res.status === 401 || res.status === 403) {
+        return res;
+      }
+
+      const data = await res.json();
+
+      console.log("data allcyberattacks: ", data);
+
+      if (data.data === null) {
+        throw res;
+      }
+
+      if (data.data) {
+        const updatedData = await Promise.all(
+          data.data.map(async (item) => {
+            const res2 = await fetch(
+              `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
+              {
+                method: "GET",
+                credentials: "include",
+                headers: {
+                  Authorization: `Bearer ${getCookie("access_token")}`,
+                },
+              }
+            );
+
+            if (res2.status === 401 || res2.status === 403) {
+              return res2;
+            }
+
+            const data2 = await res2.json();
+
+            console.log("allcountry data (data2): ", data2);
+
+            if (data.data === null) {
+              throw res2;
+            }
+
+            return {
+              ...item,
+              title: data2.data.title,
+            };
+          })
+        );
+        setLast100Cyberattacks(updatedData);
+        console.log("allcountry data (updatedData in table): ", updatedData);
+
+        return res;
+      }
+    } catch (error) {
+      console.log("inside catch allcyberattacks: ", error);
+      return error;
+    } finally {
+      dispatch(setLoadingState(false));
+    }
+  };
+
+  const fetchAllCyberAttarcksWithRefreshToken = async () => {
+    await fetchWithRefreshToken(fetchAllCountryCyberAttack, router, dispatch);
+  };
+
   useEffect(() => {
     fetchCountryNameWithRefreshToken();
+    fetchAllCyberAttarcksWithRefreshToken();
   }, []);
 
   // End of: API Intregations
@@ -84,7 +171,105 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
     router.back();
   };
 
+  const handleMigrateContent = (title, summary) => {
+    dispatch(setContent(summary));
+    dispatch(setTitle(title));
+
+    router.push("/credentials/dashboard/ransom-news/all-country/details");
+  };
+
   //   End of: Handle function
+
+  // Start of: Table Last 100 Cyberattacks
+
+  const columnsLastCyberattacks = [
+    {
+      title: "No",
+      key: "no",
+      render: (param1, record, index) => {
+        console.log("inside render (param1): ", param1);
+        console.log("inside render (record): ", record);
+        console.log("inside render (index): ", index);
+        return <p>{index + 1}</p>;
+      },
+    },
+    {
+      title: "Discovered",
+      key: "added",
+      render: (param1) => {
+        return <p>{convertDateFormat(param1.discovered)}</p>;
+      },
+    },
+    {
+      title: "Country",
+
+      key: "country",
+      render: (param1) => {
+        return (
+          <div className="flex items-center">
+            <Link
+              key={param1.title}
+              href={"/"}
+              className="flex items-center cursor-pointer"
+            >
+              <Image
+                width={32}
+                height={24}
+                src={param1.image}
+                alt="Country Icon"
+                className="rounded-md"
+              />
+              <p className="ml-2"> {param1.title} </p>
+            </Link>
+          </div>
+        );
+      },
+    },
+    {
+      title: "Ransomware",
+
+      key: "ransomware",
+      render: (param1) => {
+        return (
+          <div>
+            <p className="underline">{param1.group_name}</p>
+          </div>
+        );
+      },
+    },
+    {
+      title: "URL",
+
+      key: "url",
+      render: (param1) => {
+        return (
+          <a href={`${param1.website}`} target="_blank">
+            <LaunchIcon style={{ color: "#FF6F1E" }} />
+          </a>
+        );
+      },
+    },
+    {
+      title: "Action",
+      key: "action",
+      render: (param1, record) => {
+        return (
+          <button
+            className={clsx(
+              `py-2 px-4 rounded-md text-primary-base text-Base-normal border-[1px] border-input-border `
+            )}
+            onClick={() =>
+              handleMigrateContent(param1.post_title, param1.description)
+            }
+          >
+            Details
+          </button>
+        );
+      },
+    },
+  ];
+
+  // End of: Table Recent CyberAttacks
 
   return (
     <main>
@@ -97,7 +282,27 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack({
         </h1>
       </div>
       <div className="bg-white rounded-lg mt-4">
-        <section className="p-8"></section>
+        <section className="p-8">
+          <ConfigProvider
+            theme={{
+              components: {
+                Pagination: {
+                  itemActiveBg: "#FF6F1E",
+                  itemLinkBg: "#fff",
+                  itemInputBg: "#fff",
+                },
+              },
+              token: {
+                colorPrimary: "white",
+              },
+            }}
+          >
+            <Table
+              columns={columnsLastCyberattacks}
+              dataSource={last100ransomware}
+            />
+          </ConfigProvider>
+        </section>
       </div>
     </main>
   );
