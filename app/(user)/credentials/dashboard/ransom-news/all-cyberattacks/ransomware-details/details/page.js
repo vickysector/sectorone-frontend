@@ -68,38 +68,38 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
       }
 
       if (data.data) {
-        const updatedData = await Promise.all(
-          data.data.map(async (item) => {
-            const res2 = await fetch(
-              `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
-              {
-                method: "GET",
-                credentials: "include",
-                headers: {
-                  Authorization: `Bearer ${getCookie("access_token")}`,
-                },
-              }
-            );
+        // const updatedData = await Promise.all(
+        //   data.data.map(async (item) => {
+        //     const res2 = await fetch(
+        //       `${APIDATAV1}ransomware/country?id=${item.country.toLowerCase()}`,
+        //       {
+        //         method: "GET",
+        //         credentials: "include",
+        //         headers: {
+        //           Authorization: `Bearer ${getCookie("access_token")}`,
+        //         },
+        //       }
+        //     );
 
-            if (res2.status === 401 || res2.status === 403) {
-              return res2;
-            }
+        //     if (res2.status === 401 || res2.status === 403) {
+        //       return res2;
+        //     }
 
-            const data2 = await res2.json();
+        //     const data2 = await res2.json();
 
-            console.log("allcountry data (data2): ", data2);
+        //     console.log("allcountry data (data2): ", data2);
 
-            if (data.data === null) {
-              throw res2;
-            }
+        //     if (data.data === null) {
+        //       throw res2;
+        //     }
 
-            return {
-              ...item,
-              title: data2.data.title,
-            };
-          })
-        );
-        setRansomwareData(updatedData);
+        //     return {
+        //       ...item,
+        //       title: data2.data.title,
+        //     };
+        //   })
+        // );
+        setRansomwareData(data.data);
         console.log("allcountry data (updatedData in table): ", updatedData);
 
         return res;
