@@ -100,7 +100,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
         //   })
         // );
         setRansomwareData(data.data);
-        console.log("allcountry data (updatedData in table): ", updatedData);
+        // console.log("allcountry data (updatedData in table): ", updatedData);
 
         return res;
       }
@@ -171,20 +171,13 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
       render: (param1) => {
         return (
           <div className="flex items-center">
-            <Link
-              key={param1.title}
-              href={"/"}
-              className="flex items-center cursor-pointer"
-            >
-              <Image
-                width={32}
-                height={24}
-                src={param1.image}
-                alt="Country Icon"
-                className="rounded-md"
-              />
-              <p className="ml-2"> {param1.title} </p>
-            </Link>
+            <Image
+              width={32}
+              height={24}
+              src={param1.image}
+              alt="Country Icon"
+              className="rounded-md"
+            />
           </div>
         );
       },
@@ -207,12 +200,25 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
       key: "url",
       render: (param1) => {
         return (
-          <a
-            href={`${param1.post_url.length === 0 ? "#" : param1.post_url}`}
-            target="_blank"
-          >
-            <LaunchIcon style={{ color: "#FF6F1E" }} />
-          </a>
+          <div>
+            <a
+              href={`${param1.post_url}`}
+              target="_blank"
+              className={clsx(
+                param1.post_url.length === 0 ? "hidden" : "visible"
+              )}
+            >
+              <LaunchIcon style={{ color: "#FF6F1E" }} />
+            </a>
+            <p
+              className={clsx(
+                param1.post_url.length !== 0 ? "hidden" : "visible"
+              )}
+            >
+              {" "}
+              Not Available
+            </p>
+          </div>
         );
       },
     },
@@ -222,9 +228,25 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
       key: "proof",
       render: (param1) => {
         return (
-          <a href={`${param1.screenshot}`} target="_blank">
-            <ImageIcon style={{ color: "#FF6F1E" }} />
-          </a>
+          <div>
+            <a
+              href={`${param1.screenshot}`}
+              target="_blank"
+              className={clsx(
+                param1.screenshot.length === 0 ? "hidden" : "visible"
+              )}
+            >
+              <LaunchIcon style={{ color: "#FF6F1E" }} />
+            </a>
+            <p
+              className={clsx(
+                param1.screenshot.length !== 0 ? "hidden" : "visible"
+              )}
+            >
+              {" "}
+              Not Available
+            </p>
+          </div>
         );
       },
     },
@@ -238,7 +260,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
               `py-2 px-4 rounded-md text-primary-base text-Base-normal border-[1px] border-input-border `
             )}
             onClick={() =>
-              handleMigrateContent(param1.post_title, param1.description)
+              handleMigrateContent(param1.post_title, param1.activity)
             }
           >
             Details
@@ -250,6 +272,8 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
 
   // End of: Table Recent CyberAttacks
 
+  console.log("ransomwaredata: ", ransomwareData);
+
   return (
     <main>
       <div className={clsx("flex items-center mb-4")}>
@@ -258,7 +282,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
         </div>
         <h1 className="text-heading-2 text-black  ml-4">
           {" "}
-          {ransomwareData && ransomwareData.group_name}{" "}
+          {ransomwareData && ransomwareData[0].group_name}{" "}
         </h1>
       </div>
       <div className="bg-white rounded-lg mt-4">

@@ -277,9 +277,25 @@ export default function AllCyberAttacksPage() {
       key: "url",
       render: (param1) => {
         return (
-          <a href={`${param1.post_url}`} target="_blank">
-            <LaunchIcon style={{ color: "#FF6F1E" }} />
-          </a>
+          <div>
+            <a
+              href={`${param1.post_url}`}
+              target="_blank"
+              className={clsx(
+                param1.post_url.length === 0 ? "hidden" : "visible"
+              )}
+            >
+              <LaunchIcon style={{ color: "#FF6F1E" }} />
+            </a>
+            <p
+              className={clsx(
+                param1.post_url.length !== 0 ? "hidden" : "visible"
+              )}
+            >
+              {" "}
+              Not Available
+            </p>
+          </div>
         );
       },
     },
