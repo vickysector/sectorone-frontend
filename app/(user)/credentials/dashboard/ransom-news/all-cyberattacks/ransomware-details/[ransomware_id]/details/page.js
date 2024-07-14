@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import clsx from "clsx";
 import { convertDateFormat } from "@/app/_lib/CalculatePassword";
+import { useEffect } from "react";
 
 export default function RecentPageDetails() {
   // Start of: Redux
@@ -25,8 +26,6 @@ export default function RecentPageDetails() {
   };
 
   //   End of: Handle function
-
-  console.log("all detail ransomware: ", allDetailRansomware);
 
   return (
     <main>
@@ -67,16 +66,29 @@ export default function RecentPageDetails() {
                   <h3 className="text-black text-LG-strong">Name</h3>
                   <p className="text-LG-normal text-text-description ">
                     {" "}
-                    {allDetailRansomware.group_name}{" "}
+                    {allDetailRansomware && allDetailRansomware.group_name}{" "}
                   </p>
                 </div>
-                <div className="mt-6">
+                <div className="mt-6 break-words">
                   <h3 className="text-black text-LG-strong">URL</h3>
-                  <p className="text-LG-normal text-text-description ">
+                  <p className="text-LG-normal text-text-description max-w-[330px] ">
                     {" "}
-                    {allDetailRansomware.post_url.length === 0
-                      ? "-"
-                      : allDetailRansomware.post_url}
+                    {allDetailRansomware &&
+                    allDetailRansomware.post_url.length === 0 ? (
+                      "-"
+                    ) : (
+                      <a
+                        href={
+                          allDetailRansomware && allDetailRansomware.post_url
+                        }
+                        className="underline"
+                        target="_blank"
+                      >
+                        {" "}
+                        {allDetailRansomware &&
+                          allDetailRansomware.post_url}{" "}
+                      </a>
+                    )}
                   </p>
                 </div>
               </div>
@@ -84,26 +96,39 @@ export default function RecentPageDetails() {
                 <div>
                   <h3 className="text-black text-LG-strong">Description</h3>
                   <p className="text-LG-normal text-text-description ">
-                    {allDetailRansomware.activity.length === 0
+                    {allDetailRansomware &&
+                    allDetailRansomware.activity.length === 0
                       ? "-"
-                      : allDetailRansomware.activity}
+                      : allDetailRansomware && allDetailRansomware.activity}
                   </p>
                 </div>
-                <div className="mt-6">
+                <div className="mt-6 break-words">
                   <h3 className="text-black text-LG-strong">Proof</h3>
-                  <p className="text-LG-normal text-text-description ">
-                    {allDetailRansomware.screenshot.length === 0
-                      ? "-"
-                      : allDetailRansomware.screenshot}
+                  <p className="text-LG-normal text-text-description max-w-[330px] ">
+                    {allDetailRansomware &&
+                    allDetailRansomware.screenshot.length === 0 ? (
+                      "-"
+                    ) : (
+                      <a
+                        href={
+                          allDetailRansomware && allDetailRansomware.screenshot
+                        }
+                        target="_blank"
+                        className="underline"
+                      >
+                        {allDetailRansomware && allDetailRansomware.screenshot}
+                      </a>
+                    )}
                   </p>
                 </div>
               </div>
               <div className="basis-1/3">
                 <h3 className="text-black text-LG-strong">Title</h3>
                 <p className="text-LG-normal text-text-description ">
-                  {allDetailRansomware.post_title.length === 0
+                  {allDetailRansomware &&
+                  allDetailRansomware.post_title.length === 0
                     ? "-"
-                    : allDetailRansomware.post_title}
+                    : allDetailRansomware && allDetailRansomware.post_title}
                 </p>
               </div>
             </div>

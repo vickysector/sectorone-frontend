@@ -218,7 +218,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
               )}
             >
               {" "}
-              Not Available
+              -
             </p>
           </div>
         );
@@ -238,7 +238,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
                 param1.screenshot.length === 0 ? "hidden" : "visible"
               )}
             >
-              <LaunchIcon style={{ color: "#FF6F1E" }} />
+              <ImageIcon style={{ color: "#FF6F1E" }} />
             </a>
             <p
               className={clsx(
@@ -246,7 +246,7 @@ export default function DetailsCountryCyberAttacksPageAllCyberAttack() {
               )}
             >
               {" "}
-              Not Available
+              -
             </p>
           </div>
         );
